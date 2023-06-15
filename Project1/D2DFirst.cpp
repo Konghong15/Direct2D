@@ -1,5 +1,4 @@
 #include <cassert>
-#include <cassert>
 #include <comdef.h>
 #include <d2d1helper.h>
 
@@ -17,8 +16,8 @@ namespace project1
 
 	D2DFirst::D2DFirst(UINT width, UINT height, std::wstring name)
 		: GameProcessor(width, height, name)
-		, mTimer()
-		, mRenderer()
+		, mTimeManager()
+		, mRenderManager()
 		, mBackground(nullptr)
 		, mPlayers{ nullptr, }
 	{
@@ -30,14 +29,14 @@ namespace project1
 		hr = CoInitialize(NULL);
 		assert(SUCCEEDED(hr));
 
-		mRenderer.Init();
-		mTimer.Init();
+		mRenderManager.Init();
+		mTimeManager.Init();
 
-		const WCHAR* imagePath1 = L"./run.png";
-		const WCHAR* imagePath0 = L"./midnight.png";
+		const WCHAR* runPath = L"./resource/run.png";
+		const WCHAR* backgroundPath = L"./resource/midnight.png";
 
-		mRenderer.CreateD2DBitmapFromFile(imagePath0);
-		mRenderer.CreateD2DBitmapFromFile(imagePath1);
+		mRenderManager.CreateD2DBitmapFromFile(runPath);
+		mRenderManager.CreateD2DBitmapFromFile(backgroundPath);
 
 		std::vector<std::vector<hRectangle>> frameAnimationInfo =
 		{
@@ -48,10 +47,9 @@ namespace project1
 				{789.f, 325.f, 1573.f, 645.f}
 			}
 		};
-		AnimationAsset* animationAsset = new AnimationAsset(mRenderer.GetBitmapOrNull(imagePath0), frameAnimationInfo);
-		mRenderer.AddAnimationAsset(imagePath0, animationAsset);
 
-		frameAnimationInfo.clear();
+		mRenderManager.CreateAnimationAsset(backgroundPath, frameAnimationInfo);
+
 		frameAnimationInfo =
 		{
 			{
@@ -67,25 +65,24 @@ namespace project1
 				{ 993, 33, 1085, 120 }
 			}
 		};
-		animationAsset = new AnimationAsset(mRenderer.GetBitmapOrNull(imagePath1), frameAnimationInfo);
-		mRenderer.AddAnimationAsset(imagePath1, animationAsset);
 
+		mRenderManager.CreateAnimationAsset(runPath, frameAnimationInfo);
 
-		mBackground = new Object({ 0,0, 1920, 1080 }, AnimationInstance(*mRenderer.GetAnimationAssetOrNull(imagePath0), 0, 0, 0.2f));
+		mBackground = new Object({ 0,0, 1920, 1080 }, AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(backgroundPath), 0, 0, 0.2f));
 
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				mPlayers[i][j] = new Object({ 100.f * i, 100.f * j , 100.f * (i + 1), 100.f * (j + 1) }, AnimationInstance(*mRenderer.GetAnimationAssetOrNull(imagePath1), 0, i, 0.1f * (j + 1)));
+				mPlayers[i][j] = new Object({ 100.f * i, 100.f * j , 100.f * (i + 1), 100.f * (j + 1) }, AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(runPath), 0, i, 0.1f * (j + 1)));
 			}
 		}
 	}
 
 	void D2DFirst::Update()
 	{
-		mTimer.Update();
-		const float DELTA_TIME = mTimer.GetDeltaTime();
+		mTimeManager.Update();
+		const float DELTA_TIME = mTimeManager.GetDeltaTime();
 
 		mBackground->Update(DELTA_TIME);
 		for (int i = 0; i < 10; ++i)
@@ -99,23 +96,21 @@ namespace project1
 
 	void D2DFirst::Render()
 	{
-		mRenderer.BeginDraw();
-		mBackground->Render(&mRenderer);
+		mRenderManager.BeginDraw();
+		mBackground->Render(&mRenderManager);
 		for (int i = 0; i < 10; ++i)
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				mPlayers[i][j]->Render(&mRenderer);
+				mPlayers[i][j]->Render(&mRenderManager);
 			}
 		}
-		mRenderer.EndDraw();
+		mRenderManager.EndDraw();
 	}
 
 	void D2DFirst::Destroy()
 	{
-		mRenderer.Release();
+		mRenderManager.Release();
 		CoUninitialize();
 	}
-
 }
-

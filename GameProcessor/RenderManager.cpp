@@ -2,7 +2,7 @@
 #include <d2d1helper.h>
 #include <comdef.h>
 
-#include "Renderer.h"
+#include "RenderManger.h"
 #include "WinApp.h"
 #include "hRectangle.h"
 
@@ -10,14 +10,14 @@
 
 namespace gameProcessor
 {
-	Renderer::Renderer()
+	RenderManager::RenderManager()
 		: mFactory(nullptr)
 		, mRenderTarget(nullptr)
 		, mWICFactory(nullptr)
 	{
 	}
 
-	void Renderer::Init()
+	void RenderManager::Init()
 	{
 		HRESULT hr;
 
@@ -48,7 +48,7 @@ namespace gameProcessor
 		assert(SUCCEEDED(hr));
 	}
 
-	void Renderer::Release()
+	void RenderManager::Release()
 	{
 		mFactory->Release();
 		mRenderTarget->Release();
@@ -69,12 +69,12 @@ namespace gameProcessor
 		mAnimationAssetMap.clear();
 	}
 
-	void Renderer::BeginDraw()
+	void RenderManager::BeginDraw()
 	{
 		mRenderTarget->BeginDraw();
 	}
 
-	void Renderer::DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, const WCHAR* imageKey)
+	void RenderManager::DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap)
 	{
 		const Vector2& WORLD_TL = worldRect.GetTopLeft();
 		const Vector2& WORLD_BR = worldRect.GetBottomRight();
@@ -82,44 +82,29 @@ namespace gameProcessor
 		const Vector2& SPRITE_TL = spriteRect.GetTopLeft();
 		const Vector2& SPRITE_BR = spriteRect.GetBottomRight();
 
-		auto findIter = mBitmapMap.find(imageKey);
-
-		if (findIter != mBitmapMap.end())
-		{
-			mRenderTarget->DrawBitmap(findIter->second
-				, D2D1::RectF(WORLD_TL.GetX(), WORLD_TL.GetY(), WORLD_BR.GetX(), WORLD_BR.GetY())
-				, 1.0f
-				, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
-				, D2D1::RectF(SPRITE_TL.GetX(), SPRITE_TL.GetY(), SPRITE_BR.GetX(), SPRITE_BR.GetY()));
-		}
-	}
-
-	void Renderer::DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance)
-	{
-		const Vector2& WORLD_TL = worldRect.GetTopLeft();
-		const Vector2& WORLD_BR = worldRect.GetBottomRight();
-
-		const AnimationAsset& animationAsset = animationInstance.GetAnimaitionAsset();
-		const unsigned int FRAME_INDEX = animationInstance.GetFrameIndex();
-		const unsigned int ANIMATION_INDEX = animationInstance.GetAnimationindex();
-
-		const hRectangle& SPRITE_RECT = animationAsset.GetFrameAnimationInfo().at(ANIMATION_INDEX).at(FRAME_INDEX);
-		const Vector2& SPRITE_TL = SPRITE_RECT.GetTopLeft();
-		const Vector2& SPRITE_BR = SPRITE_RECT.GetBottomRight();
-
-		mRenderTarget->DrawBitmap(animationAsset.GetBitmap()
+		mRenderTarget->DrawBitmap(bitmap
 			, D2D1::RectF(WORLD_TL.GetX(), WORLD_TL.GetY(), WORLD_BR.GetX(), WORLD_BR.GetY())
 			, 1.0f
 			, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
 			, D2D1::RectF(SPRITE_TL.GetX(), SPRITE_TL.GetY(), SPRITE_BR.GetX(), SPRITE_BR.GetY()));
 	}
 
-	void Renderer::EndDraw()
+	void RenderManager::DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance)
+	{
+		const AnimationAsset& animationAsset = animationInstance.GetAnimaitionAsset();
+		const unsigned int FRAME_INDEX = animationInstance.GetFrameIndex();
+		const unsigned int ANIMATION_INDEX = animationInstance.GetAnimationindex();
+
+		const hRectangle& SPRITE_RECT = animationAsset.GetFrameAnimationInfo().at(ANIMATION_INDEX).at(FRAME_INDEX);
+		DrawBitMap(worldRect, SPRITE_RECT, animationAsset.GetBitmap());
+	}
+
+	void RenderManager::EndDraw()
 	{
 		mRenderTarget->EndDraw();
 	}
 
-	HRESULT Renderer::CreateD2DBitmapFromFile(const WCHAR* filePath)
+	HRESULT RenderManager::CreateD2DBitmapFromFile(const WCHAR* filePath)
 	{
 		HRESULT hr = S_OK;
 		IWICBitmapDecoder* decoder = nullptr;
@@ -173,7 +158,26 @@ namespace gameProcessor
 		return hr;
 	}
 
-	HRESULT Renderer::createDeviceResources(HWND hWnd)
+	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo)
+	{
+		ID2D1Bitmap* bitmap = GetBitmapOrNull(imagePath);
+
+		if (bitmap == nullptr)
+		{
+			if (FAILED(CreateD2DBitmapFromFile(imagePath)))
+			{
+				return E_FAIL;
+			}
+		}
+		else
+		{
+			bitmap = GetBitmapOrNull(imagePath);
+			assert(bitmap != nullptr);
+			mAnimationAssetMap.emplace(imagePath, new AnimationAsset(bitmap, frameInfo));
+		}
+	}
+
+	HRESULT RenderManager::createDeviceResources(HWND hWnd)
 	{
 		HRESULT hr = S_OK;
 

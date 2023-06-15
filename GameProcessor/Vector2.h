@@ -12,6 +12,8 @@ namespace gameProcessor
 
 		Vector2(float x, float y);
 
+		static float GetDistance(const Vector2& vector, const Vector2& otherVector);
+
 		bool operator==(const Vector2& other) const;
 		bool operator!=(const Vector2& other) const;
 		Vector2 operator+(const Vector2& other) const;
@@ -21,11 +23,9 @@ namespace gameProcessor
 		inline void SetX(float x);
 		inline void SetY(float y);
 
+		float GetMagnitude() const;
 		inline float GetX() const;
 		inline float GetY() const;
-		float GetMagnitude() const;
-
-		static float GetDistance(const Vector2& vector, const Vector2& otherVector);
 
 	private:
 		float mX;

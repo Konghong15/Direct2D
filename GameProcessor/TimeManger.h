@@ -4,11 +4,11 @@
 
 namespace gameProcessor
 {
-	class Timer
+	class TimeManager
 	{
 	public:
-		Timer();
-		~Timer() = default;
+		TimeManager();
+		~TimeManager() = default;
 		
 		void Init();
 		void Update();
@@ -26,12 +26,12 @@ namespace gameProcessor
 		float mDeltaTime;
 	};
 
-	float Timer::GetDeltaTime()
+	float TimeManager::GetDeltaTime()
 	{
 		return  mDeltaTime > 0.03f ? 0.03f : mDeltaTime;
 	}
 
-	unsigned int Timer::GetFPS()
+	unsigned int TimeManager::GetFPS()
 	{
 		return mFPS;
 	}

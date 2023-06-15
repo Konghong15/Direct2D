@@ -1,8 +1,8 @@
 #pragma once
 
 #include <d2d1.h>
-#include <wincodec.h>
 #include <dwrite.h>
+#include <wincodec.h>
 #include <map>
 
 #include "AnimationAsset.h"
@@ -10,25 +10,27 @@
 
 namespace gameProcessor
 {
-	class Renderer
+	class RenderManager
 	{
 	public:
-		Renderer();
-		~Renderer() = default;
+		RenderManager();
+		~RenderManager() = default;
 
 		void Init();
+		void BeginDraw();
+		void EndDraw();
 		void Release();
 
-		void BeginDraw();
-		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, const WCHAR* imageKey);
+		/*void DrawRectangle(const hRectangle& worldRect);
+		void DrawCircle();*/
+		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap);
 		void DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance);
-		void EndDraw();
 
 		HRESULT CreateD2DBitmapFromFile(const WCHAR* imagePath);
-		inline void AddAnimationAsset(const WCHAR* imagePath, AnimationAsset* anmationAsset);
+		HRESULT CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo);
 
-		inline ID2D1Bitmap* GetBitmapOrNull(const WCHAR* imangePath);
-		inline AnimationAsset* GetAnimationAssetOrNull(const WCHAR* imangePath);
+		inline ID2D1Bitmap* GetBitmapOrNull(const WCHAR* key);
+		inline AnimationAsset* GetAnimationAssetOrNull(const WCHAR* key);
 
 	private:
 		HRESULT createDeviceResources(HWND hWnd);
@@ -41,19 +43,14 @@ namespace gameProcessor
 		std::map<const WCHAR*, AnimationAsset*> mAnimationAssetMap;
 	};
 
-	void Renderer::AddAnimationAsset(const WCHAR* imagePath, AnimationAsset* anmationAsset)
-	{
-		mAnimationAssetMap.emplace(imagePath, anmationAsset);
-	}
-
-	ID2D1Bitmap* Renderer::GetBitmapOrNull(const WCHAR* imangePath)
+	ID2D1Bitmap* RenderManager::GetBitmapOrNull(const WCHAR* imangePath)
 	{
 		auto iter = mBitmapMap.find(imangePath);
 
 		return iter == mBitmapMap.end() ? nullptr : iter->second;
 	}
 
-	inline AnimationAsset* Renderer::GetAnimationAssetOrNull(const WCHAR* imangePath)
+	inline AnimationAsset* RenderManager::GetAnimationAssetOrNull(const WCHAR* imangePath)
 	{
 		auto iter = mAnimationAssetMap.find(imangePath);
 

@@ -1,13 +1,13 @@
-#include "Timer.h"
+#include "TimeManger.h"
 
 namespace gameProcessor
 {
-	Timer::Timer()
+	TimeManager::TimeManager()
 	{
 		Init();
 	}
 
-	void Timer::Init()
+	void TimeManager::Init()
 	{
 		QueryPerformanceFrequency(&mFrequency);
 		QueryPerformanceCounter(&mCurTime);
@@ -17,7 +17,7 @@ namespace gameProcessor
 		mFPS = 0;
 	}
 
-	void Timer::Update()
+	void TimeManager::Update()
 	{
 		static float sTime = 0.f;
 		sTime += GetDeltaTime();

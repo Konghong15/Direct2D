@@ -5,8 +5,8 @@
 #include <d2d1helper.h>
 
 #include "GameProcessor.h"
-#include "Timer.h"
-#include "Renderer.h"
+#include "TimeManger.h"
+#include "RenderManger.h"
 
 namespace gameProcessor
 {
@@ -27,8 +27,8 @@ namespace project1
 		virtual void Destroy() override;
 
 	private:
-		gameProcessor::Timer mTimer;
-		gameProcessor::Renderer mRenderer;
+		gameProcessor::TimeManager mTimeManager;
+		gameProcessor::RenderManager mRenderManager;
 
 		gameProcessor::Object* mBackground;
 		gameProcessor::Object* mPlayers[10][10];

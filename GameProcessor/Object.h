@@ -5,7 +5,7 @@
 
 namespace gameProcessor
 {
-	class Renderer;
+	class RenderManager;
 
 	class Object
 	{
@@ -14,7 +14,7 @@ namespace gameProcessor
 		~Object() = default;
 
 		void Update(float deltaTime);
-		void Render(Renderer* renderer);
+		void Render(RenderManager* renderer);
 
 	private:
 		hRectangle mWorldRectangle;

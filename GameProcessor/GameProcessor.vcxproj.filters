@@ -45,10 +45,10 @@
     <ClCompile Include="GameProcessor.cpp">
       <Filter>소스 파일\processor</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="RenderManager.cpp">
       <Filter>소스 파일\processor</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
+    <ClCompile Include="TimeManager.cpp">
       <Filter>소스 파일\processor</Filter>
     </ClCompile>
     <ClCompile Include="AnimationAsset.cpp">
@@ -60,12 +60,21 @@
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix3X3.cpp">
+      <Filter>소스 파일\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>소스 파일\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Timer.h">
+    <ClInclude Include="TimeManger.h">
       <Filter>헤더 파일\Processor</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="RenderManger.h">
       <Filter>헤더 파일\Processor</Filter>
     </ClInclude>
     <ClInclude Include="AnimationInstance.h">
@@ -88,6 +97,21 @@
     </ClInclude>
     <ClInclude Include="WinApp.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>헤더 파일\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3X3.h">
+      <Filter>헤더 파일\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="FactoryResource.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>헤더 파일\Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>헤더 파일\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

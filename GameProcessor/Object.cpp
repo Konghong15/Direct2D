@@ -1,5 +1,5 @@
 #include "Object.h"
-#include "Renderer.h"
+#include "RenderManger.h"
 
 namespace gameProcessor
 {
@@ -14,7 +14,7 @@ namespace gameProcessor
 		mAnimationInstance.Update(deltaTime);
 	}
 
-	void Object::Render(Renderer* renderer)
+	void Object::Render(RenderManager* renderer)
 	{
 		renderer->DrawBitMap(mWorldRectangle, mAnimationInstance);
 	}
