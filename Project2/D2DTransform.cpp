@@ -32,8 +32,8 @@ namespace project2
 		mTimer.Init();
 		mInputManager.Init();
 
-		mRectagles.reserve(128);
-		mCircles.reserve(128);
+		//mRectagles.reserve(128);
+		//mCircles.reserve(128);
 	}
 
 	void D2DTransform::Update()
@@ -44,14 +44,16 @@ namespace project2
 
 		if (mInputManager.GetKeyState(VK_LBUTTON) == eKeyState::Push)
 		{
-			const POINT& mousePos =  mInputManager.GetMousePos();
-			
+			const Vector2& mousePos = mInputManager.GetMousePos();
+
 		}
 	}
 
 	void D2DTransform::Render()
 	{
 		mRenderer.BeginDraw();
+
+
 		mRenderer.EndDraw();
 	}
 

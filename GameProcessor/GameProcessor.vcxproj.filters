@@ -69,6 +69,9 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>소스 파일\processor</Filter>
     </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TimeManger.h">
