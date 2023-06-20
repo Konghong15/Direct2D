@@ -10,6 +10,9 @@ namespace gameProcessor
 	{
 	public:
 		static bool CheckPointToRectangle(const Vector2& point, const hRectangle& rectangle);
-		static bool CheckPointToRadius(const Vector2& point, const Circle& circle);
+		static bool CheckLineToRectangle(const Vector2& start, const Vector2& end, const hRectangle& rectangle);
+		static bool CheckCircleToRectangle(const Circle& circle, const hRectangle& rectangle);
+		static bool CheckRectangleToRectangle(const Circle& rectangle1, const hRectangle& rectangle2);
+		static bool CheckPointToCircle(const Vector2& point, const Circle& circle);
 	};
 }

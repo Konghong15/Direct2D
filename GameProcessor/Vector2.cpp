@@ -2,6 +2,7 @@
 #include <limits>
 
 #include "Vector2.h"
+#include "Matrix3X3.h"
 
 #ifndef EPSILON
 #define EPSILON (0.001f)
@@ -47,6 +48,29 @@ namespace gameProcessor
 	{
 		return Vector2(mX - other.mX, mY - other.mY);
 	}
+
+	Vector2 Vector2::operator*(const Matrix3X3& matrix) const
+	{
+		Vector2 result;
+
+		result.mX = mX * matrix.GetValue(0, 0)
+			+ mY * matrix.GetValue(0, 1)
+			+ 1 * matrix.GetValue(0, 2);
+
+		result.mY = mX * matrix.GetValue(1, 0)
+			+ mY * matrix.GetValue(1, 1)
+			+ 1 * matrix.GetValue(1, 2);
+
+		return result;
+	}
+
+	Vector2& Vector2::operator*=(const Matrix3X3& matrix)
+	{
+		*this = *this * matrix;
+
+		return *this;
+	}
+
 
 	float Vector2::GetMagnitude() const
 	{

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 #include "Vector2.h"
 
 namespace gameProcessor

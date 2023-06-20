@@ -2,6 +2,8 @@
 
 namespace gameProcessor
 {
+	class Matrix3X3;
+
 	class Vector2
 	{
 	public:
@@ -18,6 +20,9 @@ namespace gameProcessor
 		bool operator!=(const Vector2& other) const;
 		Vector2 operator+(const Vector2& other) const;
 		Vector2 operator-(const Vector2& other) const;
+		Vector2 operator*(const Matrix3X3& matrix) const;
+
+		Vector2& operator*=(const Matrix3X3& matrix);
 
 		float Dot(const Vector2& other);
 		void Normalize();

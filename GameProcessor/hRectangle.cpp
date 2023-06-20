@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "hRectangle.h"
+#include "Matrix3X3.h"
 
 namespace gameProcessor
 {
@@ -39,6 +40,28 @@ namespace gameProcessor
 	hRectangle::hRectangle()
 		: hRectangle(0.f, 0.f, 0.f, 0.f)
 	{
+	}
+
+	hRectangle hRectangle::operator*(const Matrix3X3& matrix) const
+	{
+		hRectangle result(*this);
+
+		for (size_t i = 0; i < static_cast<size_t>(eRectangleIndex::Size); ++i)
+		{
+			result.mVertices[i] *= matrix;
+		}
+
+		return result;
+	}
+
+	hRectangle& hRectangle::operator*=(const Matrix3X3& matrix)
+	{
+		for (size_t i = 0; i < static_cast<size_t>(eRectangleIndex::Size); ++i)
+		{
+			mVertices[i] *= matrix;
+		}
+
+		return *this;
 	}
 
 	void hRectangle::Rotate(float originX, float originY, float cosf, float sinf)

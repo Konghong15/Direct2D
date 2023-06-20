@@ -29,29 +29,29 @@ namespace gameProcessor
 
 	Matrix3X3 Matrix3X3::GetRotate(float radian)
 	{
-		Matrix3X3 result;
-		result.InitIdentity();
-
 		float cosTheta = cosf(radian);
 		float sinTheta = sinf(radian);
 
-		result.m[0][0] = cosTheta;
-		result.m[0][1] = sinTheta;
-		result.m[1][0] = -sinTheta;
-		result.m[1][1] = cosTheta;
+		float m[3][3] =
+		{
+			{cosTheta, sinTheta, 0},
+			{-sinTheta, cosTheta, 0 },
+			{0, 0, 1}
+		};
 
-		return result;
+		return Matrix3X3(m);
 	}
 
 	Matrix3X3 Matrix3X3::GetTranslate(float x, float y)
 	{
-		Matrix3X3 result;
-		result.InitIdentity();
+		float m[3][3] =
+		{
+			{0, 0, 0},
+			{0, 0, 0 },
+			{x, y, 1}
+		};
 
-		result.m[2][0] = x;
-		result.m[2][1] = y;
-
-		return result;
+		return Matrix3X3(m);
 	}
 
 	Matrix3X3 Matrix3X3::ComineMatrix(size_t count, const Matrix3X3& ...)

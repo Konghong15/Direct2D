@@ -2,9 +2,12 @@
 #include <d2d1helper.h>
 #include <comdef.h>
 
+#include "Circle.h"
 #include "RenderManger.h"
 #include "WinApp.h"
 #include "hRectangle.h"
+#include "Matrix3X3.h"
+#include "Helper.h"
 
 #define DEFAULT_DPI 96.f
 
@@ -72,16 +75,168 @@ namespace gameProcessor
 	void RenderManager::BeginDraw()
 	{
 		mRenderTarget->BeginDraw();
+		mRenderTarget->Clear({ 255,255,255 });
+		D2D1_SIZE_F rtSize = mRenderTarget->GetSize();
 	}
 
 	void RenderManager::DrawRectangle(const hRectangle& worldRect)
 	{
-		mRenderTarget->DrawRectangle();
+		D2D1_POINT_2F vertices[3] = {
+			{ worldRect.GetTopLeft().GetX(), worldRect.GetTopLeft().GetY() },
+			{ worldRect.GetTopRight().GetX(), worldRect.GetTopRight().GetY() },
+			{ worldRect.GetBottomLeft().GetX(), worldRect.GetBottomLeft().GetY() }
+		};
+
+		//ID2D1PathGeometry* pPathGeometry;
+		//pFactory->CreatePathGeometry(&pPathGeometry);
+
+		//ID2D1GeometrySink* pGeometrySink;
+		//pPathGeometry->Open(&pGeometrySink);
+
+		//pGeometrySink->BeginFigure(vertices[0], D2D1_FIGURE_BEGIN_FILLED);
+		//pGeometrySink->AddLines(vertices.data() + 1, vertices.size() - 1);
+		//pGeometrySink->EndFigure(D2D1_FIGURE_END_CLOSED);
+		//pGeometrySink->Close();
+
+		//pRenderTarget->DrawGeometry(pPathGeometry, pBrush);  // pBrush는 브러시 객체입니다.
+
+		//pGeometrySink->Release();
+		//pPathGeometry->Release();
 	}
 
-	void RenderManager::DrawCircle(const Circle& circle)
+	void RenderManager::DrawRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color)
 	{
+		const Vector2& TL = worldRect.GetTopLeft();
+		const Vector2& BR = worldRect.GetBottomRight();
+		const Vector2& CENTER = worldRect.GetCenter();
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
 
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(Helper::RadianToDegree(radian), { CENTER.GetX(), CENTER.GetY() }));
+		mRenderTarget->DrawRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush, 5.f);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
+	}
+
+	void RenderManager::DrawRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	{
+		const Vector2& TL = worldRect.GetTopLeft();
+		const Vector2& BR = worldRect.GetBottomRight();
+		const Vector2& CENTER = worldRect.GetCenter();
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		D2D1::Matrix3x2F d2dMatrix;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
+			}
+		}
+
+		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->DrawRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush, 5.f);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
+	}
+
+	void RenderManager::FillRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color)
+	{
+		const Vector2& TL = worldRect.GetTopLeft();
+		const Vector2& BR = worldRect.GetBottomRight();
+		const Vector2& CENTER = worldRect.GetCenter();
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(Helper::RadianToDegree(radian), { CENTER.GetX(), CENTER.GetY() }));
+		mRenderTarget->FillRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
+	}
+
+	void RenderManager::FillRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	{
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		const Vector2& TL = worldRect.GetTopLeft();
+		const Vector2& BR = worldRect.GetBottomRight();
+		const Vector2& CENTER = worldRect.GetCenter();
+
+		D2D1::Matrix3x2F d2dMatrix;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
+			}
+		}
+
+		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->FillRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
+	}
+
+	void RenderManager::DrawCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	{
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		const Vector2& center = circle.GetCenter();
+		float radius = circle.GetRadius();
+
+		D2D1::Matrix3x2F d2dMatrix;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
+			}
+		}
+
+		mRenderTarget->SetTransform(d2dMatrix);
+		D2D1_ELLIPSE ellipse = D2D1::Ellipse({ center.GetX(), center.GetY() }, radius, radius);
+		mRenderTarget->DrawEllipse(ellipse, brush, 5.0f);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
+	}
+
+	void RenderManager::FillCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	{
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		const Vector2& center = circle.GetCenter();
+		float radius = circle.GetRadius();
+
+		D2D1::Matrix3x2F d2dMatrix;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
+			}
+		}
+
+		mRenderTarget->SetTransform(d2dMatrix);
+		D2D1_ELLIPSE ellipse = D2D1::Ellipse({ center.GetX(), center.GetY() }, radius, radius);
+		mRenderTarget->FillEllipse(ellipse, brush);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		brush->Release();
 	}
 
 	void RenderManager::DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap)

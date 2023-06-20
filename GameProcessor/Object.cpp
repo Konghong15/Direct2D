@@ -3,6 +3,8 @@
 
 namespace gameProcessor
 {
+	std::vector<Object*> Object::mObject;
+
 	Object::Object(hRectangle worldRectangle, AnimationInstance animationInstace)
 		: mWorldRectangle(worldRectangle)
 		, mAnimationInstance(animationInstace)

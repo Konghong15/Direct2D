@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "hRectangle.h"
 #include "AnimationInstance.h"
 
@@ -15,6 +16,7 @@ namespace gameProcessor
 
 		void Update(float deltaTime);
 		void Render(RenderManager* renderer);
+		static std::vector<Object*> mObject;
 
 	private:
 		hRectangle mWorldRectangle;

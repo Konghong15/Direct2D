@@ -4,13 +4,14 @@
 #include <wincodec.h>
 #include <d2d1helper.h>
 #include <vector>
+#include <memory>
 
 #include "GameProcessor.h"
 #include "TimeManger.h"
 #include "RenderManger.h"
 #include "InputManager.h"
 #include "hRectangle.h"
-//#include "Circle.h"
+#include "ShapeObject.h"
 
 namespace gameProcessor
 {
@@ -19,12 +20,6 @@ namespace gameProcessor
 
 namespace project2
 {
-	enum class eActivateShapeType
-	{
-		Rectangle,
-		Circle
-	};
-
 	class D2DTransform : public gameProcessor::GameProcessor
 	{
 	public:
@@ -36,18 +31,11 @@ namespace project2
 		virtual void Render() override;
 		virtual void Destroy() override;
 
-
-
 	private:
 		gameProcessor::TimeManager mTimer;
 		gameProcessor::RenderManager mRenderer;
 		gameProcessor::InputManager mInputManager;
 
-		eActivateShapeType mCurrentShapeType;
-		//gameProcessor::hRectangle mRectangleUI;
-		//gameProcessor::Circle mCircleUI;
-
-		//std::vector<gameProcessor::hRectangle> mRectagles;
-		//std::vector<gameProcessor::Circle> mCircles;
+		std::vector<std::unique_ptr<ShapeObject>> mShapeObjects;
 	};
 }

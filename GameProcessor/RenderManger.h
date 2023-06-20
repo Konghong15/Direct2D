@@ -24,7 +24,12 @@ namespace gameProcessor
 		void Release();
 
 		void DrawRectangle(const hRectangle& worldRect);
-		void DrawCircle(const Circle& circle);
+		void DrawRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color);
+		void DrawRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color);
+		void FillRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color);
+		void FillRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color);
+		void DrawCircle(const Circle&  circle, const Matrix3X3 matrix, D2D1_COLOR_F color);
+		void FillCircle(const Circle&  circle, const Matrix3X3 matrix, D2D1_COLOR_F color);
 		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap);
 		void DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance);
 

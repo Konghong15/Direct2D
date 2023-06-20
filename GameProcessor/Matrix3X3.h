@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 
 namespace gameProcessor
 {
@@ -29,25 +30,68 @@ namespace gameProcessor
 		void InitIdentity();
 		void Transpose();
 
-		inline float GetValue(unsigned int x, unsigned y);
 		inline void SetValue(unsigned int x, unsigned int y, float value);
+		inline void SetScale(float x, float y);
+		inline void SetRotateInRadian(float radian);
+		inline void SetTranslate(float x, float y);
+		inline void AddScale(float x, float y);
+		inline void AddTranslate(float x, float y);
 
+		inline float GetValue(unsigned int x, unsigned y) const;
 
 	private:
-		float m[3][3];
+		enum { ROW_LENGTH = 3 };
+		enum { COL_LENGTH = 3 };
+
+		float m[COL_LENGTH][ROW_LENGTH];
 	};
 
-	float Matrix3X3::GetValue(unsigned int x, unsigned y)
+	float Matrix3X3::GetValue(unsigned int x, unsigned y) const
 	{
-		assert(x < 3 && y < 3);
+		assert(x < ROW_LENGTH && y < COL_LENGTH);
 
 		return m[y][x];
 	}
 
 	void Matrix3X3::SetValue(unsigned int x, unsigned int y, float value)
 	{
-		assert(x < 3 && y < 3);
+		assert(x < ROW_LENGTH && y < COL_LENGTH);
 
 		m[y][x] = value;
+	}
+
+	void Matrix3X3::SetScale(float x, float y)
+	{
+		m[0][0] = x;
+		m[1][1] = y;
+	}
+
+	void Matrix3X3::SetRotateInRadian(float radian)
+	{
+		float cosTheta = cosf(radian);
+		float sinTheta = sinf(radian);
+
+		m[0][0] = cosTheta;
+		m[0][1] = sinTheta;
+		m[1][0] = -sinTheta;
+		m[1][1] = cosTheta;
+	}
+
+	void Matrix3X3::SetTranslate(float x, float y)
+	{
+		m[2][0] = x;
+		m[2][1] = y;
+	}
+
+	void Matrix3X3::AddScale(float x, float y)
+	{
+		m[0][0] += x;
+		m[1][1] += y;
+	}
+
+	void Matrix3X3::AddTranslate(float x, float y)
+	{
+		m[2][0] += x;
+		m[2][1] += y;
 	}
 }

@@ -9,6 +9,9 @@ namespace gameProcessor
 	public:
 		Circle(const Vector2& center, float radius);
 
+		Circle operator*(const Matrix3X3& matrix) const;
+		Circle& operator*=(const Matrix3X3& matrix);
+
 		inline void Scale(float scalar);
 		inline void Move(float x, float y);
 		inline void Move(const Vector2& vector);

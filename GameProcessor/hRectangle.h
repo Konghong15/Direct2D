@@ -26,6 +26,9 @@ namespace gameProcessor
 		hRectangle(Vector2 topLeft, Vector2 bottomRight);
 		hRectangle(float x1, float y1, float x2, float y2);
 
+		hRectangle operator*(const Matrix3X3& matrix) const;
+		hRectangle& operator*=(const Matrix3X3& matrix);
+
 		void Rotate(float originX, float originY, float cosf, float sinf);
 		void Rotate(float originX, float originY, float radian);
 		inline void Move(float x, float y);
