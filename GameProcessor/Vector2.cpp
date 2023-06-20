@@ -52,5 +52,18 @@ namespace gameProcessor
 	{
 		return sqrt(mX * mX + mY * mY);
 	}
+
+	float Vector2::Dot(const Vector2& other)
+	{
+		return mX * other.mX + mY * other.mY;
+	}
+
+	void Vector2::Normalize()
+	{
+		float magnitude = GetMagnitude();
+
+		mX /= magnitude;
+		mY /= magnitude;
+	}
 }
 

@@ -6,8 +6,8 @@
 #include <vector>
 
 #include "GameProcessor.h"
-#include "TimeManager.h"
-#include "RenderManager.h"
+#include "TimeManger.h"
+#include "RenderManger.h"
 #include "InputManager.h"
 #include "hRectangle.h"
 #include "Circle.h"
@@ -35,6 +35,8 @@ namespace project2
 		virtual void Update() override;
 		virtual void Render() override;
 		virtual void Destroy() override;
+
+
 
 	private:
 		gameProcessor::TimeManager mTimer;

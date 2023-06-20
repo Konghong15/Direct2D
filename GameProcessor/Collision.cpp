@@ -11,7 +11,31 @@ namespace gameProcessor
 {
 	bool Collision::CheckPointToRectangle(const Vector2& point, const hRectangle& rectangle)
 	{
-		// poin
+		Vector2 left = rectangle.GetTopLeft() - rectangle.GetBottomLeft();
+		Vector2 top = rectangle.GetTopRight() - rectangle.GetTopLeft();
+
+		left.Normalize();
+		top.Normalize();
+		
+		float tempX = left.GetX();
+		float tempY = left.GetY();
+		left.SetX(-tempY);
+		left.SetY(tempX);
+		tempX = top.GetX();
+		tempY = top.GetY();
+		top.SetX(-tempY);
+		top.SetY(tempX);
+
+		float rectMin;
+		float rectMax;
+
+		float pointMin;
+		float pointMax;
+
+		
+
+		for (const Vector)
+
 		return true;
 	}
 

@@ -19,6 +19,8 @@ namespace gameProcessor
 		Vector2 operator+(const Vector2& other) const;
 		Vector2 operator-(const Vector2& other) const;
 
+		float Dot(const Vector2& other);
+		void Normalize();
 		inline void Move(float x, float y);
 		inline void SetX(float x);
 		inline void SetY(float y);
