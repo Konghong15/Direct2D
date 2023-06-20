@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cmath>
+
 #include "hRectangle.h"
 
 namespace gameProcessor

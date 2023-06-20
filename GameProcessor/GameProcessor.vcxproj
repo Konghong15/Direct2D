@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationAsset.cpp" />
     <ClCompile Include="AnimationInstance.cpp" />
+    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="GameProcessor.cpp" />
     <ClCompile Include="hRectangle.cpp" />

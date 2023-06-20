@@ -10,7 +10,7 @@
 #include "RenderManger.h"
 #include "InputManager.h"
 #include "hRectangle.h"
-#include "Circle.h"
+//#include "Circle.h"
 
 namespace gameProcessor
 {
@@ -44,10 +44,10 @@ namespace project2
 		gameProcessor::InputManager mInputManager;
 
 		eActivateShapeType mCurrentShapeType;
-		gameProcessor::hRectangle mRectangleUI;
-		gameProcessor::Circle mCircleUI;
+		//gameProcessor::hRectangle mRectangleUI;
+		//gameProcessor::Circle mCircleUI;
 
-		std::vector<gameProcessor::hRectangle> mRectagles;
-		std::vector<gameProcessor::Circle> mCircles;
+		//std::vector<gameProcessor::hRectangle> mRectagles;
+		//std::vector<gameProcessor::Circle> mCircles;
 	};
 }

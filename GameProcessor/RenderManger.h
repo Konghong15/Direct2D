@@ -10,6 +10,8 @@
 
 namespace gameProcessor
 {
+	class Circle;
+
 	class RenderManager
 	{
 	public:
@@ -21,8 +23,8 @@ namespace gameProcessor
 		void EndDraw();
 		void Release();
 
-		/*void DrawRectangle(const hRectangle& worldRect);
-		void DrawCircle();*/
+		void DrawRectangle(const hRectangle& worldRect);
+		void DrawCircle(const Circle& circle);
 		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap);
 		void DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance);
 

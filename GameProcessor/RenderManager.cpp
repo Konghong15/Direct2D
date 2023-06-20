@@ -74,6 +74,16 @@ namespace gameProcessor
 		mRenderTarget->BeginDraw();
 	}
 
+	void RenderManager::DrawRectangle(const hRectangle& worldRect)
+	{
+		mRenderTarget->DrawRectangle();
+	}
+
+	void RenderManager::DrawCircle(const Circle& circle)
+	{
+
+	}
+
 	void RenderManager::DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap)
 	{
 		const Vector2& WORLD_TL = worldRect.GetTopLeft();
