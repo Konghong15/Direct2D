@@ -82,9 +82,11 @@ namespace hierarchicalObject
 
 	void D2DHierarchicalObject::Destroy()
 	{
+		// 게임 오브젝트로 소멸자 순회 호출하도록 수정 예정
 		delete mGameObject1;
 		delete mGameObject2;
 		delete mGameObject3;
+		delete mGameObject4;
 		mRenderManager.Release();
 		CoUninitialize();
 	}
