@@ -11,6 +11,10 @@
 
 #define DEFAULT_DPI 96.f
 
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "windowscodecs.lib")
+
 namespace gameProcessor
 {
 	RenderManager::RenderManager()

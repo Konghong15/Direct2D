@@ -26,7 +26,7 @@ namespace gameProcessor
 		inline bool GetIsLoop() const;
 
 	private:
-		const AnimationAsset& mAnimationAsset;
+		const AnimationAsset& mAnimationAsset; // 포인터와 동일, 안전한 포인터
 		unsigned int mAnimationIndex;
 		unsigned int mFrameIndex;
 		float mProgressTime;

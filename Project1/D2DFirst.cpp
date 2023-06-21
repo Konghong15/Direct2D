@@ -74,7 +74,7 @@ namespace project1
 		{
 			for (int j = 0; j < 10; ++j)
 			{
-				mPlayers[i][j] = new Object({ 100.f * i, 100.f * j , 100.f * (i + 1), 100.f * (j + 1) }, AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(runPath), 0, i, 0.1f * (j + 1)));
+				mPlayers[i][j] = new Object({ 100.f * i, 100.f * j , 100.f * (i + 1), 100.f * (j + 1) }, AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(runPath), 0, i, 0.1f));// *(j + 1)));
 			}
 		}
 	}

@@ -17,9 +17,8 @@ namespace project2
 	void RectangleObject::Update(gameProcessor::InputManager* inputManager, float deltaTime)
 	{
 		const gameProcessor::Vector2& mousePos = inputManager->GetMousePos();
-		gameProcessor::hRectangle transformRect(mRectangle);
-		transformRect *= mTransform;
-
+		gameProcessor::hRectangle transformRect(mRectangle * mTransform);
+		
 		mbHover = gameProcessor::Collision::CheckPointToRectangle(mousePos, transformRect);
 		if (mbHover)
 		{
@@ -46,6 +45,8 @@ namespace project2
 			mRadian -= deltaTime;
 			mTransform.SetRotateInRadian(mRadian);
 		}
+
+		ShapeObject::UpdateMatrix();
 	}
 
 	void RectangleObject::Render(gameProcessor::RenderManager* renderManager)

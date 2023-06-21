@@ -6,9 +6,10 @@ namespace project2
 	ShapeObject::ShapeObject(const gameProcessor::Vector2& center)
 		: mbHover(false)
 		, mbSelect(false)
+		, mScale(gameProcessor::Matrix3X3::Identity())
+		, mRotate(mScale)
+		, mTranslate(mScale)
 	{
-		mScale.InitIdentity();
-		mTranslate.InitIdentity();
 		mTranslate.SetTranslate(center.GetX(), center.GetY());
 	}
 

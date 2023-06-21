@@ -15,6 +15,18 @@ namespace gameProcessor
 		memcpy(this->m, m, 9 * sizeof(float));
 	}
 
+	Matrix3X3 Matrix3X3::Identity()
+	{
+		float m[3][3] =
+		{
+			{1, 0, 0},
+			{0, 1, 0 },
+			{0, 0, 1}
+		};
+
+		return Matrix3X3(m);
+	}
+
 	Matrix3X3 Matrix3X3::GetScale(float x, float y)
 	{
 		float m[3][3] =

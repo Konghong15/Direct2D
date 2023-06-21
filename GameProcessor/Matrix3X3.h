@@ -15,6 +15,7 @@ namespace gameProcessor
 
 		Matrix3X3(float m[3][3]);
 
+		static Matrix3X3 Identity();
 		static Matrix3X3 GetScale(float x, float y);
 		static Matrix3X3 GetRotate(float radian);
 		static Matrix3X3 GetTranslate(float x, float y);
