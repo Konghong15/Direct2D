@@ -39,14 +39,19 @@ namespace gameProcessor
 		return sqrtf(x * x + y * y);
 	}
 
-	Vector2 Vector2::operator+(const Vector2& other) const
-	{
-		return Vector2(mX + other.mX, mY + other.mY);
-	}
-
 	Vector2 Vector2::operator-(const Vector2& other) const
 	{
 		return Vector2(mX - other.mX, mY - other.mY);
+	}
+
+	Vector2 Vector2::operator*(float scalar) const
+	{
+		return Vector2(mX * scalar, mY * scalar);
+	}
+
+	Vector2 Vector2::operator+(const Vector2& other) const
+	{
+		return Vector2(mX + other.mX, mY + other.mY);
 	}
 
 	Vector2 Vector2::operator*(const Matrix3X3& matrix) const
@@ -62,6 +67,15 @@ namespace gameProcessor
 			+ 1 * matrix.GetValue(1, 2);
 
 		return result;
+	}
+
+
+	Vector2& Vector2::operator+=(const Vector2& other)
+	{
+		mX += other.mX;
+		mY += other.mY;
+
+		return *this;
 	}
 
 	Vector2& Vector2::operator*=(const Matrix3X3& matrix)

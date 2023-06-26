@@ -50,7 +50,7 @@ namespace project2
 		if (mInputManager.GetKeyState('1') == eKeyState::Push)
 		{
 			hRectangle rectangle(mousePos.GetX() - 100, mousePos.GetY() - 100, mousePos.GetX() + 100, mousePos.GetY() + 100);
-			std::unique_ptr<ShapeObject> obj = std::make_unique<RectangleObject>();
+			std::unique_ptr<ShapeObject> obj = std::make_unique<RectangleObject>(rectangle);
 			mShapeObjects.push_back(std::move(obj));
 		}
 		else if (mInputManager.GetKeyState('2') == eKeyState::Push)

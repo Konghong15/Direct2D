@@ -5,6 +5,8 @@
 
 namespace gameProcessor
 {
+	class Vector2;
+
 	class Matrix3X3
 	{
 	public:
@@ -17,13 +19,15 @@ namespace gameProcessor
 
 		static Matrix3X3 Identity();
 		static Matrix3X3 GetScale(float x, float y);
+		static Matrix3X3 GetScale(const Vector2& scale);
 		static Matrix3X3 GetRotate(float radian);
 		static Matrix3X3 GetTranslate(float x, float y);
+		static Matrix3X3 GetTranslate(const Vector2& translate);
 		static Matrix3X3 ComineMatrix(size_t count, const Matrix3X3& ...);
 
-		Matrix3X3 operator*(const Matrix3X3& other);
-		Matrix3X3 operator-(const Matrix3X3& other);
-		Matrix3X3 operator+(const Matrix3X3& other);
+		Matrix3X3 operator*(const Matrix3X3& other) const;
+		Matrix3X3 operator-(const Matrix3X3& other) const;
+		Matrix3X3 operator+(const Matrix3X3& other) const;
 		Matrix3X3& operator*=(const Matrix3X3& other);
 		Matrix3X3& operator-=(const Matrix3X3& other);
 		Matrix3X3& operator+=(const Matrix3X3& other);
@@ -49,14 +53,14 @@ namespace gameProcessor
 
 	float Matrix3X3::GetValue(unsigned int x, unsigned y) const
 	{
-		assert(x < ROW_LENGTH && y < COL_LENGTH);
+		assert(x < ROW_LENGTH&& y < COL_LENGTH);
 
 		return m[y][x];
 	}
 
 	void Matrix3X3::SetValue(unsigned int x, unsigned int y, float value)
 	{
-		assert(x < ROW_LENGTH && y < COL_LENGTH);
+		assert(x < ROW_LENGTH&& y < COL_LENGTH);
 
 		m[y][x] = value;
 	}

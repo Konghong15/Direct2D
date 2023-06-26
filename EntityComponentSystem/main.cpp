@@ -1,4 +1,4 @@
-#include "D2DComponentBased.h"
+#include "D2DEntityComponentSystem.h"
 #include "WinApp.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
