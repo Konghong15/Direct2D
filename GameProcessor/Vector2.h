@@ -18,10 +18,13 @@ namespace gameProcessor
 
 		bool operator==(const Vector2& other) const;
 		bool operator!=(const Vector2& other) const;
-		Vector2 operator+(const Vector2& other) const;
 		Vector2 operator-(const Vector2& other) const;
+
+		Vector2 operator+(const Vector2& other) const;
+		Vector2 operator*(float scalar) const;
 		Vector2 operator*(const Matrix3X3& matrix) const;
 
+		Vector2& operator+=(const Vector2& other);
 		Vector2& operator*=(const Matrix3X3& matrix);
 
 		float Dot(const Vector2& other);
@@ -29,6 +32,7 @@ namespace gameProcessor
 		inline void Move(float x, float y);
 		inline void SetX(float x);
 		inline void SetY(float y);
+		inline void SetXY(float x, float y);
 
 		float GetMagnitude() const;
 		inline float GetX() const;
@@ -56,6 +60,12 @@ namespace gameProcessor
 
 	void Vector2::SetY(float y)
 	{
+		mY = y;
+	}
+
+	void Vector2::SetXY(float x, float y)
+	{
+		mX = x;
 		mY = y;
 	}
 

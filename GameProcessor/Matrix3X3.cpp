@@ -2,6 +2,7 @@
 #include <stdarg.h>
 
 #include "Matrix3X3.h"
+#include "Vector2.h"
 
 namespace gameProcessor
 {
@@ -39,6 +40,11 @@ namespace gameProcessor
 		return Matrix3X3(m);
 	}
 
+	Matrix3X3 Matrix3X3::GetScale(const Vector2& scale)
+	{
+		return GetScale(scale.GetX(), scale.GetY());
+	}
+
 	Matrix3X3 Matrix3X3::GetRotate(float radian)
 	{
 		float cosTheta = cosf(radian);
@@ -58,12 +64,17 @@ namespace gameProcessor
 	{
 		float m[3][3] =
 		{
-			{0, 0, 0},
-			{0, 0, 0 },
+			{1, 0, 0},
+			{0, 1, 0 },
 			{x, y, 1}
 		};
 
 		return Matrix3X3(m);
+	}
+
+	Matrix3X3 Matrix3X3::GetTranslate(const Vector2& translate)
+	{
+		return GetTranslate(translate.GetX(), translate.GetY());
 	}
 
 	Matrix3X3 Matrix3X3::ComineMatrix(size_t count, const Matrix3X3& ...)

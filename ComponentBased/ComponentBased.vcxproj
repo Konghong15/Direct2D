@@ -111,7 +111,7 @@
       <AdditionalIncludeDirectories>../GameProcessor/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../$(PlatformTarget)/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
@@ -137,12 +137,25 @@
   <ItemGroup>
     <ClCompile Include="D2DComponentBased.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OldComponentObject.cpp" />
+    <ClCompile Include="OldObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentObject.h" />
     <ClInclude Include="D2DComponentBased.h" />
     <ClInclude Include="eComponentType.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="OldComponentObject.h" />
+    <ClInclude Include="OldMovementComponent.h" />
+    <ClInclude Include="OldObject.h" />
+    <ClInclude Include="OldRenderComponent.h" />
+    <ClInclude Include="OldTransformComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameProcessor\GameProcessor.vcxproj">
+      <Project>{f3f352e8-7223-4ba2-b320-94e19b8659a0}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

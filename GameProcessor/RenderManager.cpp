@@ -124,11 +124,11 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::DrawRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::DrawRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
 	{
-		const Vector2& TL = worldRect.GetTopLeft();
-		const Vector2& BR = worldRect.GetBottomRight();
-		const Vector2& CENTER = worldRect.GetCenter();
+		const Vector2& TL = localRect.GetTopLeft();
+		const Vector2& BR = localRect.GetBottomRight();
+		const Vector2& CENTER = localRect.GetCenter();
 		ID2D1SolidColorBrush* brush;
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
 		assert(SUCCEEDED(hr));
@@ -165,15 +165,15 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::FillRectangle(const hRectangle& worldRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::FillRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
 	{
 		ID2D1SolidColorBrush* brush;
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
 		assert(SUCCEEDED(hr));
 
-		const Vector2& TL = worldRect.GetTopLeft();
-		const Vector2& BR = worldRect.GetBottomRight();
-		const Vector2& CENTER = worldRect.GetCenter();
+		const Vector2& TL = localRect.GetTopLeft();
+		const Vector2& BR = localRect.GetBottomRight();
+		const Vector2& CENTER = localRect.GetCenter();
 
 		D2D1::Matrix3x2F d2dMatrix;
 		for (int i = 0; i < 2; ++i)
