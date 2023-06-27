@@ -14,5 +14,6 @@ namespace entityComponentSystem
 		}
 
 		gameProcessor::hRectangle Rectangle;
+		// 애니메이션 인스턴스나 비트맵, shape오브젝트에서 다룬 것들
 	};
 }

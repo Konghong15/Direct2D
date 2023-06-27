@@ -144,6 +144,7 @@
     <ClInclude Include="D2DEntityComponentSystem.h" />
     <ClInclude Include="eComponentType.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="TransformComponent.h" />

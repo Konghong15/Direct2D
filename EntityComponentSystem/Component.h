@@ -10,5 +10,6 @@ namespace entityComponentSystem
 		virtual ~Component() = 0;
 
 		const eComponentType mComponentType;
+		// entity id
 	};
 }

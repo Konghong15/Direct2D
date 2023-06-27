@@ -15,7 +15,7 @@ namespace componentBased
 		~GameObject();
 
 		void AddComponent(Component* component);
-		void Update();
+		void Update(float deltaTime);
 
 	private:
 		enum { RESERVE_SIZE = 128 };
