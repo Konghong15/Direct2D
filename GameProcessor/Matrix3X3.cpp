@@ -95,7 +95,7 @@ namespace gameProcessor
 	}
 
 
-	Matrix3X3 Matrix3X3::operator*(const Matrix3X3& other)
+	Matrix3X3 Matrix3X3::operator*(const Matrix3X3& other) const
 	{
 		Matrix3X3 result;
 
@@ -113,7 +113,7 @@ namespace gameProcessor
 		return result;
 	}
 
-	Matrix3X3 Matrix3X3::operator-(const Matrix3X3& other)
+	Matrix3X3 Matrix3X3::operator-(const Matrix3X3& other) const
 	{
 		Matrix3X3 result;
 
@@ -127,7 +127,7 @@ namespace gameProcessor
 		return result;
 	}
 
-	Matrix3X3 Matrix3X3::operator+(const Matrix3X3& other)
+	Matrix3X3 Matrix3X3::operator+(const Matrix3X3& other) const
 	{
 		Matrix3X3 result;
 

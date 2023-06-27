@@ -49,6 +49,7 @@ namespace componentBased
 		{
 			mRotateInRadian += deltaTime;
 		}
+
 		const int CUR_SPEED = mSpeed + mAcceleration;
 		if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Hold)
 		{

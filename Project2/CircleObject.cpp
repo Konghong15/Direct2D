@@ -19,6 +19,7 @@ namespace project2
 		const gameProcessor::Vector2& mousePos = inputManager->GetMousePos();
 		gameProcessor::Circle transformCircle(mCircle);
 		transformCircle *= mTransform;
+		ShapeObject::updateMatrix();
 
 		mbHover = gameProcessor::Collision::CheckPointToCircle(mousePos, transformCircle);
 		if (mbHover)

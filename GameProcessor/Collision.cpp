@@ -12,8 +12,6 @@ namespace gameProcessor
 {
 	bool Collision::CheckPointToRectangle(const Vector2& point, const hRectangle& rectangle)
 	{
-		// 정점을 두개만 다루면 제대로 처리가 안된다.
-
 		Vector2 normalVector[4] =
 		{
 			rectangle.GetTopLeft() - rectangle.GetBottomLeft(),

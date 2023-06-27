@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d18d7e17-1361-45f5-aa96-6a00d8532970}</ProjectGuid>
-    <RootNamespace>ComponentBased</RootNamespace>
+    <ProjectGuid>{c23e3579-8a90-4a38-8066-002b0486af15}</ProjectGuid>
+    <RootNamespace>EntityComponentSystem</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -79,7 +79,7 @@
       <AdditionalIncludeDirectories>../GameProcessor/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../$(PlatformTarget)/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
@@ -95,7 +95,7 @@
       <AdditionalIncludeDirectories>../GameProcessor/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -127,7 +127,7 @@
       <AdditionalIncludeDirectories>../GameProcessor/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,30 +135,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="D2DComponentBased.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="OldComponentObject.cpp" />
-    <ClCompile Include="OldMovementComponent.cpp" />
-    <ClCompile Include="OldObject.cpp" />
-    <ClCompile Include="OldRenderComponent.cpp" />
-    <ClCompile Include="OldTransformComponent.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="D2DComponentBased.h" />
-    <ClInclude Include="IRenderable.h" />
-    <ClInclude Include="OldComponentObject.h" />
-    <ClInclude Include="OldMovementComponent.h" />
-    <ClInclude Include="OldObject.h" />
-    <ClInclude Include="OldRenderComponent.h" />
-    <ClInclude Include="OldTransformComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GameProcessor\GameProcessor.vcxproj">
       <Project>{f3f352e8-7223-4ba2-b320-94e19b8659a0}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="D2DEntityComponentSystem.h" />
+    <ClInclude Include="eComponentType.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="MovementComponent.h" />
+    <ClInclude Include="RenderComponent.h" />
+    <ClInclude Include="TransformComponent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

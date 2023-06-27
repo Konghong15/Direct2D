@@ -18,7 +18,8 @@ namespace project2
 	{
 		const gameProcessor::Vector2& mousePos = inputManager->GetMousePos();
 		gameProcessor::hRectangle transformRect(mRectangle * mTransform);
-		
+		ShapeObject::updateMatrix();
+
 		mbHover = gameProcessor::Collision::CheckPointToRectangle(mousePos, transformRect);
 		if (mbHover)
 		{
@@ -38,15 +39,14 @@ namespace project2
 		if (inputManager->GetKeyState('Q') == gameProcessor::eKeyState::Hold)
 		{
 			mRadian += deltaTime;
-			mTransform.SetRotateInRadian(mRadian);
+			mRotate = gameProcessor::Matrix3X3::GetRotate(mRadian);
 		}
 		else if (inputManager->GetKeyState('E') == gameProcessor::eKeyState::Hold)
 		{
 			mRadian -= deltaTime;
-			mTransform.SetRotateInRadian(mRadian);
+			mRotate = gameProcessor::Matrix3X3::GetRotate(mRadian);
 		}
 
-		ShapeObject::UpdateMatrix();
 	}
 
 	void RectangleObject::Render(gameProcessor::RenderManager* renderManager)

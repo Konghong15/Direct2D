@@ -25,9 +25,9 @@ namespace gameProcessor
 		static Matrix3X3 GetTranslate(const Vector2& translate);
 		static Matrix3X3 ComineMatrix(size_t count, const Matrix3X3& ...);
 
-		Matrix3X3 operator*(const Matrix3X3& other);
-		Matrix3X3 operator-(const Matrix3X3& other);
-		Matrix3X3 operator+(const Matrix3X3& other);
+		Matrix3X3 operator*(const Matrix3X3& other) const;
+		Matrix3X3 operator-(const Matrix3X3& other) const;
+		Matrix3X3 operator+(const Matrix3X3& other) const;
 		Matrix3X3& operator*=(const Matrix3X3& other);
 		Matrix3X3& operator-=(const Matrix3X3& other);
 		Matrix3X3& operator+=(const Matrix3X3& other);

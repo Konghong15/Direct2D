@@ -11,12 +11,13 @@ namespace componentBased
 
 	void OldComponentObject::Update(gameProcessor::InputManager* inputManager, float deltaTime)
 	{
-		mMovementComponent.Update();
-		mTransformComponent.Update();
+		mMovementComponent.Update(inputManager, deltaTime);
+		mTransformComponent.Update(inputManager, deltaTime);
+		mRenderComponent.SetMatrix3X3(mMovementComponent.GetTransform() * mTransformComponent.GetTransform());
 	}
 
 	void OldComponentObject::Render(gameProcessor::RenderManager* renderManager)
 	{
-		mRenderComponent.Render();
+		mRenderComponent.Render(renderManager);
 	}
 }
