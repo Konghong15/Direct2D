@@ -142,7 +142,7 @@ namespace gameProcessor
 			}
 		}
 
-		mRenderTarget->SetTransform(d2dMatrix);
+  		mRenderTarget->SetTransform(d2dMatrix);
 		mRenderTarget->DrawRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush, 5.f);
 		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 

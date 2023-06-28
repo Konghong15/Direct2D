@@ -6,6 +6,7 @@ namespace entityComponentSystem
 	{
 		Transform,
 		Render,
+		Movement,
 		Size
 	};
 }

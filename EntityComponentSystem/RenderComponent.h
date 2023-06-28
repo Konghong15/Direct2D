@@ -2,18 +2,27 @@
 
 #include "hRectangle.h"
 #include "Component.h"
+#include "Matrix3X3.h"
+
+namespace gameProcessor
+{
+	class RenderManager;
+}
 
 namespace entityComponentSystem
 {
-	struct RenderComponent : public Component
+	class RenderComponent : public Component
 	{
-		RenderComponent(const gameProcessor::hRectangle& rectangle)
-			: Component(eComponentType::Render)
-			, Rectangle(rectangle)
-		{
-		}
+	public:
+		RenderComponent(unsigned int entityId, const gameProcessor::hRectangle& rectangle);
+		virtual ~RenderComponent() = default;
+		RenderComponent(const RenderComponent& other) = default;
+		RenderComponent& operator=(const RenderComponent& other) = default;
 
-		gameProcessor::hRectangle Rectangle;
-		// 애니메이션 인스턴스나 비트맵, shape오브젝트에서 다룬 것들
+		virtual void Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& matrix = gameProcessor::Matrix3X3::Identity());
+
+	private:
+		gameProcessor::hRectangle mRectangle;
+		//비트맵이나 뭐 애니메이션인스턴스
 	};
 }

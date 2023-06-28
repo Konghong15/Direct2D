@@ -5,6 +5,7 @@
 #include <wincodec.h>
 #include <map>
 
+#include "Helper.h"
 #include "AnimationAsset.h"
 #include "AnimationInstance.h"
 
@@ -24,12 +25,12 @@ namespace gameProcessor
 		void Release();
 
 		void DrawRectangle(const hRectangle& worldRect);
-		void DrawRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color);
-		void DrawRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color);
-		void FillRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color);
-		void FillRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color);
-		void DrawCircle(const Circle&  circle, const Matrix3X3 matrix, D2D1_COLOR_F color);
-		void FillCircle(const Circle&  circle, const Matrix3X3 matrix, D2D1_COLOR_F color);
+		void DrawRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
+		void DrawRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
+		void FillRectangle(const hRectangle& worldRect, float radian, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
+		void FillRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
+		void DrawCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
+		void FillCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
 		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap);
 		void DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance);
 

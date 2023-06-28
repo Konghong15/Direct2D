@@ -4,12 +4,29 @@
 
 namespace entityComponentSystem
 {
-	struct Component
+	class Component
 	{
-		Component(eComponentType componentType) : mComponentType(componentType) {};
-		virtual ~Component() = 0;
+	public:
+		Component(unsigned int entityId, eComponentType componentType);
+		virtual ~Component() = default;
+		Component(const Component& other) = default;
+		Component& operator=(const Component& other) = default;
+		
+		inline unsigned int GetEntityId() const;
+		inline eComponentType GetComponentType() const;
 
+	private:
+		unsigned int mEntityId;
 		const eComponentType mComponentType;
-		// entity id
 	};
+
+	unsigned int Component::GetEntityId() const
+	{
+		return mEntityId;
+	}
+
+	eComponentType Component::GetComponentType() const
+	{
+		return mComponentType;
+	}
 }

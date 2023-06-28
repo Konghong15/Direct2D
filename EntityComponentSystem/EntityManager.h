@@ -4,17 +4,29 @@
 
 namespace entityComponentSystem
 {
+	class Entity;
+
 	class EntityManager
 	{
 	public:
+		EntityManager();
+		~EntityManager();
+		EntityManager(const EntityManager& other) = delete;
+		EntityManager& operator=(const EntityManager& other) = delete;
 
-		void Add();
-		void Remove();
+		Entity* CreateEntity(unsigned int entityId);
+		void DestroyEntity(unsigned int entityId);
+		Entity* GetEntityByIdOrNull(unsigned int entityId);
 
-		// void SetScene(Scene)
+		inline std::vector<Entity*>& GetEntity();
 
 	private:
+		enum { RESERVE_SIZE = 512 };
 		std::vector<Entity*> mEntities;
-		// ¾À? ¾ÀÀº ·»´õ¸µ ÄÄÆ÷³ÍÆ®°¡ ÀÖÀ» °æ¿ì Ãß°¡ÇÑ´Ù?
 	};
+
+	std::vector<Entity*>& EntityManager::GetEntity()
+	{
+		return mEntities;
+	}
 }

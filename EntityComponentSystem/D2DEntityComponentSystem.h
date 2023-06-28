@@ -8,9 +8,14 @@
 #include "TimeManger.h"
 #include "RenderManger.h"
 #include "InputManager.h"
+#include "System.h"
+#include "TimeManger.h"
+#include "RenderManger.h"
 
 namespace entityComponentSystem
 {
+	class EntityManager;
+
 	class D2DEntityComponentSystem : public gameProcessor::GameProcessor
 	{
 	public:
@@ -23,8 +28,10 @@ namespace entityComponentSystem
 		virtual void Destroy() override;
 
 	private:
-		// RenderSystem
-		// MovementSystem
-		// EntityManager
+		gameProcessor::TimeManager mTimeManager;
+		gameProcessor::RenderManager mRenderManager;
+		System mSystem;
+
+		EntityManager* mEntityManager;
 	};
 }

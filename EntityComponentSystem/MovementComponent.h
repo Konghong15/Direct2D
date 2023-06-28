@@ -1,25 +1,33 @@
 #pragma once
 
 #include "Vector2.h"
-#include "Matrix3X3.h"
 #include "Component.h"
 
 namespace entityComponentSystem
 {
-	struct MovementComponent : public Component
+	class MovementComponent : public Component
 	{
-		MovementComponent(const gameProcessor::Vector2& scale, float rotateInRadian, const gameProcessor::Vector2& translate)
-			: Component(eComponentType::Transform)
-			, Scale(scale)
-			, RotateInRadian(rotateInRadian)
-			, Translate(translate)
-			, Transform(gameProcessor::Matrix3X3::Identity())
-		{
-		}
+	public:
+		MovementComponent(unsigned int entityId, const gameProcessor::Vector2& direction, float speed, float accelerationIncrement, float maxAcceleration);
+		virtual ~MovementComponent() = default;
+		MovementComponent(const MovementComponent& other) = default;
+		MovementComponent& operator=(const MovementComponent& other) = default;
 
-		gameProcessor::Vector2 Scale;
-		float RotateInRadian;
-		gameProcessor::Vector2 Translate;
-		gameProcessor::Matrix3X3 Transform;
+		void Update(float deltaTime);
+
+		inline const gameProcessor::Vector2& GetVelocity() const;
+
+	private:
+		gameProcessor::Vector2 mVelocity;
+		gameProcessor::Vector2 mDirection;
+		float mSpeed;
+		float mAcceleration;
+		const float mAccelerationIncrement;
+		const float mMaxAcceleration;
 	};
+
+	const gameProcessor::Vector2& MovementComponent::GetVelocity() const
+	{
+		return mVelocity;
+	}
 }

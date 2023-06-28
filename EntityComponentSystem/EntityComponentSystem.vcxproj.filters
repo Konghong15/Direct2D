@@ -13,36 +13,78 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Component">
+      <UniqueIdentifier>{1b9cdb69-e979-4daf-8a46-2eb6298e70bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\EnumClass">
+      <UniqueIdentifier>{f736c68e-7e9c-43fd-a1ef-d119cfec54a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Component">
+      <UniqueIdentifier>{ba6ac820-429e-43d5-b9ab-e532a868bd46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\EntityBase">
+      <UniqueIdentifier>{edc7b611-f6de-45da-8eb8-1d45f580b87c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\EntityBase">
+      <UniqueIdentifier>{bd9c4dde-9ef5-4226-adc1-f3009a37fe0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="eComponentType.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="D2DEntityComponentSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
     <ClInclude Include="TransformComponent.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="RenderComponent.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="MovementComponent.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="eComponentType.h">
+      <Filter>헤더 파일\EnumClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>헤더 파일\EntityBase</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\EntityBase</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>헤더 파일\EntityBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DEntityComponentSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>소스 파일\EntityBase</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
+      <Filter>소스 파일\EntityBase</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>소스 파일\EntityBase</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

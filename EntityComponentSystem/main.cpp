@@ -6,6 +6,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
-	componentBased::D2DComponentBased componentBased(1920, 1080, L"componentBased");
-	return gameProcessor::WinApp::Run(&componentBased, hInstance, nCmdShow);
+	entityComponentSystem::D2DEntityComponentSystem entityComponentSystem(1920, 1080, L"entityComponentSystem");
+	return gameProcessor::WinApp::Run(&entityComponentSystem, hInstance, nCmdShow);
 }
