@@ -16,6 +16,7 @@ namespace entityComponentSystem
 		void Update(float deltaTime);
 
 		inline const gameProcessor::Vector2& GetVelocity() const;
+		inline void SetDirection(const gameProcessor::Vector2& direction);
 
 	private:
 		gameProcessor::Vector2 mVelocity;
@@ -29,5 +30,10 @@ namespace entityComponentSystem
 	const gameProcessor::Vector2& MovementComponent::GetVelocity() const
 	{
 		return mVelocity;
+	}
+
+	void MovementComponent::SetDirection(const gameProcessor::Vector2& direction)
+	{
+		mDirection = direction;
 	}
 }

@@ -176,14 +176,14 @@ namespace gameProcessor
 		return true;
 	}
 
-	bool Collision::CheckRectangleToRectangle(const Circle& rectangle1, const hRectangle& rectangle2)
+	bool Collision::CheckRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
 	{
 		Vector2 normalVector[4] =
 		{
-			rectangle2.GetTopLeft() - rectangle2.GetBottomLeft(),
-			rectangle2.GetBottomLeft() - rectangle2.GetBottomRight(),
-			rectangle2.GetBottomRight() - rectangle2.GetTopRight(),
-			rectangle2.GetTopRight() - rectangle2.GetTopLeft()
+			rectangle1.GetTopLeft() - rectangle1.GetBottomLeft(),
+			rectangle1.GetBottomLeft() - rectangle1.GetBottomRight(),
+			rectangle1.GetBottomRight() - rectangle1.GetTopRight(),
+			rectangle1.GetTopRight() - rectangle1.GetTopLeft()
 		};
 
 		for (int i = 0; i < 4; ++i)
@@ -202,7 +202,7 @@ namespace gameProcessor
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector[i].Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -221,13 +221,13 @@ namespace gameProcessor
 			{
 				int scalar = normalVector[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
 
-				if (rectMax < scalar)
+				if (otherRectMax < scalar)
 				{
-					rectMax = scalar;
+					otherRectMax = scalar;
 				}
-				else if (rectMin > scalar)
+				else if (otherRectMin > scalar)
 				{
-					rectMin = scalar;
+					otherRectMin = scalar;
 				}
 			}
 

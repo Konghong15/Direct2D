@@ -23,8 +23,9 @@ namespace gameProcessor
 		static Matrix3X3 GetRotate(float radian);
 		static Matrix3X3 GetTranslate(float x, float y);
 		static Matrix3X3 GetTranslate(const Vector2& translate);
+		static bool TryInverse(const Matrix3X3& matrix, Matrix3X3* outMatrix);
 		static Matrix3X3 ComineMatrix(size_t count, const Matrix3X3& ...);
-
+		
 		Matrix3X3 operator*(const Matrix3X3& other) const;
 		Matrix3X3 operator-(const Matrix3X3& other) const;
 		Matrix3X3 operator+(const Matrix3X3& other) const;
@@ -34,6 +35,7 @@ namespace gameProcessor
 
 		void InitIdentity();
 		void Transpose();
+
 
 		inline void SetValue(unsigned int x, unsigned int y, float value);
 		inline void SetScale(float x, float y);

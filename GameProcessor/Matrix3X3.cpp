@@ -72,9 +72,36 @@ namespace gameProcessor
 		return Matrix3X3(m);
 	}
 
-	Matrix3X3 Matrix3X3::GetTranslate(const Vector2& translate)
+	Matrix3X3 Matrix3X3::GetTranslate(const gameProcessor::Vector2& vector)
 	{
-		return GetTranslate(translate.GetX(), translate.GetY());
+		return GetTranslate(vector.GetX(), vector.GetY());
+	}
+
+	bool Matrix3X3::TryInverse(const Matrix3X3& matrix, Matrix3X3* outMatrix)
+	{
+		float det = matrix.m[0][0] * (matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1]) -
+			matrix.m[0][1] * (matrix.m[1][0] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][0]) +
+			matrix.m[0][2] * (matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0]);
+
+		// 행렬식이 0인 경우 역행렬이 존재하지 않음
+		if (det == 0) {
+			return false;
+		}
+
+		// 역행렬 계산
+		float invDet = 1.0 / det;
+
+		outMatrix->m[0][0] = (matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1]) * invDet;
+		outMatrix->m[0][1] = (matrix.m[0][2] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][2]) * invDet;
+		outMatrix->m[0][2] = (matrix.m[0][1] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][1]) * invDet;
+		outMatrix->m[1][0] = (matrix.m[1][2] * matrix.m[2][0] - matrix.m[1][0] * matrix.m[2][2]) * invDet;
+		outMatrix->m[1][1] = (matrix.m[0][0] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][0]) * invDet;
+		outMatrix->m[1][2] = (matrix.m[0][2] * matrix.m[1][0] - matrix.m[0][0] * matrix.m[1][2]) * invDet;
+		outMatrix->m[2][0] = (matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0]) * invDet;
+		outMatrix->m[2][1] = (matrix.m[0][1] * matrix.m[2][0] - matrix.m[0][0] * matrix.m[2][1]) * invDet;
+		outMatrix->m[2][2] = (matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0]) * invDet;
+
+		return true;
 	}
 
 	Matrix3X3 Matrix3X3::ComineMatrix(size_t count, const Matrix3X3& ...)

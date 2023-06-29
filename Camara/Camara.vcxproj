@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c23e3579-8a90-4a38-8066-002b0486af15}</ProjectGuid>
-    <RootNamespace>EntityComponentSystem</RootNamespace>
+    <ProjectGuid>{a65321c1-ae75-49dc-8d0b-c8328bfd3b9e}</ProjectGuid>
+    <RootNamespace>Camara</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -140,27 +140,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="D2DEntityComponentSystem.h" />
-    <ClInclude Include="eComponentType.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityManager.h" />
-    <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="MovementComponent.h" />
-    <ClInclude Include="RenderComponent.h" />
-    <ClInclude Include="System.h" />
-    <ClInclude Include="TransformComponent.h" />
+    <ClCompile Include="Camara.cpp" />
+    <ClCompile Include="D2DCamara.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="D2DEntityComponentSystem.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityManager.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MovementComponent.cpp" />
-    <ClCompile Include="RenderComponent.cpp" />
-    <ClCompile Include="System.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
+    <ClInclude Include="Camara.h" />
+    <ClInclude Include="D2DCamara.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
