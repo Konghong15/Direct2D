@@ -21,6 +21,7 @@ namespace gameProcessor
 		static Matrix3X3 GetScale(float x, float y);
 		static Matrix3X3 GetScale(const Vector2& scale);
 		static Matrix3X3 GetRotate(float radian);
+		static Matrix3X3 GetRotate(float cos, float sin);
 		static Matrix3X3 GetTranslate(float x, float y);
 		static Matrix3X3 GetTranslate(const Vector2& translate);
 		static bool TryInverse(const Matrix3X3& matrix, Matrix3X3* outMatrix);

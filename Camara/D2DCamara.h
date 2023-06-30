@@ -13,9 +13,13 @@
 #include "RenderManger.h"
 #include "hRectangle.h"
 #include "Camara.h"
+#include "GameObject.h"
+#include "Player.h"
 
 namespace camara
 {
+	class GameObject;
+
 	class D2DCamara : public gameProcessor::GameProcessor
 	{
 	public:
@@ -32,7 +36,10 @@ namespace camara
 		gameProcessor::RenderManager mRenderManager;
 		gameProcessor::InputManager mInputManager;
 
-		std::vector<gameProcessor::hRectangle> mObjects;
+		std::vector<GameObject*> mObjects;
+		Player* mPlayer;
+		Camara mPlayerCamara;
 		Camara mCamara;
+		Camara mMiniMapCamara;
 	};
 }

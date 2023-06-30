@@ -25,7 +25,7 @@ namespace entityComponentSystem
 	private:
 		gameProcessor::Vector2 mScale;
 		float mRotateInRadian;
-		gameProcessor::Vector2 mTranslate;
+		gameProcessor::Vector2 mTranslate;  
 		gameProcessor::Matrix3X3 mTransform;
 	};
 

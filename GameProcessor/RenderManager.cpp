@@ -53,6 +53,11 @@ namespace gameProcessor
 			D2D1::HwndRenderTargetProperties(gameProcessor::WinApp::GetHwnd(), size),
 			&mRenderTarget);
 		assert(SUCCEEDED(hr));
+
+		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
+			reinterpret_cast<IUnknown**>(&mWriteFactory));
+		assert(SUCCEEDED(hr));
+
 	}
 
 	void RenderManager::Release()
@@ -60,6 +65,7 @@ namespace gameProcessor
 		mFactory->Release();
 		mRenderTarget->Release();
 		mWICFactory->Release();
+		mWriteFactory->Release();
 
 		for (auto iter = mBitmapMap.begin(); iter != mBitmapMap.end(); ++iter)
 		{
@@ -81,6 +87,28 @@ namespace gameProcessor
 		mRenderTarget->BeginDraw();
 		mRenderTarget->Clear({ 255,255,255 });
 		D2D1_SIZE_F rtSize = mRenderTarget->GetSize();
+	}
+
+	void RenderManager::Clear(const Matrix3X3& matrix, D2D1_COLOR_F color)
+	{
+		mRenderTarget->SetTransform(convertMatrix(matrix));
+		mRenderTarget->Clear(color);
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+	}
+
+	void RenderManager::DrawLine(const Vector2& line, const Matrix3X3& matrix, D2D1_COLOR_F color)
+	{
+		ID2D1SolidColorBrush* brush;
+		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		{
+			mRenderTarget->SetTransform(convertMatrix(matrix));
+			mRenderTarget->DrawLine({ 0,0 }, { line.GetX(), line.GetY() }, brush, 5.f);
+			mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+		}
+
+		brush->Release();
 	}
 
 	void RenderManager::DrawRectangle(const hRectangle& worldRect)
@@ -124,7 +152,7 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::DrawRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::DrawRectangle(const hRectangle& localRect, const Matrix3X3& matrix, D2D1_COLOR_F color)
 	{
 		const Vector2& TL = localRect.GetTopLeft();
 		const Vector2& BR = localRect.GetBottomRight();
@@ -133,16 +161,7 @@ namespace gameProcessor
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
 		assert(SUCCEEDED(hr));
 
-		D2D1::Matrix3x2F d2dMatrix;
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
-			}
-		}
-
-  		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->SetTransform(convertMatrix(matrix));
 		mRenderTarget->DrawRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush, 5.f);
 		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
@@ -165,7 +184,7 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::FillRectangle(const hRectangle& localRect, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::FillRectangle(const hRectangle& localRect, const Matrix3X3& matrix, D2D1_COLOR_F color)
 	{
 		ID2D1SolidColorBrush* brush;
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
@@ -175,23 +194,14 @@ namespace gameProcessor
 		const Vector2& BR = localRect.GetBottomRight();
 		const Vector2& CENTER = localRect.GetCenter();
 
-		D2D1::Matrix3x2F d2dMatrix;
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
-			}
-		}
-
-		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->SetTransform(convertMatrix(matrix));
 		mRenderTarget->FillRectangle({ TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush);
 		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
 		brush->Release();
 	}
 
-	void RenderManager::DrawCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::DrawCircle(const Circle& circle, const Matrix3X3& matrix, D2D1_COLOR_F color)
 	{
 		ID2D1SolidColorBrush* brush;
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
@@ -200,16 +210,7 @@ namespace gameProcessor
 		const Vector2& center = circle.GetCenter();
 		float radius = circle.GetRadius();
 
-		D2D1::Matrix3x2F d2dMatrix;
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
-			}
-		}
-
-		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->SetTransform(convertMatrix(matrix));
 		D2D1_ELLIPSE ellipse = D2D1::Ellipse({ center.GetX(), center.GetY() }, radius, radius);
 		mRenderTarget->DrawEllipse(ellipse, brush, 5.0f);
 		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -217,7 +218,7 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::FillCircle(const Circle& circle, const Matrix3X3 matrix, D2D1_COLOR_F color)
+	void RenderManager::FillCircle(const Circle& circle, const Matrix3X3& matrix, D2D1_COLOR_F color)
 	{
 		ID2D1SolidColorBrush* brush;
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
@@ -226,16 +227,7 @@ namespace gameProcessor
 		const Vector2& center = circle.GetCenter();
 		float radius = circle.GetRadius();
 
-		D2D1::Matrix3x2F d2dMatrix;
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				d2dMatrix.m[j][i] = matrix.GetValue(i, j);
-			}
-		}
-
-		mRenderTarget->SetTransform(d2dMatrix);
+		mRenderTarget->SetTransform(convertMatrix(matrix));
 		D2D1_ELLIPSE ellipse = D2D1::Ellipse({ center.GetX(), center.GetY() }, radius, radius);
 		mRenderTarget->FillEllipse(ellipse, brush);
 		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -266,6 +258,26 @@ namespace gameProcessor
 
 		const hRectangle& SPRITE_RECT = animationAsset.GetFrameAnimationInfo().at(ANIMATION_INDEX).at(FRAME_INDEX);
 		DrawBitMap(worldRect, SPRITE_RECT, animationAsset.GetBitmap());
+	}
+
+	void RenderManager::WriteText(const hRectangle& rectangle, const std::wstring& text, unsigned int size, const Matrix3X3& matrix, D2D1_COLOR_F color)
+	{
+		IDWriteTextFormat* textFormat = nullptr;
+		ID2D1SolidColorBrush* brush = nullptr;
+		HRESULT hr;
+		hr = mWriteFactory->CreateTextFormat(L"Gulim", NULL, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+			DWRITE_FONT_STRETCH_NORMAL, size, L"ko-KR", &textFormat);
+		assert(SUCCEEDED(hr));
+		hr = mRenderTarget->CreateSolidColorBrush(color, &brush);
+		assert(SUCCEEDED(hr));
+
+		const Vector2& TL = rectangle.GetTopLeft();
+		const Vector2& BR = rectangle.GetBottomRight();
+		mRenderTarget->SetTransform(convertMatrix(matrix));
+		mRenderTarget->DrawText(text.c_str(), text.length(), textFormat, { TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY() }, brush);
+
+		textFormat->Release();
+		brush->Release();
 	}
 
 	void RenderManager::EndDraw()
@@ -377,5 +389,20 @@ namespace gameProcessor
 		}
 
 		return hr;
+	}
+
+	D2D1::Matrix3x2F RenderManager::convertMatrix(const Matrix3X3& matrix)
+	{
+		D2D1::Matrix3x2F result;
+
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				result.m[j][i] = matrix.GetValue(i, j);
+			}
+		}
+
+		return result;
 	}
 }

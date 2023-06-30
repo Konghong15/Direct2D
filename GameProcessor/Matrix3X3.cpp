@@ -60,6 +60,18 @@ namespace gameProcessor
 		return Matrix3X3(m);
 	}
 
+	Matrix3X3 Matrix3X3::GetRotate(float cos, float sin)
+	{
+		float m[3][3] =
+		{
+			{cos, sin, 0},
+			{-sin, cos, 0 },
+			{0, 0, 1}
+		};
+
+		return Matrix3X3(m);
+	}
+
 	Matrix3X3 Matrix3X3::GetTranslate(float x, float y)
 	{
 		float m[3][3] =

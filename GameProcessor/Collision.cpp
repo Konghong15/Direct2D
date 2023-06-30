@@ -208,7 +208,7 @@ namespace gameProcessor
 				{
 					rectMax = scalar;
 				}
-				else if (rectMin > scalar)
+				if (rectMin > scalar)
 				{
 					rectMin = scalar;
 				}
@@ -225,13 +225,78 @@ namespace gameProcessor
 				{
 					otherRectMax = scalar;
 				}
-				else if (otherRectMin > scalar)
+				if (otherRectMin > scalar)
 				{
 					otherRectMin = scalar;
 				}
 			}
 
 			if (otherRectMax < rectMin || otherRectMin > rectMax)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	bool Collision::ContainRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
+	{
+		Vector2 normalVector[4] =
+		{
+			rectangle1.GetTopLeft() - rectangle1.GetBottomLeft(),
+			rectangle1.GetBottomLeft() - rectangle1.GetBottomRight(),
+			rectangle1.GetBottomRight() - rectangle1.GetTopRight(),
+			rectangle1.GetTopRight() - rectangle1.GetTopLeft()
+		};
+
+		for (int i = 0; i < 4; ++i)
+		{
+			normalVector[i].Normalize();
+			float tempX = normalVector[i].GetX();
+			float tempY = normalVector[i].GetY();
+			normalVector[i].SetX(-tempY);
+			normalVector[i].SetY(tempX);
+		}
+
+		for (int i = 0; i < 4; ++i)
+		{
+			float rectMin = std::numeric_limits<float>::max();
+			float rectMax = -std::numeric_limits<float>::max();
+
+			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
+			{
+				float scalar = normalVector[i].Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
+
+				if (rectMax < scalar)
+				{
+					rectMax = scalar;
+				}
+				if (rectMin > scalar)
+				{
+					rectMin = scalar;
+				}
+			}
+
+			float otherRectMin = std::numeric_limits<float>::max();
+			float otherRectMax = -std::numeric_limits<float>::max();
+
+			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
+			{
+				float scalar = normalVector[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+
+				if (otherRectMax < scalar)
+				{
+					otherRectMax = scalar;
+				}
+				if (otherRectMin > scalar)
+				{
+					otherRectMin = scalar;
+				}
+			}
+
+			if (!(rectMin < otherRectMin && rectMax > otherRectMax))
 			{
 				return false;
 			}

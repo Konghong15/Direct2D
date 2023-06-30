@@ -103,5 +103,14 @@ namespace gameProcessor
 		mX /= magnitude;
 		mY /= magnitude;
 	}
+
+	void Vector2::Rotate(float rotateInRadian)
+	{
+		float cosScalr = cos(rotateInRadian);
+		float sinScalr = sin(rotateInRadian);
+
+		Vector2 temp(mX * cosScalr - mY * sinScalr, mX * sinScalr + mY * cosScalr);
+		*this = temp;
+	}
 }
 

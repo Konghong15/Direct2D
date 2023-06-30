@@ -29,6 +29,7 @@ namespace gameProcessor
 
 		float Dot(const Vector2& other);
 		void Normalize();
+		void Rotate(float rotateInRadian);
 		inline void Move(float x, float y);
 		inline void SetX(float x);
 		inline void SetY(float y);
