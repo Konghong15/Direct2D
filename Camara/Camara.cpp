@@ -9,7 +9,7 @@ namespace camara
 		, mTransform(mOrginTranslate)
 		, mSpeed(speed)
 		, mScale(1.f)
-		, mRotateInRadian(0.f)
+		, mDirection(1, 0)
 		, mOwnerObjectOrNull(ownerObjectOrNull)
 	{
 	}
@@ -18,18 +18,19 @@ namespace camara
 	{
 		if (mOwnerObjectOrNull != nullptr)
 		{
-			gameProcessor::Matrix3X3 inverse;
-			gameProcessor::Matrix3X3::TryInverse(mTransform, &inverse);
-			const gameProcessor::Vector2& OWNER_CENTER = mOwnerObjectOrNull->GetRectangle().GetCenter();
+			const gameProcessor::Vector2& CAMARA_CENTER = GetClippingRectangle().GetCenter();
+			const gameProcessor::Vector2& OWNER_CENTER = (mOwnerObjectOrNull->GetWorldRectangle()).GetCenter();
 
-			mTranslate.SetXY(OWNER_CENTER.GetX(), OWNER_CENTER.GetY());
+			mTranslate.Move(OWNER_CENTER.GetX() - CAMARA_CENTER.GetX(), OWNER_CENTER.GetY() - CAMARA_CENTER.GetY());
 
-			mRotateInRadian = acosf(mOwnerObjectOrNull->GetDirection().GetX());
+			mDirection = mOwnerObjectOrNull->GetDirection();
+			float temp = mDirection.GetX();
+			mDirection.SetX(mDirection.GetY());
+			mDirection.SetY(-temp);
 		}
 		else
 		{
 			const float MOVEMENT_AMOUNT = mSpeed * deltaTime;
-			mDirection.SetXY(cos(mRotateInRadian), sin(mRotateInRadian));
 
 			if (inputManager->GetKeyState('W') == gameProcessor::eKeyState::Hold)
 			{
@@ -50,15 +51,13 @@ namespace camara
 
 			if (inputManager->GetKeyState('Q') == gameProcessor::eKeyState::Hold)
 			{
-				mRotateInRadian -= deltaTime;
+				mDirection.Rotate(deltaTime);
 			}
 			else if (inputManager->GetKeyState('E') == gameProcessor::eKeyState::Hold)
 			{
-				mRotateInRadian += deltaTime;
+				mDirection.Rotate(-deltaTime);
 			}
 		}
-
-
 
 		if (inputManager->GetKeyState('X') == gameProcessor::eKeyState::Hold)
 		{
@@ -78,7 +77,7 @@ namespace camara
 		mTransform = gameProcessor::Matrix3X3::ComineMatrix(4
 			, mTransform
 			, gameProcessor::Matrix3X3::GetScale(mScale, mScale)
-			, gameProcessor::Matrix3X3::GetRotate(mRotateInRadian)
+			, gameProcessor::Matrix3X3::GetRotate(mDirection.GetX(), mDirection.GetY())
 			, gameProcessor::Matrix3X3::GetTranslate(mTranslate));
 	}
 }

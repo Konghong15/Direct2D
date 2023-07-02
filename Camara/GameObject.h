@@ -22,14 +22,25 @@ namespace camara
 		virtual void Update(float deltaTime);
 		virtual void Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& transform, D2D1_COLOR_F color);
 
+		inline gameProcessor::hRectangle GetWorldRectangle() const;
 		inline const gameProcessor::hRectangle& GetRectangle() const;
 		inline const gameProcessor::Vector2& GetDirection() const;
 
 	protected:
 		gameProcessor::hRectangle mRectangle;
+
+		float mScale;
 		gameProcessor::Vector2 mDirection;
+		gameProcessor::Vector2 mTranslate;
+		gameProcessor::Matrix3X3 mTransform;
+
 		float mSpeed;
 	};
+
+	gameProcessor::hRectangle GameObject::GetWorldRectangle() const
+	{
+		return mRectangle * mTransform;
+	}
 
 	const gameProcessor::hRectangle& GameObject::GetRectangle() const
 	{

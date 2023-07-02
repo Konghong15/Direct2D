@@ -100,6 +100,14 @@ namespace gameProcessor
 	{
 		float magnitude = GetMagnitude();
 
+		if (magnitude < FLT_EPSILON)
+		{
+			mX = 0;
+			mY = 0;
+
+			return;
+		}
+
 		mX /= magnitude;
 		mY /= magnitude;
 	}

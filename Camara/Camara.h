@@ -18,18 +18,18 @@ namespace camara
 
 		inline const gameProcessor::Matrix3X3& GetTransform() const;
 		inline const gameProcessor::hRectangle& GetClippingRectangle() const;
+		inline gameProcessor::hRectangle GetRectangle() const;
 
 		inline void SetOwnerObject(GameObject* ownerObjectOrNull);
 
 	private:
 		const gameProcessor::hRectangle mRectangle;
 		const gameProcessor::Matrix3X3 mOrginTranslate;
-		gameProcessor::Matrix3X3 mTransform;
 
+		gameProcessor::Matrix3X3 mTransform;
 		gameProcessor::Vector2 mTranslate;
 		gameProcessor::Vector2 mDirection;
 		float mScale;
-		float mRotateInRadian;
 
 		float mSpeed;
 		GameObject* mOwnerObjectOrNull;
@@ -48,5 +48,10 @@ namespace camara
 	void Camara::SetOwnerObject(GameObject* ownerObjectOrNull)
 	{
 		mOwnerObjectOrNull = ownerObjectOrNull;
+	}
+
+	inline gameProcessor::hRectangle Camara::GetRectangle() const
+	{
+		return mRectangle;
 	}
 }

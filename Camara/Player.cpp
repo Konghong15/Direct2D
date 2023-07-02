@@ -15,35 +15,24 @@ namespace camara
 	{
 		if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Hold)
 		{
-			mSpeed = 200;
+			mSpeed = 500;
 		}
 		else if (inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Hold)
 		{
-			mSpeed = -100;
+			mSpeed = -250;
 		}
 		else
 		{
 			mSpeed = 0;
 		}
 
-		if (inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Push)
+		if (inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Hold)
 		{
-			mDirection.Rotate(gameProcessor::Helper::DegreeToRadian(-90));
+			mDirection.Rotate(0.01);
 		}
-		else if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Push)
+		else if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Hold)
 		{
-			mDirection.Rotate(gameProcessor::Helper::DegreeToRadian(90));
+			mDirection.Rotate(-0.01);
 		}
-
-		mDirection.Normalize();
-	}
-
-	void Player::Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& transform, D2D1_COLOR_F color)
-	{
-		gameProcessor::Matrix3X3 combinedTrasform = gameProcessor::Matrix3X3::GetRotate(mDirection.GetX(), mDirection.GetY())
-			* transform;
-
-		GameObject::Render(renderManager, transform, color);
-		//renderManager->DrawLine(gameProcessor::Vector2(0, 500), combinedTrasform, color);
 	}
 }

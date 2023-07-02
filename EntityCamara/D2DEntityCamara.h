@@ -10,19 +10,20 @@
 #include "RenderManger.h"
 #include "InputManager.h"
 #include "TimeManger.h"
-#include "RenderManger.h"
-#include "Player.h"
+#include "Entity.h"
+#include "EntityManager.h"
+#include "System.h"
 
-namespace camara
+namespace entityCamara
 {
 	class GameObject;
 	class Camara;
 
-	class D2DCamara : public gameProcessor::GameProcessor
+	class D2DEntityCamara : public gameProcessor::GameProcessor
 	{
 	public:
-		D2DCamara(UINT width, UINT height, std::wstring name);
-		virtual ~D2DCamara() = default;
+		D2DEntityCamara(UINT width, UINT height, std::wstring name);
+		virtual ~D2DEntityCamara() = default;
 
 		virtual void Init() override;
 		virtual void Update() override;
@@ -32,11 +33,8 @@ namespace camara
 	private:
 		gameProcessor::TimeManager mTimeManager;
 		gameProcessor::RenderManager mRenderManager;
-		gameProcessor::InputManager mInputManager;
+		System mSystem;
 
-		std::vector<GameObject*> mObjects;
-		Player* mPlayer;
-		Camara* mCamara;
-		Camara* mMiniMapCamara;
+		EntityManager* mEntityManager;
 	};
 }
