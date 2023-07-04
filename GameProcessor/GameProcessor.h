@@ -20,11 +20,9 @@ namespace gameProcessor
 		inline UINT GetHeight() const;
 		inline const WCHAR* GetTitle() const;
 
-	protected:
+	private:
 		UINT mWidth;
 		UINT mHeight;
-
-	private:
 		std::wstring mTitle;
 	};
 

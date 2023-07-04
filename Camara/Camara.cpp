@@ -4,12 +4,13 @@
 namespace camara
 {
 	Camara::Camara(unsigned int width, unsigned int height, float speed, GameObject* ownerObjectOrNull)
-		: mRectangle(0, 0, width, height)
-		, mOrginTranslate(gameProcessor::Matrix3X3::GetTranslate(-mRectangle.GetWidth() / 2, -mRectangle.GetHeight() / 2)* gameProcessor::Matrix3X3::GetScale(1, -1))
-		, mTransform(mOrginTranslate)
-		, mSpeed(speed)
+		: mRectangle(-static_cast<int>(width) / 2, -static_cast<int>(height) / 2, width / 2, height / 2)
+		, mScreenTransform(gameProcessor::Matrix3X3::GetScale(1, -1)* gameProcessor::Matrix3X3::GetTranslate(mRectangle.GetWidth() / 2, mRectangle.GetHeight() / 2))
+		, mTranslate(0, 0)
+		, mXaxis(1, 0)
 		, mScale(1.f)
-		, mDirection(1, 0)
+		, mSpeed(speed)
+		, mCamaraTransform(gameProcessor::Matrix3X3::Identity())
 		, mOwnerObjectOrNull(ownerObjectOrNull)
 	{
 	}
@@ -23,10 +24,9 @@ namespace camara
 
 			mTranslate.Move(OWNER_CENTER.GetX() - CAMARA_CENTER.GetX(), OWNER_CENTER.GetY() - CAMARA_CENTER.GetY());
 
-			mDirection = mOwnerObjectOrNull->GetDirection();
-			float temp = mDirection.GetX();
-			mDirection.SetX(mDirection.GetY());
-			mDirection.SetY(-temp);
+			const gameProcessor::Vector2& ownerDirection = mOwnerObjectOrNull->GetDirection();
+			mXaxis.SetX(ownerDirection.GetY());
+			mXaxis.SetY(-ownerDirection.GetX());
 		}
 		else
 		{
@@ -34,28 +34,28 @@ namespace camara
 
 			if (inputManager->GetKeyState('W') == gameProcessor::eKeyState::Hold)
 			{
-				mTranslate.Move(-mDirection.GetY() * MOVEMENT_AMOUNT, mDirection.GetX() * MOVEMENT_AMOUNT);
+				mTranslate.Move(-mXaxis.GetY() * MOVEMENT_AMOUNT, mXaxis.GetX() * MOVEMENT_AMOUNT);
 			}
 			else if (inputManager->GetKeyState('S') == gameProcessor::eKeyState::Hold)
 			{
-				mTranslate.Move(-mDirection.GetY() * -MOVEMENT_AMOUNT, mDirection.GetX() * -MOVEMENT_AMOUNT);
+				mTranslate.Move(-mXaxis.GetY() * -MOVEMENT_AMOUNT, mXaxis.GetX() * -MOVEMENT_AMOUNT);
 			}
 			else if (inputManager->GetKeyState('A') == gameProcessor::eKeyState::Hold)
 			{
-				mTranslate.Move(mDirection.GetX() * -MOVEMENT_AMOUNT, mDirection.GetY() * -MOVEMENT_AMOUNT);
+				mTranslate.Move(mXaxis.GetX() * -MOVEMENT_AMOUNT, mXaxis.GetY() * -MOVEMENT_AMOUNT);
 			}
 			else if (inputManager->GetKeyState('D') == gameProcessor::eKeyState::Hold)
 			{
-				mTranslate.Move(mDirection.GetX() * MOVEMENT_AMOUNT, mDirection.GetY() * MOVEMENT_AMOUNT);
+				mTranslate.Move(mXaxis.GetX() * MOVEMENT_AMOUNT, mXaxis.GetY() * MOVEMENT_AMOUNT);
 			}
 
 			if (inputManager->GetKeyState('Q') == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Rotate(deltaTime);
+				mXaxis.Rotate(deltaTime);
 			}
 			else if (inputManager->GetKeyState('E') == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Rotate(-deltaTime);
+				mXaxis.Rotate(-deltaTime);
 			}
 		}
 
@@ -72,12 +72,10 @@ namespace camara
 				mScale = 1.f;
 			}
 		}
-		mTransform = mOrginTranslate;
 
-		mTransform = gameProcessor::Matrix3X3::ComineMatrix(4
-			, mTransform
+		mCamaraTransform = gameProcessor::Matrix3X3::ComineMatrix(3
 			, gameProcessor::Matrix3X3::GetScale(mScale, mScale)
-			, gameProcessor::Matrix3X3::GetRotate(mDirection.GetX(), mDirection.GetY())
+			, gameProcessor::Matrix3X3::GetRotate(mXaxis.GetX(), mXaxis.GetY())
 			, gameProcessor::Matrix3X3::GetTranslate(mTranslate));
 	}
 }

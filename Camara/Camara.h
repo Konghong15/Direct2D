@@ -16,7 +16,8 @@ namespace camara
 
 		void Update(gameProcessor::InputManager* inputManager, float deltaTime);
 
-		inline const gameProcessor::Matrix3X3& GetTransform() const;
+		inline const gameProcessor::Matrix3X3& GetScreenTrasform() const;
+		inline const gameProcessor::Matrix3X3& GetCamaraTrasform() const;
 		inline const gameProcessor::hRectangle& GetClippingRectangle() const;
 		inline gameProcessor::hRectangle GetRectangle() const;
 
@@ -24,25 +25,30 @@ namespace camara
 
 	private:
 		const gameProcessor::hRectangle mRectangle;
-		const gameProcessor::Matrix3X3 mOrginTranslate;
+		const gameProcessor::Matrix3X3 mScreenTransform;
 
-		gameProcessor::Matrix3X3 mTransform;
 		gameProcessor::Vector2 mTranslate;
-		gameProcessor::Vector2 mDirection;
+		gameProcessor::Vector2 mXaxis;
 		float mScale;
+		gameProcessor::Matrix3X3 mCamaraTransform;
 
 		float mSpeed;
 		GameObject* mOwnerObjectOrNull;
 	};
 
-	const gameProcessor::Matrix3X3& Camara::GetTransform() const
+	const gameProcessor::Matrix3X3& Camara::GetScreenTrasform() const
 	{
-		return mTransform;
+		return mScreenTransform;
+	}
+
+	const gameProcessor::Matrix3X3& Camara::GetCamaraTrasform() const
+	{
+		return mCamaraTransform;
 	}
 
 	const gameProcessor::hRectangle& Camara::GetClippingRectangle() const
 	{
-		return mRectangle * mTransform;
+		return mRectangle * mCamaraTransform;
 	}
 
 	void Camara::SetOwnerObject(GameObject* ownerObjectOrNull)

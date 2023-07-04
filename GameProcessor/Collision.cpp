@@ -12,31 +12,31 @@ namespace gameProcessor
 {
 	bool Collision::CheckPointToRectangle(const Vector2& point, const hRectangle& rectangle)
 	{
-		Vector2 normalVector[4] =
+		const size_t RECT_VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
+
+		eRectangleIndex index[RECT_VERTEX_COUNT] =
 		{
-			rectangle.GetTopLeft() - rectangle.GetBottomLeft(),
-			rectangle.GetBottomLeft() - rectangle.GetBottomRight(),
-			rectangle.GetBottomRight() - rectangle.GetTopRight(),
-			rectangle.GetTopRight() - rectangle.GetTopLeft()
+			eRectangleIndex::TopLeft,
+			eRectangleIndex::TopRight,
+			eRectangleIndex::BottomRight,
+			eRectangleIndex::BottomLeft,
 		};
 
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < RECT_VERTEX_COUNT; ++i)
 		{
-			normalVector[i].Normalize();
-			float tempX = normalVector[i].GetX();
-			float tempY = normalVector[i].GetY();
-			normalVector[i].SetX(-tempY);
-			normalVector[i].SetY(tempX);
-		}
+			eRectangleIndex cur = index[i];
+			eRectangleIndex next = index[(i + 1) % 4];
+			Vector2 line = rectangle.GetVertex(cur) - rectangle.GetVertex(next);
 
-		for (int i = 0; i < 4; ++i)
-		{
+			line.Normalize();
+			Vector2 normalVector(-line.GetY(), line.GetX());
+
 			float rectMin = std::numeric_limits<float>::max();
 			float rectMax = std::numeric_limits<float>::min();
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector.Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -48,7 +48,7 @@ namespace gameProcessor
 				}
 			}
 
-			float pointScalar = normalVector[i].Dot(point);
+			float pointScalar = normalVector.Dot(point);
 
 			if (pointScalar < rectMin || pointScalar > rectMax)
 			{
@@ -61,32 +61,31 @@ namespace gameProcessor
 
 	bool Collision::CheckLineToRectangle(const Vector2& start, const Vector2& end, const hRectangle& rectangle)
 	{
-		Vector2 normalVector[4] =
+		const size_t RECT_VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
+
+		eRectangleIndex index[RECT_VERTEX_COUNT] =
 		{
-			rectangle.GetTopLeft() - rectangle.GetBottomLeft(),
-			rectangle.GetBottomLeft() - rectangle.GetBottomRight(),
-			rectangle.GetBottomRight() - rectangle.GetTopRight(),
-			rectangle.GetTopRight() - rectangle.GetTopLeft()
+			eRectangleIndex::TopLeft,
+			eRectangleIndex::TopRight,
+			eRectangleIndex::BottomRight,
+			eRectangleIndex::BottomLeft,
 		};
 
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < RECT_VERTEX_COUNT; ++i)
 		{
-			normalVector[i].Normalize();
-			float tempX = normalVector[i].GetX();
-			float tempY = normalVector[i].GetY();
-			normalVector[i].SetX(-tempY);
-			normalVector[i].SetY(tempX);
-		}
+			eRectangleIndex cur = index[i];
+			eRectangleIndex next = index[(i + 1) % 4];
+			Vector2 line = rectangle.GetVertex(cur) - rectangle.GetVertex(next);
 
+			line.Normalize();
+			Vector2 normalVector(-line.GetY(), line.GetX());
 
-		for (int i = 0; i < 4; ++i)
-		{
 			float rectMin = std::numeric_limits<float>::max();
 			float rectMax = std::numeric_limits<float>::min();
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector.Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -98,21 +97,14 @@ namespace gameProcessor
 				}
 			}
 
-			float startScalar = normalVector[i].Dot(start);
-			float endScalar = normalVector[i].Dot(end);
+			float maxScalar = normalVector.Dot(start);
+			float minScalar = normalVector.Dot(end);
 
-			float maxScalar;
-			float minScalar;
-
-			if (startScalar > endScalar)
+			if (minScalar > maxScalar)
 			{
-				maxScalar = startScalar;
-				minScalar = endScalar;
-			}
-			else
-			{
-				maxScalar = endScalar;
-				minScalar = startScalar;
+				float temp = maxScalar;
+				maxScalar = minScalar;
+				minScalar = maxScalar;
 			}
 
 			if (maxScalar < rectMin || minScalar > rectMax)
@@ -126,48 +118,48 @@ namespace gameProcessor
 
 	bool Collision::CheckCircleToRectangle(const Circle& circle, const hRectangle& rectangle)
 	{
-		Vector2 normalVector[4] =
+		const size_t RECT_VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
+
+		eRectangleIndex index[RECT_VERTEX_COUNT] =
 		{
-			rectangle.GetTopLeft() - rectangle.GetBottomLeft(),
-			rectangle.GetBottomLeft() - rectangle.GetBottomRight(),
-			rectangle.GetBottomRight() - rectangle.GetTopRight(),
-			rectangle.GetTopRight() - rectangle.GetTopLeft()
+			eRectangleIndex::TopLeft,
+			eRectangleIndex::TopRight,
+			eRectangleIndex::BottomRight,
+			eRectangleIndex::BottomLeft,
 		};
 
-		for (int i = 0; i < 4; ++i)
+		for (size_t i = 0; i < RECT_VERTEX_COUNT; ++i)
 		{
-			normalVector[i].Normalize();
-			float tempX = normalVector[i].GetX();
-			float tempY = normalVector[i].GetY();
-			normalVector[i].SetX(-tempY);
-			normalVector[i].SetY(tempX);
-		}
+			eRectangleIndex cur = index[i];
+			eRectangleIndex next = index[(i + 1) % 4];
+			Vector2 line = rectangle.GetVertex(cur) - rectangle.GetVertex(next);
 
+			line.Normalize();
+			Vector2 normalVector(-line.GetY(), line.GetX());
 
-		for (int i = 0; i < 4; ++i)
-		{
 			float rectMin = std::numeric_limits<float>::max();
 			float rectMax = std::numeric_limits<float>::min();
 
-			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
+			for (int j = 0; j < RECT_VERTEX_COUNT; ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector.Dot(rectangle.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
 					rectMax = scalar;
 				}
-				else if (rectMin > scalar)
+				if (rectMin > scalar)
 				{
 					rectMin = scalar;
 				}
 			}
 
-			float centerScalar = normalVector[i].Dot(circle.GetCenter());
-			float maxScalar = centerScalar + circle.GetRadius();
-			float minScalar = centerScalar - circle.GetRadius();
+			int scalar = normalVector.Dot(circle.GetCenter());
 
-			if (maxScalar < rectMin || minScalar > rectMax)
+			float circleMin = scalar - circle.GetRadius();
+			float circleMax = scalar + circle.GetRadius();
+
+			if (circleMax < rectMin || circleMin > rectMax)
 			{
 				return false;
 			}
@@ -178,31 +170,31 @@ namespace gameProcessor
 
 	bool Collision::CheckRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
 	{
-		Vector2 normalVector[4] =
+		const size_t VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
+
+		eRectangleIndex index[VERTEX_COUNT] =
 		{
-			rectangle1.GetTopLeft() - rectangle1.GetBottomLeft(),
-			rectangle1.GetBottomLeft() - rectangle1.GetBottomRight(),
-			rectangle1.GetBottomRight() - rectangle1.GetTopRight(),
-			rectangle1.GetTopRight() - rectangle1.GetTopLeft()
+			eRectangleIndex::TopLeft,
+			eRectangleIndex::TopRight,
+			eRectangleIndex::BottomRight,
+			eRectangleIndex::BottomLeft,
 		};
 
-		for (int i = 0; i < 4; ++i)
+		for (size_t i = 0; i < VERTEX_COUNT; ++i)
 		{
-			normalVector[i].Normalize();
-			float tempX = normalVector[i].GetX();
-			float tempY = normalVector[i].GetY();
-			normalVector[i].SetX(-tempY);
-			normalVector[i].SetY(tempX);
-		}
+			eRectangleIndex cur = index[i];
+			eRectangleIndex next = index[(i + 1) % 4];
+			Vector2 line = rectangle1.GetVertex(cur) - rectangle1.GetVertex(next);
 
-		for (int i = 0; i < 4; ++i)
-		{
+			line.Normalize();
+			Vector2 normalVector(-line.GetY(), line.GetX());
+
 			float rectMin = std::numeric_limits<float>::max();
 			float rectMax = std::numeric_limits<float>::min();
 
-			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
+			for (int j = 0; j < VERTEX_COUNT; ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector.Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -217,9 +209,9 @@ namespace gameProcessor
 			float otherRectMin = std::numeric_limits<float>::max();;
 			float otherRectMax = std::numeric_limits<float>::min();;
 
-			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
+			for (size_t j = 0; j < VERTEX_COUNT; ++j)
 			{
-				int scalar = normalVector[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+				int scalar = normalVector.Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (otherRectMax < scalar)
 				{
@@ -243,31 +235,31 @@ namespace gameProcessor
 
 	bool Collision::ContainRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
 	{
-		Vector2 normalVector[4] =
+		const size_t VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
+
+		eRectangleIndex index[VERTEX_COUNT] =
 		{
-			rectangle1.GetTopLeft() - rectangle1.GetBottomLeft(),
-			rectangle1.GetBottomLeft() - rectangle1.GetBottomRight(),
-			rectangle1.GetBottomRight() - rectangle1.GetTopRight(),
-			rectangle1.GetTopRight() - rectangle1.GetTopLeft()
+			eRectangleIndex::TopLeft,
+			eRectangleIndex::TopRight,
+			eRectangleIndex::BottomRight,
+			eRectangleIndex::BottomLeft,
 		};
 
 		for (int i = 0; i < 4; ++i)
 		{
-			normalVector[i].Normalize();
-			float tempX = normalVector[i].GetX();
-			float tempY = normalVector[i].GetY();
-			normalVector[i].SetX(-tempY);
-			normalVector[i].SetY(tempX);
-		}
+			eRectangleIndex cur = index[i];
+			eRectangleIndex next = index[(i + 1) % 4];
+			Vector2 line = rectangle1.GetVertex(cur) - rectangle1.GetVertex(next);
 
-		for (int i = 0; i < 4; ++i)
-		{
+			line.Normalize();
+			Vector2 normalVector(-line.GetY(), line.GetX());
+
 			float rectMin = std::numeric_limits<float>::max();
 			float rectMax = -std::numeric_limits<float>::max();
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				float scalar = normalVector[i].Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVector.Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -284,7 +276,7 @@ namespace gameProcessor
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				float scalar = normalVector[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVector.Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (otherRectMax < scalar)
 				{

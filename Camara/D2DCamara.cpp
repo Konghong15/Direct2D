@@ -19,8 +19,8 @@ namespace camara
 
 		mObjects.reserve(128);
 
-		const  int HALF_WIDTH = mWidth / 2;
-		const  int HALF_HEIGHT = mHeight / 2;
+		const  int HALF_WIDTH = GetWidth() / 2;
+		const  int HALF_HEIGHT = GetHeight() / 2;
 		for (int i = -25; i < 25; ++i)
 		{
 			for (int j = -25; j < 25; ++j)
@@ -30,11 +30,12 @@ namespace camara
 		}
 
 		mPlayer = new Player({ -250, -250, 250, 250 }, 1000);
-		mCamara = new Camara(mWidth, mHeight, 200);
-		mMiniMapCamara = new Camara(mWidth * 2, mHeight * 2, 200);
+		mCamara = new Camara(GetWidth(), GetHeight(), 200);
+		mMiniMapCamara = new Camara(GetWidth() * 2, GetHeight() * 2, 200);
 
 		mCamara->SetOwnerObject(mPlayer);
-		//mMiniMapCamara->SetOwnerObject(mPlayer);
+		mMiniMapCamara->SetOwnerObject(mPlayer);
+		mMiniMapCamara->SetOwnerObject(mPlayer);
 	}
 
 	void D2DCamara::Destroy()
@@ -70,15 +71,16 @@ namespace camara
 
 		// clipingCamara 
 		gameProcessor::Matrix3X3 inverse;
-		gameProcessor::Matrix3X3::TryInverse(mCamara->GetTransform(), &inverse);
+		gameProcessor::Matrix3X3::TryInverse(mCamara->GetCamaraTrasform(), &inverse);
+		inverse *= mCamara->GetScreenTrasform();
 		gameProcessor::hRectangle clippingRect = mCamara->GetClippingRectangle();
-		gameProcessor::Matrix3X3 viewportTransform = gameProcessor::Matrix3X3::GetScale(0.5f, 0.5f) * gameProcessor::Matrix3X3::GetTranslate(mWidth / 2, 0);
+		gameProcessor::Matrix3X3 viewportTransform = gameProcessor::Matrix3X3::GetScale(0.5f, 0.5f) * gameProcessor::Matrix3X3::GetTranslate(GetWidth() / 2, 0);
 
-		mRenderManager.FillRectangle(gameProcessor::hRectangle(mWidth / 2, 0, mWidth, mHeight)
+		mRenderManager.FillRectangle(gameProcessor::hRectangle(GetWidth() / 2, 0, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::Identity()
 			, gameProcessor::Helper::GetRGBA(253, 250, 205, 255));
 
-		mRenderManager.DrawRectangle(gameProcessor::hRectangle(mWidth / 2, 0, mWidth, mHeight)
+		mRenderManager.DrawRectangle(gameProcessor::hRectangle(GetWidth() / 2, 0, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::Identity()
 			, gameProcessor::Helper::GetRGBA(253, 227, 114, 255));
 
@@ -94,15 +96,16 @@ namespace camara
 
 		// minimap
 		gameProcessor::Matrix3X3 minimapInverse;
-		gameProcessor::Matrix3X3::TryInverse(mMiniMapCamara->GetTransform(), &minimapInverse);
+		gameProcessor::Matrix3X3::TryInverse(mMiniMapCamara->GetCamaraTrasform(), &minimapInverse);
+		minimapInverse *= mMiniMapCamara->GetScreenTrasform();
 		gameProcessor::hRectangle minimapClippingRect = mMiniMapCamara->GetClippingRectangle();
-		gameProcessor::Matrix3X3 minimapViewportTrasform = gameProcessor::Matrix3X3::GetScale(0.25f, 0.25f) * gameProcessor::Matrix3X3::GetTranslate(mWidth / 2, mHeight / 2);
+		gameProcessor::Matrix3X3 minimapViewportTrasform = gameProcessor::Matrix3X3::GetScale(0.25f, 0.25f) * gameProcessor::Matrix3X3::GetTranslate(GetWidth() / 2, GetHeight() / 2);
 
-		mRenderManager.FillRectangle(gameProcessor::hRectangle(mWidth / 2, mHeight / 2, mWidth, mHeight)
+		mRenderManager.FillRectangle(gameProcessor::hRectangle(GetWidth() / 2, GetHeight() / 2, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::Identity()
 			, gameProcessor::Helper::GetRGBA(253, 250, 205, 255));
 
-		mRenderManager.DrawRectangle(gameProcessor::hRectangle(mWidth / 2, mHeight / 2, mWidth, mHeight)
+		mRenderManager.DrawRectangle(gameProcessor::hRectangle(GetWidth() / 2, GetHeight() / 2, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::Identity()
 			, gameProcessor::Helper::GetRGBA(253, 227, 114, 255));
 
@@ -127,16 +130,16 @@ namespace camara
 		}
 
 		mPlayer->Render(&mRenderManager, minimapInverse * minimapViewportTrasform, gameProcessor::Helper::GetRGBA(0, 255, 0, 255));
-		mRenderManager.DrawRectangle(mCamara->GetRectangle(), mCamara->GetTransform() * minimapInverse * minimapViewportTrasform);
+		mRenderManager.DrawRectangle(mCamara->GetRectangle(), mCamara->GetCamaraTrasform() * minimapInverse * minimapViewportTrasform);
 
 		// UI
 		gameProcessor::Matrix3X3 uiViewportTrasform = gameProcessor::Matrix3X3::ComineMatrix(1, gameProcessor::Matrix3X3::GetScale(0.5f, 1.f));
 
-		mRenderManager.FillRectangle(gameProcessor::hRectangle(0, 0, mWidth, mHeight)
+		mRenderManager.FillRectangle(gameProcessor::hRectangle(0, 0, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::ComineMatrix(1, gameProcessor::Matrix3X3::GetScale(0.5f, 1.f))
 			, gameProcessor::Helper::GetRGBA(253, 250, 205, 255));
 
-		mRenderManager.DrawRectangle(gameProcessor::hRectangle(0, 0, mWidth, mHeight)
+		mRenderManager.DrawRectangle(gameProcessor::hRectangle(0, 0, GetWidth(), GetHeight())
 			, gameProcessor::Matrix3X3::ComineMatrix(1, gameProcessor::Matrix3X3::GetScale(0.5f, 1.f))
 			, gameProcessor::Helper::GetRGBA(253, 227, 114, 255));
 
