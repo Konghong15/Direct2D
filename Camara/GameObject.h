@@ -27,12 +27,12 @@ namespace camara
 		inline const gameProcessor::Vector2& GetDirection() const;
 
 	protected:
-		gameProcessor::hRectangle mRectangle;
+		gameProcessor::hRectangle mRectangle; // 로컬
 
 		float mScale;
 		gameProcessor::Vector2 mDirection;
 		gameProcessor::Vector2 mTranslate;
-		gameProcessor::Matrix3X3 mTransform;
+		gameProcessor::Matrix3X3 mTransform; // 월드가기위한 변환행렬
 
 		float mSpeed;
 	};

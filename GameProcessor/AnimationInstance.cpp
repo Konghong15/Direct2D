@@ -1,6 +1,7 @@
 #include "AnimationInstance.h"
 #include "AnimationAsset.h"
 #include "hRectangle.h"
+#include "RenderManger.h"
 
 namespace gameProcessor
 {
@@ -11,6 +12,7 @@ namespace gameProcessor
 		, mProgressTime(progressTime)
 		, mElapsed(0.f)
 		, mbLoop(bLoop)
+		, mbEnd(false)
 	{
 	}
 
@@ -29,35 +31,40 @@ namespace gameProcessor
 
 		if (FRAME_SIZE <= mFrameIndex)
 		{
-			mFrameIndex = mbLoop ? 0 : mFrameIndex - 1;
+			if (mbLoop)
+			{
+				mFrameIndex = 0;
+				mbEnd = true;
+			}
+			else
+			{
+				mFrameIndex = mFrameIndex - 1;
+				mbEnd = true;
+			}
 		}
 	}
-
-	//void AnimationInstance::Render(const hRectangle& worldRect, ID2D1HwndRenderTarget* renderTarget)
-	//{
-	//	const Vector2& WORLD_TL = worldRect.GetTopLeft();
-	//	const Vector2& WORLD_BR = worldRect.GetBottomRight();
-
-	//	const hRectangle rect = mAnimationAsset.GetFrameAnimationInfo().at(mFrameIndex).at(mAnimationIndex);
-	//	const Vector2& TL = rect.GetTopLeft();
-	//	const Vector2& BR = rect.GetBottomRight();
-
-	//	renderTarget->DrawBitmap(mAnimationAsset.GetBitmap()
-	//		, D2D1::RectF(WORLD_TL.GetX(), WORLD_TL.GetY(), WORLD_BR.GetX(), WORLD_BR.GetY())
-	//		, 1.0f
-	//		, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
-	//		, D2D1::RectF(TL.GetX(), TL.GetY(), BR.GetX(), BR.GetY()));
-	//}
+	void AnimationInstance::Render(RenderManager* renderManager, const hRectangle& localRect, const Matrix3X3& matrix)
+	{
+		renderManager->DrawAnimationInstance(localRect, matrix, *this);
+	}
 
 	void AnimationInstance::SetFrameIndex(unsigned int index)
 	{
-		const unsigned int FRAME_SIZE = static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().size());
-		mFrameIndex += FRAME_SIZE > index ? index : mFrameIndex;
+		const unsigned int FRAME_SIZE = static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().at(mAnimationIndex).size());
+
+		if (FRAME_SIZE > index)
+		{
+			mFrameIndex = index;
+		}
 	}
 
 	void AnimationInstance::SetAnimationIndex(unsigned int index)
 	{
-		const unsigned int ANIMATION_SIZE = static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().at(mFrameIndex).size());
-		mAnimationIndex += ANIMATION_SIZE > index ? index : mAnimationIndex;
+		const unsigned int ANIMATION_SIZE = static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().size());
+
+		if (ANIMATION_SIZE > index)
+		{
+			mAnimationIndex = index;
+		}
 	}
 }

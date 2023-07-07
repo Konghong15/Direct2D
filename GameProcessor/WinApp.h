@@ -18,6 +18,9 @@ namespace gameProcessor
 	private:
 		static void placeInCenterOfScreen(HWND window, DWORD style, DWORD exStyle);
 
+		WinApp() = delete;
+		~WinApp() = delete;
+
 	private:
 		static HWND mHwnd;
 	};

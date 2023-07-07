@@ -35,13 +35,15 @@ namespace gameProcessor
 		void FillRectangle(const hRectangle& localRect, const Matrix3X3& matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
 		void DrawCircle(const Circle& circle, const Matrix3X3& matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
 		void FillCircle(const Circle& circle, const Matrix3X3& matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
-		void DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap);
-		void DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance);
+		void DrawBitMap(const hRectangle& localRect, const hRectangle& spriteRect, const Matrix3X3& matrix, ID2D1Bitmap* bitmap);
+		void DrawAnimationInstance(const hRectangle& localRect, const Matrix3X3& matrix, const AnimationInstance& animationInstance);
 
 		void WriteText(const hRectangle& rectangle, const std::wstring& text, unsigned int size, const Matrix3X3& matrix, D2D1_COLOR_F color = Helper::GetRGBA(0, 0, 0, 255));
 
 		HRESULT CreateD2DBitmapFromFile(const WCHAR* imagePath);
+		HRESULT CreateD2DBitmapFromFile(const WCHAR* key, const WCHAR* imagePath);
 		HRESULT CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo);
+		HRESULT CreateAnimationAsset(const WCHAR* key, const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo);
 
 		inline ID2D1Bitmap* GetBitmapOrNull(const WCHAR* key);
 		inline AnimationAsset* GetAnimationAssetOrNull(const WCHAR* key);

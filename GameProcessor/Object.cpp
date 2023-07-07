@@ -18,6 +18,6 @@ namespace gameProcessor
 
 	void Object::Render(RenderManager* renderer)
 	{
-		renderer->DrawBitMap(mWorldRectangle, mAnimationInstance);
+		//renderer->DrawBitMap(mWorldRectangle, mAnimationInstance);
 	}
 }

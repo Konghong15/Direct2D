@@ -70,7 +70,7 @@ namespace gameProcessor
 		for (auto iter = mBitmapMap.begin(); iter != mBitmapMap.end(); ++iter)
 		{
 			ID2D1Bitmap* bitmap = iter->second;
-			bitmap->Release();
+			int count = bitmap->Release();
 		}
 		for (auto iter = mAnimationAssetMap.begin(); iter != mAnimationAssetMap.end(); ++iter)
 		{
@@ -235,29 +235,31 @@ namespace gameProcessor
 		brush->Release();
 	}
 
-	void RenderManager::DrawBitMap(const hRectangle& worldRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap)
+	void RenderManager::DrawBitMap(const hRectangle& localRect, const hRectangle& spriteRect, const Matrix3X3& matrix, ID2D1Bitmap* bitmap)
 	{
-		const Vector2& WORLD_TL = worldRect.GetTopLeft();
-		const Vector2& WORLD_BR = worldRect.GetBottomRight();
+		const Vector2& WORLD_TL = localRect.GetTopLeft();
+		const Vector2& WORLD_BR = localRect.GetBottomRight();
 
 		const Vector2& SPRITE_TL = spriteRect.GetTopLeft();
 		const Vector2& SPRITE_BR = spriteRect.GetBottomRight();
 
+		mRenderTarget->SetTransform(convertMatrix(matrix));
 		mRenderTarget->DrawBitmap(bitmap
 			, D2D1::RectF(WORLD_TL.GetX(), WORLD_TL.GetY(), WORLD_BR.GetX(), WORLD_BR.GetY())
 			, 1.0f
 			, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
 			, D2D1::RectF(SPRITE_TL.GetX(), SPRITE_TL.GetY(), SPRITE_BR.GetX(), SPRITE_BR.GetY()));
+		mRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 	}
 
-	void RenderManager::DrawBitMap(const hRectangle& worldRect, const AnimationInstance& animationInstance)
+	void RenderManager::DrawAnimationInstance(const hRectangle& localRect, const Matrix3X3& matrix, const AnimationInstance& animationInstance)
 	{
 		const AnimationAsset& animationAsset = animationInstance.GetAnimaitionAsset();
 		const unsigned int FRAME_INDEX = animationInstance.GetFrameIndex();
 		const unsigned int ANIMATION_INDEX = animationInstance.GetAnimationindex();
 
 		const hRectangle& SPRITE_RECT = animationAsset.GetFrameAnimationInfo().at(ANIMATION_INDEX).at(FRAME_INDEX);
-		DrawBitMap(worldRect, SPRITE_RECT, animationAsset.GetBitmap());
+		DrawBitMap(localRect, SPRITE_RECT, matrix, animationAsset.GetBitmap());
 	}
 
 	void RenderManager::WriteText(const hRectangle& rectangle, const std::wstring& text, unsigned int size, const Matrix3X3& matrix, D2D1_COLOR_F color)
@@ -287,6 +289,13 @@ namespace gameProcessor
 
 	HRESULT RenderManager::CreateD2DBitmapFromFile(const WCHAR* filePath)
 	{
+		auto iter = mBitmapMap.find(filePath);
+
+		if (iter != mBitmapMap.end())
+		{
+			return S_FALSE;
+		}
+
 		HRESULT hr = S_OK;
 		IWICBitmapDecoder* decoder = nullptr;
 		IWICBitmapFrameDecode* frameDecode = nullptr;
@@ -339,8 +348,76 @@ namespace gameProcessor
 		return hr;
 	}
 
+	HRESULT RenderManager::CreateD2DBitmapFromFile(const WCHAR* key, const WCHAR* filePath)
+	{
+		auto iter = mBitmapMap.find(key);
+
+		if (iter != mBitmapMap.end())
+		{
+			return S_FALSE;
+		}
+
+		HRESULT hr = S_OK;
+		IWICBitmapDecoder* decoder = nullptr;
+		IWICBitmapFrameDecode* frameDecode = nullptr;
+		IWICFormatConverter* convertedBitmap = nullptr;
+		ID2D1Bitmap* bitmap = nullptr;
+
+		// 디코더 생성
+		hr = mWICFactory->CreateDecoderFromFilename(filePath, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &decoder);
+		if (FAILED(hr)) { goto END; }
+
+		// 프레임 디코더를 통해 0번쨰 프레임 얻기 (압축파일을 메모리의 비트맵으로 사용하기 위해)
+		hr = decoder->GetFrame(0, &frameDecode);
+		if (FAILED(hr)) { goto END; }
+
+		// 32비트맵 픽셀 포멧으로 변경하기 위해 컨버터 생성
+		hr = mWICFactory->CreateFormatConverter(&convertedBitmap);
+		if (FAILED(hr)) { goto END; }
+
+		// 32비트맵 픽셀 포멧으로 변경
+		hr = convertedBitmap->Initialize(frameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.f, WICBitmapPaletteTypeCustom);
+		if (FAILED(hr)) { goto END; }
+
+		// 렌더타겟 체크
+		hr = createDeviceResources(gameProcessor::WinApp::GetHwnd());
+		if (FAILED(hr)) { goto END; }
+
+		hr = mRenderTarget->CreateBitmapFromWicBitmap(convertedBitmap, NULL, &bitmap);
+		if (FAILED(hr)) { goto END; }
+		mBitmapMap.emplace(key, bitmap);
+
+	END:
+		if (decoder != nullptr)
+		{
+			decoder->Release();
+		}
+		if (frameDecode != nullptr)
+		{
+			frameDecode->Release();
+		}
+		if (convertedBitmap != nullptr)
+		{
+			convertedBitmap->Release();
+		}
+		if (FAILED(hr))
+		{
+			_com_error err(hr);
+			MessageBox(gameProcessor::WinApp::GetHwnd(), filePath, L"비트맵 로드 에러", MB_OK);
+		}
+
+		return hr;
+	}
+
 	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo)
 	{
+		auto iter = mAnimationAssetMap.find(imagePath);
+
+		if (iter != mAnimationAssetMap.end())
+		{
+			return S_FALSE;
+		}
+
 		ID2D1Bitmap* bitmap = GetBitmapOrNull(imagePath);
 
 		if (bitmap == nullptr)
@@ -350,12 +427,34 @@ namespace gameProcessor
 				return E_FAIL;
 			}
 		}
-		else
+
+		bitmap = GetBitmapOrNull(imagePath);
+		assert(bitmap != nullptr);
+		mAnimationAssetMap.emplace(imagePath, new AnimationAsset(bitmap, frameInfo));
+	}
+
+	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* key, const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo)
+	{
+		auto iter = mAnimationAssetMap.find(key);
+
+		if (iter != mAnimationAssetMap.end())
 		{
-			bitmap = GetBitmapOrNull(imagePath);
-			assert(bitmap != nullptr);
-			mAnimationAssetMap.emplace(imagePath, new AnimationAsset(bitmap, frameInfo));
+			return S_FALSE;
 		}
+
+		ID2D1Bitmap* bitmap = GetBitmapOrNull(key);
+
+		if (bitmap == nullptr)
+		{
+			if (FAILED(CreateD2DBitmapFromFile(key, imagePath)))
+			{
+				return E_FAIL;
+			}
+		}
+
+		bitmap = GetBitmapOrNull(key);
+		assert(bitmap != nullptr);
+		mAnimationAssetMap.emplace(key, new AnimationAsset(bitmap, frameInfo));
 	}
 
 	HRESULT RenderManager::createDeviceResources(HWND hWnd)

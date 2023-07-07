@@ -4,6 +4,9 @@
 #include "hRectangle.h"
 #include "InputManager.h"
 
+// 추상화 수준이 끝단 있는 거
+// 기능 만들기 -> 클래스화 하기 -> 추상화 레벨 높이기
+
 namespace camara
 {
 	class GameObject;
