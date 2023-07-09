@@ -6,6 +6,9 @@
 #include "Weapon.h"
 #include "RenderManger.h"
 #include "Helper.h"
+#include "PlayerIdle.h"
+#include "PlayerMove.h"
+#include "PlayerDeath.h"
 
 namespace finiteStateMachine
 {
@@ -17,141 +20,36 @@ namespace finiteStateMachine
 		, mWeapon(weapon)
 		, mAttackDirection(-1, 0)
 		, mbIsLeft(true)
+		, mStates{ new PlayerIdle(), new PlayerMove(), new PlayerDeath() }
+		, mCurrentState(mStates[static_cast<unsigned int>(ePlayerState::Idle)])
 	{
 	}
 
 	Player::~Player()
 	{
 		delete mAnimationInstnace;
+
+		for (PlayerState* state : mStates)
+		{
+			delete state;
+		}
 	}
 
 	void Player::HandleInput(gameProcessor::InputManager* inputManager)
 	{
-		switch (mPlayerState)
-		{
-		case ePlayerState::Idle:
-		{
-			if (inputManager->GetKeyState('X') == gameProcessor::eKeyState::Push)
-			{
-				mWeapon->Action(mAttackDirection);
-			}
-
-			if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Push
-				|| inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Push
-				|| inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Push
-				|| inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Push)
-			{
-				mPlayerState = ePlayerState::Move;
-				mAnimationInstnace->SetAnimationIndex(1);
-
-				return;
-			}
-		}
-		break;
-		case ePlayerState::Move:
-		{
-			if (inputManager->GetKeyState('X') == gameProcessor::eKeyState::Push)
-			{
-				mWeapon->Action(mAttackDirection);
-			}
-
-			if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::None
-				&& inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::None
-				&& inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::None
-				&& inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::None)
-			{
-				mPlayerState = ePlayerState::Idle;
-				mAnimationInstnace->SetAnimationIndex(0);
-
-				return;
-			}
-
-			if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Hold)
-			{
-				mDirection.SetY(1);
-			}
-			else if (inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Hold)
-			{
-				mDirection.SetY(-1);
-			}
-			else
-			{
-				mDirection.SetY(0);
-			}
-			if (inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Hold)
-			{
-				mbIsLeft = true;
-				mDirection.SetX(-1);
-			}
-			else if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Hold)
-			{
-				mbIsLeft = false;
-				mDirection.SetX(1);
-			}
-			else
-			{
-				mDirection.SetX(0);
-			}
-
-			mDirection.Normalize();
-		}
-		break;
-		case ePlayerState::Death:
-		{
-			if (mAnimationInstnace->GetFrameIndex() < mAnimationInstnace->GetTotalFrameCount() / 2)
-			{
-				mDirection.SetXY(0, 1.f);
-			}
-			else
-			{
-				mDirection.SetXY(0, -1.f);
-			}
-
-			if (mAnimationInstnace->GetIsEnd())
-			{
-				mPlayerState = ePlayerState::Idle;
-				mAnimationInstnace->SetAnimationIndex(static_cast<int>(ePlayerState::Idle));
-				mAnimationInstnace->InitIsEnd();
-				mAnimationInstnace->SetFrameIndex(0);
-
-				int area = 500;
-				mTranslate.Move(rand() % area - area / 2, rand() % area - area / 2);
-				mbIsAlive = true;
-			}
-		}
-		break;
-		default:
-			assert(false);
-		}
-
-		if (mPlayerState != ePlayerState::Death && !mbIsAlive)
-		{
-			mPlayerState = ePlayerState::Death;
-			mAnimationInstnace->SetAnimationIndex(static_cast<int>(ePlayerState::Death));
-			mAnimationInstnace->InitIsEnd();
-			mAnimationInstnace->SetFrameIndex(0);
-		}
-
-		mWeapon->HandleState();
+		mCurrentState->HandleInput(inputManager);
 	}
 
 	void Player::Update(float deltaTime)
 	{
-		if (mPlayerState == ePlayerState::Move)
-		{
-			mTranslate.Move(mDirection.GetX() * mSpeed * deltaTime, mDirection.GetY() * mSpeed * deltaTime);
-		}
-		mAnimationInstnace->Update(deltaTime);
-		mTransform = combineMatrix();
+		mCurrentState->Update(this, deltaTime);
+		ePlayerState nextState = mCurrentState->HandleState(this);
 
-		if (mPlayerState == ePlayerState::Death)
+		if (nextState != mCurrentState->GetState())
 		{
-			mTranslate.Move(mDirection.GetX() * 20 * deltaTime, mDirection.GetY() * 20 * deltaTime);
-		}
-
-		for (Object* child : mChildren)
-		{
-			child->Update(deltaTime);
+			mCurrentState->Exit(this);
+			mCurrentState = mStates[static_cast<unsigned int>(nextState)];
+			mCurrentState->Enter(this);
 		}
 	}
 

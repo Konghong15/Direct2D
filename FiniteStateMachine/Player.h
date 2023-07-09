@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "ePlayerState.h"
 
 namespace gameProcessor
 {
@@ -10,17 +11,16 @@ namespace gameProcessor
 
 namespace finiteStateMachine
 {
-	enum class ePlayerState
-	{
-		Idle,
-		Move,
-		Death
-	};
-
 	class Weapon;
+	class PlayerState;
 
 	class Player : public Object
 	{
+		friend class PlayerState;
+		friend class PlayerIdle;
+		friend class PlayerMove;
+		friend class PlayerDeath;
+
 	public:
 		Player(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, Weapon* weapon, float speed);
 		~Player();
@@ -41,6 +41,9 @@ namespace finiteStateMachine
 		Weapon* mWeapon;
 
 		bool mbIsLeft;
+
+		PlayerState* mStates[static_cast<unsigned int>(ePlayerState::Size)];
+		PlayerState* mCurrentState;
 	};
 
 	void Player::SetAttackDirection(const gameProcessor::Vector2& attackDirection)

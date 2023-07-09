@@ -140,6 +140,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerDeath.cpp" />
+    <ClCompile Include="PlayerIdle.cpp" />
+    <ClCompile Include="PlayerMove.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="Toungu.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
@@ -151,8 +155,15 @@
   <ItemGroup>
     <ClInclude Include="D2DFiniteStateMachine.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="ePlayerState.h" />
+    <ClInclude Include="IInputHandleable.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerDeath.h" />
+    <ClInclude Include="PlayerIdle.h" />
+    <ClInclude Include="PlayerMove.h" />
+    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Toungu.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
