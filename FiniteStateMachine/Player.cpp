@@ -4,16 +4,19 @@
 #include "Player.h"
 #include "InputManager.h"
 #include "Weapon.h"
+#include "RenderManger.h"
+#include "Helper.h"
 
 namespace finiteStateMachine
 {
-	Player::Player(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, Weapon* weapon, float speed)
-		: Object(rectangle)
+	Player::Player(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, Weapon* weapon, float speed)
+		: Object(rectangle, colliderArea)
 		, mAnimationInstnace(animationInstance)
 		, mSpeed(speed)
 		, mPlayerState(ePlayerState::Idle)
 		, mWeapon(weapon)
 		, mAttackDirection(-1, 0)
+		, mbIsLeft(true)
 	{
 	}
 
@@ -45,11 +48,6 @@ namespace finiteStateMachine
 			}
 		}
 		break;
-		case ePlayerState::Attack:
-		{
-			// haha
-		}
-		break;
 		case ePlayerState::Move:
 		{
 			if (inputManager->GetKeyState('X') == gameProcessor::eKeyState::Push)
@@ -70,26 +68,68 @@ namespace finiteStateMachine
 
 			if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Move(0, 1);
+				mDirection.SetY(1);
 			}
-			if (inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Hold)
+			else if (inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Move(0, -1);
+				mDirection.SetY(-1);
+			}
+			else
+			{
+				mDirection.SetY(0);
 			}
 			if (inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Move(-1, 0);
+				mbIsLeft = true;
+				mDirection.SetX(-1);
 			}
-			if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Hold)
+			else if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Hold)
 			{
-				mDirection.Move(1, 0);
+				mbIsLeft = false;
+				mDirection.SetX(1);
+			}
+			else
+			{
+				mDirection.SetX(0);
 			}
 
 			mDirection.Normalize();
 		}
 		break;
+		case ePlayerState::Death:
+		{
+			if (mAnimationInstnace->GetFrameIndex() < mAnimationInstnace->GetTotalFrameCount() / 2)
+			{
+				mDirection.SetXY(0, 1.f);
+			}
+			else
+			{
+				mDirection.SetXY(0, -1.f);
+			}
+
+			if (mAnimationInstnace->GetIsEnd())
+			{
+				mPlayerState = ePlayerState::Idle;
+				mAnimationInstnace->SetAnimationIndex(static_cast<int>(ePlayerState::Idle));
+				mAnimationInstnace->InitIsEnd();
+				mAnimationInstnace->SetFrameIndex(0);
+
+				int area = 500;
+				mTranslate.Move(rand() % area - area / 2, rand() % area - area / 2);
+				mbIsAlive = true;
+			}
+		}
+		break;
 		default:
 			assert(false);
+		}
+
+		if (mPlayerState != ePlayerState::Death && !mbIsAlive)
+		{
+			mPlayerState = ePlayerState::Death;
+			mAnimationInstnace->SetAnimationIndex(static_cast<int>(ePlayerState::Death));
+			mAnimationInstnace->InitIsEnd();
+			mAnimationInstnace->SetFrameIndex(0);
 		}
 
 		mWeapon->HandleState();
@@ -104,6 +144,11 @@ namespace finiteStateMachine
 		mAnimationInstnace->Update(deltaTime);
 		mTransform = combineMatrix();
 
+		if (mPlayerState == ePlayerState::Death)
+		{
+			mTranslate.Move(mDirection.GetX() * 20 * deltaTime, mDirection.GetY() * 20 * deltaTime);
+		}
+
 		for (Object* child : mChildren)
 		{
 			child->Update(deltaTime);
@@ -112,7 +157,9 @@ namespace finiteStateMachine
 
 	void Player::Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& compositeTrasform)
 	{
-		mAnimationInstnace->Render(renderManager, mRectangle, gameProcessor::Matrix3X3::ComineMatrix(3, gameProcessor::Matrix3X3::GetScale(mDirection.GetX() <= 0 ? 1 : -1, -1), mTransform, compositeTrasform));
+		mAnimationInstnace->Render(renderManager, mRectangle, gameProcessor::Matrix3X3::ComineMatrix(3, gameProcessor::Matrix3X3::GetScale(mbIsLeft ? 1 : -1, -1), mTransform, compositeTrasform));
+		renderManager->FillCircle(mCollider, mTransform * compositeTrasform, gameProcessor::Helper::GetRGBA(0, 255, 0, 50));
+		renderManager->DrawCircle(mCollider, mTransform * compositeTrasform, gameProcessor::Helper::GetRGBA(0, 255, 0, 255));
 
 		for (Object* child : mChildren)
 		{

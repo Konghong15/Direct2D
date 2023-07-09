@@ -1,3 +1,4 @@
+#include "Collision.h"
 #include "D2DFiniteStateMachine.h"
 #include "Player.h"
 #include "hRectangle.h"
@@ -26,6 +27,7 @@ namespace finiteStateMachine
 		mRenderManager.Init();
 		mTimeManager.Init();
 		mInputManager.Init();
+		mWeapons.reserve(32);
 
 		mScreenTransform = gameProcessor::Matrix3X3::GetScale(1, -1) * gameProcessor::Matrix3X3::GetTranslate(GetWidth() / 2, GetHeight() / 2);
 
@@ -38,7 +40,7 @@ namespace finiteStateMachine
 		const WCHAR* enemyWeaponKey = L"enemyWeaponKey";
 
 		std::vector<std::vector<hRectangle>> frameAnimationInfo;
-	
+
 		frameAnimationInfo =
 		{
 			{
@@ -52,6 +54,27 @@ namespace finiteStateMachine
 				{ 199, 10, 214, 26 },
 				{ 231, 9, 246, 26 },
 				{ 263, 10, 278, 26 }
+			},
+			{
+				{9, 108, 23, 122 },
+				{41, 104, 56, 122 },
+				{73, 94, 88, 112 },
+				{105, 85, 120, 103 },
+				{137, 81, 152, 99 },
+				{169, 78, 184, 96 },
+				{201, 76, 216, 94 },
+				{233, 75, 248, 93 },
+				{265, 74, 280, 92 },
+				{297, 75, 312, 90 },
+				{329, 76, 344, 91 },
+				{361, 78, 376, 93 },
+				{393, 81, 408, 96 },
+				{425, 88, 440, 103 },
+				{457, 97, 472, 112 },
+				{489, 107, 504,	122	},
+				{521, 108, 536,	122	},
+				{553, 108, 568,	122	},
+				{585, 108, 600,	122	}
 			}
 		};
 		mRenderManager.CreateAnimationAsset(playerKey, playerPath, frameAnimationInfo);
@@ -138,38 +161,43 @@ namespace finiteStateMachine
 
 		mRenderManager.CreateAnimationAsset(enemyWeaponKey, enemyPath, frameAnimationInfo);
 
-		Weapon* weapon = new Weapon(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerWeaponKey), 0, 0, 0.1f), { 25, 25, 0, 0 }, 400.f, 200.f);
-		mPlayer = new Player(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerKey), 0, 0, 0.2f), { -30, 30, 30, -30 }, weapon, 300);
+		Weapon* weapon = new Weapon(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerWeaponKey), 0, 0, 0.1f), { -25, 0, 0, -25 }, 25, 400.f, 200.f, eOwnerType::Player);
+		mPlayer = new Player(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerKey), 0, 0, 0.2f), { -30, 30, 30, -30 }, 20, weapon, 300);
 
 		weapon->SetParent(mPlayer);
 		mPlayer->AddChild(weapon);
+		mWeapons.push_back(weapon);
 
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
 		{
 			int randX = rand() % GetWidth() - GetWidth() / 2;
 			int randY = rand() % GetHeight() - GetHeight() / 2;
-			weapon = new Toungu(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyWeaponKey), 0, 0, 0.1f), { 0, 25, 50, -25 }, 400.f, 200.f);
-			mEnemy[i] = new Enemy(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyKey), 0, 0, 0.2f), { -100.f + randX, 100.f + randY, 100.f + randX, -100.f + randY }, weapon, 50, 700, 200);
+			weapon = new Toungu(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyWeaponKey), 0, 0, 0.1f), { -10, 0, 10, -40 }, 25, 400.f, 200.f);
+			mEnemies[i] = new Enemy(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyKey), 0, 0, 0.1f), { -100.f + randX, 100.f + randY, 100.f + randX, -100.f + randY }, 50, weapon, 200, 700, 200);
 
-			mEnemy[i]->SetPlayer(mPlayer);
-			weapon->SetParent(mEnemy[i]);
-			mEnemy[i]->AddChild(weapon);
+			mEnemies[i]->SetPlayer(mPlayer);
+			weapon->SetParent(mEnemies[i]);
+			mEnemies[i]->AddChild(weapon);
+
+			mWeapons.push_back(weapon);
 		}
 	}
 
 	void D2DFiniteStateMachine::Update()
 	{
+		// manager update
 		mTimeManager.Update();
 		mInputManager.Update();
 
 		const float DELTA_TIME = mTimeManager.GetDeltaTime();
 
-		Enemy* minEnemy = mEnemy[0];
-		gameProcessor::Vector2 minVector = mEnemy[0]->GetWorldRectangle().GetCenter() - mPlayer->GetWorldRectangle().GetCenter();
+		// player detect emeny
+		Enemy* minEnemy = mEnemies[0];
+		gameProcessor::Vector2 minVector = mEnemies[0]->GetWorldRectangle().GetCenter() - mPlayer->GetWorldRectangle().GetCenter();
 		float minDistance = minVector.GetMagnitude();
-		for (int i = 1; i < 10; ++i)
+		for (int i = 1; i < SWPAN_MONSTER_COUNT; ++i)
 		{
-			gameProcessor::Vector2 vector = mEnemy[i]->GetWorldRectangle().GetCenter() - mPlayer->GetWorldRectangle().GetCenter();
+			gameProcessor::Vector2 vector = mEnemies[i]->GetWorldRectangle().GetCenter() - mPlayer->GetWorldRectangle().GetCenter();
 			float distance = vector.GetMagnitude();
 			if (minDistance > distance)
 			{
@@ -184,9 +212,63 @@ namespace finiteStateMachine
 		mPlayer->Update(DELTA_TIME);
 		mPlayer->SetAttackDirection(minVector);
 
-		for (int i = 0; i < 10; ++i)
+		// check collision
+		for (Weapon* weapon : mWeapons)
 		{
-			mEnemy[i]->Update(DELTA_TIME);
+			if (weapon->GetState() == eWeaponState::Idle)
+			{
+				continue;
+			}
+
+			if (weapon->GetOwnerType() == eOwnerType::Enemy)
+			{
+				if (gameProcessor::Collision::CheckCircleToCircle(mPlayer->GetWorldCollider(), weapon->GetWorldCollider()))
+				{
+					mPlayer->SetIsAlive(false);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
+				{
+					if (gameProcessor::Collision::CheckCircleToCircle(mEnemies[i]->GetWorldCollider(), weapon->GetWorldCollider()))
+					{
+						mEnemies[i]->SetIsAlive(false);
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
+		{
+			for (int j = i + 1; j < SWPAN_MONSTER_COUNT; ++j)
+			{
+				gameProcessor::Circle lhs = mEnemies[i]->GetWorldCollider();
+				gameProcessor::Circle rhs = mEnemies[j]->GetWorldCollider();
+
+				if (gameProcessor::Collision::CheckCircleToCircle(lhs, rhs))
+				{
+					gameProcessor::Vector2 vec = lhs.GetCenter() - rhs.GetCenter();
+					gameProcessor::Vector2 oppositeVec = vec * -1;
+					float collisionDistance = lhs.GetRadius() + rhs.GetRadius() - vec.GetMagnitude();
+
+					vec.Normalize();
+					oppositeVec.Normalize();
+					vec = vec * collisionDistance * 0.5f;
+					oppositeVec = oppositeVec * collisionDistance * 0.5f;
+
+					mEnemies[i]->SetTranslate(mEnemies[i]->GetTraslate() + vec);
+					mEnemies[j]->SetTranslate(mEnemies[j]->GetTraslate() + oppositeVec);
+				}
+			}
+		}
+
+		// enemy update 
+		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
+		{
+			mEnemies[i]->HandleState();
+			mEnemies[i]->Update(DELTA_TIME);
 		}
 	}
 
@@ -194,11 +276,11 @@ namespace finiteStateMachine
 	{
 		mRenderManager.BeginDraw();
 
-		mPlayer->Render(&mRenderManager, mScreenTransform);
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
 		{
-			mEnemy[i]->Render(&mRenderManager, mScreenTransform);
+			mEnemies[i]->Render(&mRenderManager, mScreenTransform);
 		}
+		mPlayer->Render(&mRenderManager, mScreenTransform);
 
 		mRenderManager.EndDraw();
 	}
@@ -207,9 +289,9 @@ namespace finiteStateMachine
 	{
 		delete mPlayer;
 
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
 		{
-			delete mEnemy[i];
+			delete mEnemies[i];
 		}
 
 		mRenderManager.Release();

@@ -4,6 +4,7 @@
 
 #include "hRectangle.h"
 #include "Matrix3X3.h"
+#include "Circle.h"
 
 namespace gameProcessor
 {
@@ -17,7 +18,7 @@ namespace finiteStateMachine
 	class Object
 	{
 	public:
-		Object(const gameProcessor::hRectangle& rectangle, Object* parent = nullptr);
+		Object(const gameProcessor::hRectangle& rectangle, float colliderArea, Object* parent = nullptr);
 		virtual ~Object();
 
 		virtual void Update(float deltaTime) = 0;
@@ -26,15 +27,16 @@ namespace finiteStateMachine
 		inline void SetParent(Object* object);
 		inline void AddChild(Object* object);
 		inline void RemoveChild(Object* object);
-		inline void MultyplyMatrix(const gameProcessor::Matrix3X3& matrix);
-		inline void MultyplyMatrixRecursive(const gameProcessor::Matrix3X3& matrix);
 		inline void SetScale(const gameProcessor::Vector2& scale);
 		inline void SetTranslate(const gameProcessor::Vector2& traslate);
 		inline void SetRotateInRadin(float rotateInRadian);
+		inline void SetIsAlive(bool bIsAlive);
+		inline void SetDirection(const gameProcessor::Vector2& direction);
 
 		inline const Object* GetParentOrNull() const;
 		inline const std::vector<Object*>& GetChildren() const;
 		inline gameProcessor::hRectangle GetWorldRectangle() const;
+		inline gameProcessor::Circle GetWorldCollider() const;
 		inline const gameProcessor::hRectangle& GetRectangle() const;
 		inline const gameProcessor::Matrix3X3& GetTrasform() const;
 		inline const gameProcessor::Vector2& GetScale() const;
@@ -49,12 +51,15 @@ namespace finiteStateMachine
 		Object* mParent;
 		std::vector<Object*> mChildren;
 		gameProcessor::hRectangle mRectangle;
+		gameProcessor::Circle mCollider;
 
 		gameProcessor::Vector2 mScale;
 		float mRotateInRadian;
 		gameProcessor::Vector2 mTranslate;
 		gameProcessor::Matrix3X3 mTransform;
 		gameProcessor::Vector2 mDirection;
+
+		bool mbIsAlive;
 	};
 
 	void Object::SetParent(Object* object)
@@ -83,22 +88,6 @@ namespace finiteStateMachine
 		}
 	}
 
-	void Object::MultyplyMatrix(const gameProcessor::Matrix3X3& matrix)
-	{
-		mTransform *= matrix;
-	}
-
-
-	void Object::MultyplyMatrixRecursive(const gameProcessor::Matrix3X3& matrix)
-	{
-		MultyplyMatrix(matrix);
-
-		for (Object* child : mChildren)
-		{
-			child->MultyplyMatrixRecursive(matrix);
-		}
-	}
-
 	void Object::SetScale(const gameProcessor::Vector2& scale)
 	{
 		mScale = scale;
@@ -114,9 +103,24 @@ namespace finiteStateMachine
 		mRotateInRadian = rotateInRadian;
 	}
 
+	void Object::SetIsAlive(bool bIsAlive)
+	{
+		mbIsAlive = bIsAlive;
+	}
+
+	void Object::SetDirection(const gameProcessor::Vector2& direction)
+	{
+		mDirection = direction;
+	}
+
 	gameProcessor::hRectangle Object::GetWorldRectangle() const
 	{
 		return mRectangle * mTransform;
+	}
+
+	gameProcessor::Circle Object::GetWorldCollider() const
+	{
+		return mCollider * mTransform;
 	}
 
 	const gameProcessor::hRectangle& Object::GetRectangle() const

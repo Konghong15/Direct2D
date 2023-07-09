@@ -27,7 +27,7 @@ namespace finiteStateMachine
 	class Enemy : public Object
 	{
 	public:
-		Enemy(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, Weapon* weapon, float speed, float patrallDistance, float attackDistance);
+		Enemy(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, Weapon* weapon, float speed, float patrallDistance, float attackDistance);
 		~Enemy();
 
 		virtual void HandleState(void);
@@ -37,18 +37,22 @@ namespace finiteStateMachine
 		inline void SetPlayer(Player* player);
 
 	private:
+		void changeState(eEnemyState state);
+
+	private:
 		gameProcessor::AnimationInstance* mAnimationInstnace;
 		gameProcessor::Circle mPatrallArea;
 		gameProcessor::Circle mAttackArea;
 
 		float mSpeed;
 
-		eEnemyState mEnemyState;
+		eEnemyState mEnemiesState;
 		Player* mPlayer;
 		Weapon* mWeapon;
 
 		bool mbPatrall;
 		bool mbAttack;
+		bool mbIsProgressAttack;
 	};
 
 	void Enemy::SetPlayer(Player* player)

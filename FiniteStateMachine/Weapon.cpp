@@ -2,17 +2,20 @@
 
 #include "Weapon.h"
 #include "AnimationInstance.h"
+#include "Helper.h"
+#include "RenderManger.h"
 
 namespace finiteStateMachine
 {
-	Weapon::Weapon(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float speed, float distance)
-		: Object(rectangle)
+	Weapon::Weapon(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, float speed, float distance, eOwnerType onwerType)
+		: Object(rectangle, colliderArea)
 		, mAnimationInstnace(animationInstance)
 		, mSpeed(speed)
 		, mWeaponState(eWeaponState::Idle)
 		, mPrevParentMatrix(gameProcessor::Matrix3X3::Identity())
 		, mMaxDistance(distance)
 		, mInitTraslate(mTranslate)
+		, mOwnerType(onwerType)
 	{
 	}
 
@@ -84,7 +87,12 @@ namespace finiteStateMachine
 
 	void Weapon::Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& compositeTrasform)
 	{
-		mAnimationInstnace->Render(renderManager, mRectangle, gameProcessor::Matrix3X3::ComineMatrix(3, gameProcessor::Matrix3X3::GetScale(1, -1), mTransform, compositeTrasform));
+		if (mWeaponState != eWeaponState::Idle)
+		{
+			mAnimationInstnace->Render(renderManager, mRectangle, gameProcessor::Matrix3X3::ComineMatrix(3, gameProcessor::Matrix3X3::GetScale(mDirection.GetX() <= 0 ? 1 : -1, -1), mTransform, compositeTrasform));
+			renderManager->FillCircle(mCollider, mTransform * compositeTrasform, gameProcessor::Helper::GetRGBA(0, 255, 0, 50));
+			renderManager->DrawCircle(mCollider, mTransform * compositeTrasform, gameProcessor::Helper::GetRGBA(0, 255, 0, 255));
+		}
 
 		for (Object* child : mChildren)
 		{

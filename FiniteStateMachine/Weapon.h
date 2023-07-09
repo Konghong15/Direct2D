@@ -20,10 +20,16 @@ namespace finiteStateMachine
 		Back
 	};
 
+	enum class eOwnerType
+	{
+		Enemy,
+		Player
+	};
+
 	class Weapon : public Object
 	{
 	public:
-		Weapon(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float speed, float distance);
+		Weapon(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, float speed, float distance, eOwnerType onwerType);
 		virtual ~Weapon() override;
 
 		virtual void HandleState();
@@ -32,7 +38,10 @@ namespace finiteStateMachine
 
 		void Action(const gameProcessor::Vector2& direction);
 
+		inline void SetState(eWeaponState state);
+
 		inline eWeaponState GetState() const;
+		inline eOwnerType GetOwnerType() const;
 
 	protected:
 		gameProcessor::AnimationInstance* mAnimationInstnace;
@@ -44,12 +53,22 @@ namespace finiteStateMachine
 		float mElapsedDistance;
 		const float mMaxDistance;
 
-
 		eWeaponState mWeaponState;
+		eOwnerType mOwnerType;
 	};
 
-	inline eWeaponState Weapon::GetState() const
+	void Weapon::SetState(eWeaponState state)
+	{
+		mWeaponState = state;
+	}
+
+	eWeaponState Weapon::GetState() const
 	{
 		return mWeaponState;
+	}
+
+	eOwnerType Weapon::GetOwnerType() const
+	{
+		return mOwnerType;
 	}
 }

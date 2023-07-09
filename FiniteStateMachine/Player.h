@@ -13,7 +13,6 @@ namespace finiteStateMachine
 	enum class ePlayerState
 	{
 		Idle,
-		Attack,
 		Move,
 		Death
 	};
@@ -23,7 +22,7 @@ namespace finiteStateMachine
 	class Player : public Object
 	{
 	public:
-		Player(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, Weapon* weapon, float speed);
+		Player(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, Weapon* weapon, float speed);
 		~Player();
 
 		void HandleInput(gameProcessor::InputManager* inputManager);
@@ -40,6 +39,8 @@ namespace finiteStateMachine
 		gameProcessor::Vector2 mAttackDirection;
 		ePlayerState mPlayerState;
 		Weapon* mWeapon;
+
+		bool mbIsLeft;
 	};
 
 	void Player::SetAttackDirection(const gameProcessor::Vector2& attackDirection)

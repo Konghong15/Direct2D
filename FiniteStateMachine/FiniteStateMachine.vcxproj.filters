@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{4dbd4686-8dc6-4b89-9ac5-d68089e4a99f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{2c3c6058-0adb-410a-876f-1ef21192547d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,40 +27,40 @@
     <ClCompile Include="D2DFiniteStateMachine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
     <ClCompile Include="Toungu.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DFiniteStateMachine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="Toungu.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

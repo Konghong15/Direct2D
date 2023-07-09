@@ -20,6 +20,7 @@ namespace gameProcessor
 		inline void SetProgressTime(float progressTime);
 		inline void SetIsLoop(bool bLoop);
 
+		unsigned int GetTotalFrameCount() const;
 		inline const AnimationAsset& GetAnimaitionAsset() const;
 		inline unsigned int GetAnimationindex() const;
 		inline unsigned int GetFrameIndex() const;
@@ -27,6 +28,7 @@ namespace gameProcessor
 		inline bool GetIsLoop() const;
 		inline bool GetIsEnd() const;
 		inline void InitIsEnd();
+		inline bool GetIsLastFrame() const;
 
 	private:
 		const AnimationAsset& mAnimationAsset; // 포인터와 동일, 안전한 포인터
@@ -36,6 +38,7 @@ namespace gameProcessor
 		float mElapsed;
 		bool mbLoop;
 		bool mbEnd;
+		bool mbLastFrame;
 	};
 
 	void AnimationInstance::SetProgressTime(float progressTime)
@@ -48,6 +51,7 @@ namespace gameProcessor
 		mbLoop = bLoop;
 	}
 
+	
 	const AnimationAsset& AnimationInstance::GetAnimaitionAsset() const
 	{
 		return mAnimationAsset;
@@ -81,5 +85,10 @@ namespace gameProcessor
 	void AnimationInstance::InitIsEnd()
 	{
 		mbEnd = false;
+	}
+
+	bool AnimationInstance::GetIsLastFrame() const
+	{
+		return mbLastFrame;
 	}
 }

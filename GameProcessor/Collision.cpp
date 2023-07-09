@@ -168,6 +168,11 @@ namespace gameProcessor
 		return true;
 	}
 
+	bool Collision::CheckCircleToCircle(const Circle& lhs, const Circle& rhs)
+	{
+		return Vector2::GetDistance(lhs.GetCenter(), rhs.GetCenter()) < lhs.GetRadius() + rhs.GetRadius();
+	}
+
 	bool Collision::CheckRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
 	{
 		const size_t VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);

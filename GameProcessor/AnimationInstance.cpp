@@ -28,6 +28,7 @@ namespace gameProcessor
 		}
 
 		const unsigned int FRAME_SIZE = static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().at(mAnimationIndex).size());
+		mbLastFrame = mFrameIndex == FRAME_SIZE - 1;
 
 		if (FRAME_SIZE <= mFrameIndex)
 		{
@@ -66,5 +67,10 @@ namespace gameProcessor
 		{
 			mAnimationIndex = index;
 		}
+	}
+
+	unsigned int AnimationInstance::GetTotalFrameCount() const
+	{
+		return static_cast<unsigned int>(mAnimationAsset.GetFrameAnimationInfo().at(mAnimationIndex).size());
 	}
 }

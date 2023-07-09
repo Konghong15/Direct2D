@@ -3,6 +3,7 @@
 #include <d2d1.h>
 #include <wincodec.h>
 #include <d2d1helper.h>
+#include <vector>
 
 #include "GameProcessor.h"
 #include "TimeManger.h"
@@ -17,6 +18,7 @@ namespace finiteStateMachine
 	class EntityManager;
 	class Player;
 	class Enemy;
+	class Weapon;
 
 	class D2DFiniteStateMachine : public gameProcessor::GameProcessor
 	{
@@ -30,12 +32,15 @@ namespace finiteStateMachine
 		virtual void Destroy() override;
 
 	private:
+		enum { SWPAN_MONSTER_COUNT = 10 };
+
 		gameProcessor::TimeManager mTimeManager;
 		gameProcessor::RenderManager mRenderManager;
 		gameProcessor::InputManager mInputManager;
 
 		Player* mPlayer;
-		Enemy* mEnemy[10];
+		Enemy* mEnemies[SWPAN_MONSTER_COUNT];
+		std::vector<Weapon*> mWeapons;
 		gameProcessor::Matrix3X3 mScreenTransform;
 	};
 }
