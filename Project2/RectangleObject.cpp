@@ -2,6 +2,7 @@
 #include "InputManager.h"
 #include "Collision.h"
 #include "RenderManger.h"
+#include "Helper.h"
 
 namespace project2
 {
@@ -53,15 +54,15 @@ namespace project2
 	{
 		if (mbSelect)
 		{
-			renderManager->FillRectangle(mRectangle, mTransform, { 1,1,0,1 });
+			renderManager->FillRectangle(mRectangle, mTransform, gameProcessor::Helper::GetRGBA(255, 255, 0, 255));
 		}
 		else if (!mbHover)
 		{
-			renderManager->DrawRectangle(mRectangle, mTransform, { 0,0,0,1 });
+			renderManager->DrawRectangle(mRectangle, mTransform, gameProcessor::Helper::GetRGBA(0, 0, 0, 255));
 		}
 		else
 		{
-			renderManager->DrawRectangle(mRectangle, mTransform, { 1,0,0,1 });
+			renderManager->DrawRectangle(mRectangle, mTransform, gameProcessor::Helper::GetRGBA(255, 0, 0, 255));
 		}
 	}
 }

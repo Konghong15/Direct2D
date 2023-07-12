@@ -32,7 +32,7 @@ namespace finiteStateMachine
 		virtual void Destroy() override;
 
 	private:
-		enum { SWPAN_MONSTER_COUNT = 10 };
+		enum { SWPAN_MONSTER_COUNT = 20 };
 
 		gameProcessor::TimeManager mTimeManager;
 		gameProcessor::RenderManager mRenderManager;

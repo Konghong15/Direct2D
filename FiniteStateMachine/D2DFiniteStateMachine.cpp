@@ -162,7 +162,7 @@ namespace finiteStateMachine
 		mRenderManager.CreateAnimationAsset(enemyWeaponKey, enemyPath, frameAnimationInfo);
 
 		Weapon* weapon = new Weapon(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerWeaponKey), 0, 0, 0.1f), { -25, 0, 0, -25 }, 25, 400.f, 200.f, eOwnerType::Player);
-		mPlayer = new Player(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerKey), 0, 0, 0.2f), { -30, 30, 30, -30 }, 20, weapon, 300);
+		mPlayer = new Player(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(playerKey), 0, 0, 0.2f), { -30, 30, 30, -30 }, 20, weapon, 200);
 
 		weapon->SetParent(mPlayer);
 		mPlayer->AddChild(weapon);
@@ -224,7 +224,7 @@ namespace finiteStateMachine
 			{
 				if (gameProcessor::Collision::CheckCircleToCircle(mPlayer->GetWorldCollider(), weapon->GetWorldCollider()))
 				{
-					mPlayer->SetIsAlive(false);
+					mPlayer->OnCollision();
 				}
 			}
 			else
@@ -267,7 +267,6 @@ namespace finiteStateMachine
 		// enemy update 
 		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
 		{
-			mEnemies[i]->HandleState();
 			mEnemies[i]->Update(DELTA_TIME);
 		}
 	}

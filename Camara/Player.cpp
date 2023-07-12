@@ -7,7 +7,6 @@ namespace camara
 {
 	Player::Player(const gameProcessor::hRectangle& rectangle, float speed)
 		: GameObject(rectangle, speed)
-		, mAttac
 	{
 		mDirection.SetXY(0, 1);
 	}

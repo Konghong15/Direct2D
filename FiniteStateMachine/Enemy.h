@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Circle.h"
+#include "eEnemyState.h"
 
 namespace gameProcessor
 {
@@ -11,33 +12,27 @@ namespace gameProcessor
 
 namespace finiteStateMachine
 {
-	enum class eEnemyState
-	{
-		Idle,
-		Discover,
-		Trace,
-		Attack,
-		Death
-	};
-
 	class Weapon;
 	class Player;
-	class IMovealbe;
+	class EnemyState;
 
 	class Enemy : public Object
 	{
+		friend class EnemyState;
+		friend class EnemyIdle;
+		friend class EnemyDiscover;
+		friend class EnemyTrace;
+		friend class EnemyAttack;
+		friend class EnemyDeath;
+
 	public:
 		Enemy(gameProcessor::AnimationInstance* animationInstance, const gameProcessor::hRectangle& rectangle, float colliderArea, Weapon* weapon, float speed, float patrallDistance, float attackDistance);
 		~Enemy();
 
-		virtual void HandleState(void);
 		virtual void Update(float deltaTime) override;
 		virtual void Render(gameProcessor::RenderManager* renderManager, const gameProcessor::Matrix3X3& compositeTrasform) override;
 
 		inline void SetPlayer(Player* player);
-
-	private:
-		void changeState(eEnemyState state);
 
 	private:
 		gameProcessor::AnimationInstance* mAnimationInstnace;
@@ -46,13 +41,15 @@ namespace finiteStateMachine
 
 		float mSpeed;
 
-		eEnemyState mEnemiesState;
 		Player* mPlayer;
 		Weapon* mWeapon;
 
 		bool mbPatrall;
 		bool mbAttack;
 		bool mbIsProgressAttack;
+
+		EnemyState* mStates[static_cast<unsigned int>(eEnemyState::Size)];
+		EnemyState* mCurrentState;
 	};
 
 	void Enemy::SetPlayer(Player* player)

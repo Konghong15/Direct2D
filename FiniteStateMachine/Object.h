@@ -43,6 +43,7 @@ namespace finiteStateMachine
 		inline const gameProcessor::Vector2& GetTraslate() const;
 		inline const float GetRotateInRadian() const;
 		inline const gameProcessor::Vector2& GetDirection() const;
+		inline bool GetIsAlive() const;
 
 	protected:
 		inline virtual gameProcessor::Matrix3X3 combineMatrix();
@@ -169,5 +170,10 @@ namespace finiteStateMachine
 	const gameProcessor::Vector2& Object::GetDirection() const
 	{
 		return mDirection;
+	}
+
+	bool Object::GetIsAlive() const
+	{
+		return mbIsAlive;
 	}
 }

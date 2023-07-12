@@ -10,13 +10,17 @@ namespace finiteStateMachine
 		PlayerDeath();
 		virtual ~PlayerDeath() = default;
 
-		virtual void HandleInput(gameProcessor::InputManager* inputManager) override;
-		virtual ePlayerState HandleState(Player* player) override;
+		virtual void OnHandleEvent(Player* player, const std::string& event, const std::string& data);
+		virtual ePlayerState UpdateState(Player* player);
+
 		virtual void Enter(Player* player) override;
 		virtual void Update(Player* player, float deltaTime) override;
+		virtual void Exit(Player* player);
 
 	private:
-		const float mDeathMoveSpeed;
+		enum { DEATH_MOVE_SPEED = 50 };
+
+		bool mbIsRestart;
 		bool mbIsDrop;
 	};
 }

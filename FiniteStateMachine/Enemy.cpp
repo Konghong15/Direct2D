@@ -7,6 +7,11 @@
 #include "Player.h"
 #include "Helper.h"
 #include "Weapon.h"
+#include "EnemyIdle.h"
+#include "EnemyDiscover.h"
+#include "EnemyTrace.h"
+#include "EnemyAttack.h"
+#include "EnemyDeath.h"
 
 namespace finiteStateMachine
 {
@@ -14,7 +19,6 @@ namespace finiteStateMachine
 		: Object(rectangle, colliderArea)
 		, mAnimationInstnace(animationInstance)
 		, mSpeed(speed)
-		, mEnemiesState(eEnemyState::Idle)
 		, mPlayer(nullptr)
 		, mPatrallArea({ 0, 0 }, patrallDistance)
 		, mAttackArea({ 0, 0 }, attackDistance)
@@ -22,102 +26,31 @@ namespace finiteStateMachine
 		, mbAttack(false)
 		, mbPatrall(false)
 		, mbIsProgressAttack(false)
+		, mStates{ new EnemyIdle(), new EnemyDiscover(), new EnemyTrace(), new EnemyAttack(), new EnemyDeath() }
+		, mCurrentState(mStates[static_cast<unsigned int>(eEnemyState::Idle)])
 	{
 	}
 
 	Enemy::~Enemy()
 	{
 		delete mAnimationInstnace;
-	}
 
-	void Enemy::HandleState(void)
-	{
-		mDirection = mPlayer->GetWorldRectangle().GetCenter() - GetWorldRectangle().GetCenter();
-		mDirection.Normalize();
-
-		mbPatrall = gameProcessor::Collision::CheckPointToCircle(mPlayer->GetWorldRectangle().GetCenter(), mPatrallArea * mTransform);
-		mbAttack = gameProcessor::Collision::CheckPointToCircle(mPlayer->GetWorldRectangle().GetCenter(), mAttackArea * mTransform);
-
-		switch (mEnemiesState)
+		for (int i = 0; i < static_cast<int>(eEnemyState::Size); ++i)
 		{
-		case finiteStateMachine::eEnemyState::Idle:
-			if (mbPatrall && mAnimationInstnace->GetIsEnd())
-			{
-				changeState(eEnemyState::Discover);
-			}
-			break;
-		case eEnemyState::Discover:
-			if (mAnimationInstnace->GetIsEnd())
-			{
-				changeState(eEnemyState::Trace);
-			}
-			break;
-		case finiteStateMachine::eEnemyState::Trace:
-			if (!mbPatrall)
-			{
-				changeState(eEnemyState::Idle);
-			}
-			if (mbAttack)
-			{
-				changeState(eEnemyState::Attack);
-			}
-			break;
-		case finiteStateMachine::eEnemyState::Attack:
-			if (mbIsProgressAttack && mWeapon->GetState() == eWeaponState::Idle)
-			{
-				changeState(eEnemyState::Trace);
-				mbIsProgressAttack = false;
-			}
-			else if (mAnimationInstnace->GetIsLastFrame())
-			{
-				mWeapon->Action(mDirection);
-				mbIsProgressAttack = true;
-			}
-			break;
-		case finiteStateMachine::eEnemyState::Death:
-			if (mAnimationInstnace->GetIsEnd())
-			{
-				changeState(eEnemyState::Idle);
-				int area = static_cast<int>(mPatrallArea.GetRadius());
-				mTranslate.Move(rand() % area - area / 2, rand() % area - area / 2);
-				mbIsAlive = true;
-			}
-			break;
-		default:
-			assert(false);
-			break;
+			delete mStates[i];
 		}
-
-		if (mEnemiesState != eEnemyState::Death && !mbIsAlive)
-		{
-			changeState(eEnemyState::Death);
-			mbIsProgressAttack = false;
-		}
-
-		mWeapon->HandleState();
 	}
 
 	void Enemy::Update(float deltaTime)
 	{
-		if (!mbIsProgressAttack)
-		{
-			mAnimationInstnace->Update(deltaTime);
-		}
+		mCurrentState->Update(this, deltaTime);
+		eEnemyState nextState = mCurrentState->UpdateState(this);
 
-		if (mEnemiesState == eEnemyState::Trace)
+		if (nextState != mCurrentState->GetState())
 		{
-			mTranslate.Move(mDirection.GetX() * mSpeed * deltaTime, mDirection.GetY() * mSpeed * deltaTime);
-		}
-		mTransform = combineMatrix();
-
-		if (mParent != nullptr)
-		{
-			mTransform *= mParent->GetTrasform();
-		}
-
-		for (Object* child : mChildren)
-		{
-			child->Update(deltaTime);
+			mCurrentState->Exit(this);
+			mCurrentState = mStates[static_cast<unsigned int>(nextState)];
+			mCurrentState->Enter(this);
 		}
 	}
 
@@ -137,13 +70,5 @@ namespace finiteStateMachine
 		{
 			child->Render(renderManager, compositeTrasform);
 		}
-	}
-
-	void Enemy::changeState(eEnemyState state)
-	{
-		mEnemiesState = state;
-		mAnimationInstnace->SetAnimationIndex(static_cast<int>(state));
-		mAnimationInstnace->SetFrameIndex(0);
-		mAnimationInstnace->InitIsEnd();
 	}
 }

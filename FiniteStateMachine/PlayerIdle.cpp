@@ -11,40 +11,66 @@ namespace finiteStateMachine
 	{
 	}
 
-	void PlayerIdle::HandleInput(gameProcessor::InputManager* inputManager)
+	void PlayerIdle::OnHandleEvent(Player* player, const std::string& event, const std::string& data)
 	{
-		if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Push
-			|| inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Push
-			|| inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Push
-			|| inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Push)
+		if (event == "collisionEnemy")
 		{
-			PlayerState::SetNextState(ePlayerState::Move);
+			player->mbIsAlive = false;
+			return;
 		}
+		if (event == "arrowKeyInput")
+		{
+			if (data == "left")
+			{
+				player->mDirection.Move(-1, 0);
+				player->mbIsLeft = true;
+			}
+			else if (data == "right")
+			{
+				player->mDirection.Move(1, 0);
+				player->mbIsLeft = false;
+			}
+			else if (data == "up")
+			{
+				player->mDirection.Move(0, 1);
+			}
+			else if (data == "down")
+			{
+				player->mDirection.Move(0, -1);
+			}
 
-		mbIsAttack = inputManager->GetKeyState('X') == gameProcessor::eKeyState::Push;
+			player->mDirection.Normalize();
+			player->mAcceleration = player->mAccelerationIncrement;
+			return;
+		}
+		if (event == "attack")
+		{
+			player->mbIsAttack = true;
+			return;
+		}
 	}
 
-	ePlayerState PlayerIdle::HandleState(Player* player)
+	ePlayerState PlayerIdle::UpdateState(Player* player)
 	{
-		// 몬스터의 공격에 충돌이 있었는지 체크
+		if (player->mbIsAlive == false)
+		{
+			return ePlayerState::Death;
+		}
+		if (player->mAcceleration >= 0)
+		{
+			return ePlayerState::Move;
+		}
 
-		return PlayerState::GetNextState();
+		return GetState();
 	}
 
 	void PlayerIdle::Enter(Player* player)
 	{
 		PlayerState::Enter(player);
-		mbIsAttack = false;
 	}
 
 	void PlayerIdle::Update(Player* player, float deltaTime)
 	{
-		player->mAnimationInstnace->Update(deltaTime);
-
-		if (mbIsAttack)
-		{
-			// 가장 가까운 적을 탐색해서 그쪽 방향으로 공격함
-			//	player->mWeapon->Action();
-		}
+		PlayerState::Update(player, deltaTime);
 	}
 }

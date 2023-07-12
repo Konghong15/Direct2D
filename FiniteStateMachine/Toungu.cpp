@@ -75,11 +75,13 @@ namespace finiteStateMachine
 		{
 			//gameProcessor::Matrix3X3 translateMatrix = gameProcessor::Matrix3X3::ComineMatrix(3, gameProcessor::Matrix3X3::GetScale(mDirection.GetX() <= 0 ? 1 : -1, -1), mTransform, compositeTrasform);
 			gameProcessor::Matrix3X3 nonTranslateMatrix = gameProcessor::Matrix3X3::ComineMatrix(4, gameProcessor::Matrix3X3::GetScale(-1, -1), mTransform, gameProcessor::Matrix3X3::GetTranslate(mInitTraslate.GetX() - mTranslate.GetX(), mInitTraslate.GetY() - mTranslate.GetY()), compositeTrasform);
-			gameProcessor::Matrix3X3 translateMatrix = gameProcessor::Matrix3X3::GetTranslate(mTranslate);
 
 			gameProcessor::hRectangle renderRectangle = mRectangle;
 			renderRectangle.SetTopLeft(renderRectangle.GetTopLeft() - gameProcessor::Vector2(mElapsedDistance, 0));
 			renderRectangle.SetBottomLeft(renderRectangle.GetBottomLeft() - gameProcessor::Vector2(mElapsedDistance, 0));
+			renderRectangle.SetTopRight(renderRectangle.GetTopRight() - gameProcessor::Vector2(mRectangle.GetWidth(), 0));
+			renderRectangle.SetBottomRight(renderRectangle.GetBottomRight() - gameProcessor::Vector2(mRectangle.GetWidth(), 0));
+
 			//renderRectangle.SetTopRight(renderRectangle.GetTopRight() * translateMatrix);
 			//renderRectangle.SetBottomRight(renderRectangle.GetBottomRight() * translateMatrix);
 			mAnimationInstnace->Render(renderManager, renderRectangle, nonTranslateMatrix);

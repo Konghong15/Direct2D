@@ -9,6 +9,7 @@ namespace project2
 		, mScale(gameProcessor::Matrix3X3::Identity())
 		, mRotate(mScale)
 		, mTranslate(mScale)
+		, mTransform(gameProcessor::Matrix3X3::Identity())
 	{
 		mTranslate.SetTranslate(center.GetX(), center.GetY());
 	}

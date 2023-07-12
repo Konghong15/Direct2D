@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseFiniteStateMachine.cpp" />
     <ClCompile Include="D2DFiniteStateMachine.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="main.cpp" />
@@ -153,9 +154,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseFiniteStateMachine.h" />
+    <ClInclude Include="BaseState.h" />
     <ClInclude Include="D2DFiniteStateMachine.h" />
+    <ClInclude Include="eEnemyState.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyAttack.h" />
+    <ClInclude Include="EnemyDeath.h" />
+    <ClInclude Include="EnemyDiscover.h" />
+    <ClInclude Include="EnemyIdle.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="EnemyTrace.h" />
     <ClInclude Include="ePlayerState.h" />
+    <ClInclude Include="IDetectable.h" />
     <ClInclude Include="IInputHandleable.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />

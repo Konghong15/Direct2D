@@ -16,10 +16,5 @@ namespace project2
 
 	private:
 		gameProcessor::Circle mCircle;
-
-		gameProcessor::Matrix3X3 mScale;
-		gameProcessor::Matrix3X3 mRotate;
-		gameProcessor::Matrix3X3 mTranslate;
-		gameProcessor::Matrix3X3 mTransform;
 	};
 }

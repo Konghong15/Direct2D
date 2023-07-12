@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "InputManager.h"
 #include "AnimationInstance.h"
+#include "Weapon.h"
 
 namespace finiteStateMachine
 {
@@ -10,70 +11,96 @@ namespace finiteStateMachine
 	{
 	}
 
-	void PlayerMove::HandleInput(gameProcessor::InputManager* inputManager)
+	void PlayerMove::OnHandleEvent(Player* player, const std::string& event, const std::string& data)
 	{
-		mbIsAttack = inputManager->GetKeyState('X') == gameProcessor::eKeyState::Push;
-
-		if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::None
-			&& inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::None
-			&& inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::None
-			&& inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::None)
+		if (event == "collisionEnemy")
 		{
-			PlayerState::SetNextState(ePlayerState::Idle);
+			player->SetIsAlive(false);
+			return;
+		}
+		if (event == "attack")
+		{
+			player->mbIsAttack = true;
+			return;
+		}
+		if (event == "arrowKeyInput")
+		{
+			if (data == "left")
+			{
+				player->mDirection.Move(-1, 0);
+				player->mbIsLeft = true;
+			}
+			else if (data == "right")
+			{
+				player->mDirection.Move(1, 0);
+				player->mbIsLeft = false;
+			}
+			else if (data == "up")
+			{
+				player->mDirection.Move(0, 1);
+			}
+			else if (data == "down")
+			{
+				player->mDirection.Move(0, -1);
+			}
+
+			player->mDirection.Normalize();
+			mbIsInput = true;
 
 			return;
 		}
-
-		if (inputManager->GetKeyState(VK_UP) == gameProcessor::eKeyState::Hold)
-		{
-			mDirection.SetY(1);
-		}
-		else if (inputManager->GetKeyState(VK_DOWN) == gameProcessor::eKeyState::Hold)
-		{
-			mDirection.SetY(-1);
-		}
-		else
-		{
-			mDirection.SetY(0);
-		}
-		if (inputManager->GetKeyState(VK_LEFT) == gameProcessor::eKeyState::Hold)
-		{
-			mbIsLeft = true;
-			mDirection.SetX(-1);
-		}
-		else if (inputManager->GetKeyState(VK_RIGHT) == gameProcessor::eKeyState::Hold)
-		{
-			mbIsLeft = false;
-			mDirection.SetX(1);
-		}
-		else
-		{
-			mDirection.SetX(0);
-		}
-
-		mDirection.Normalize();
 	}
 
-	ePlayerState PlayerMove::HandleState(Player* player)
+	ePlayerState PlayerMove::UpdateState(Player* player)
 	{
-		return PlayerState::GetNextState();
+		if (player->mbIsAlive == false)
+		{
+			return ePlayerState::Death;
+		}
+		if (player->mAcceleration < -player->mSpeed)
+		{
+			return ePlayerState::Idle;
+		}
+
+		return GetState();
 	}
 
 	void PlayerMove::Enter(Player* player)
 	{
 		PlayerState::Enter(player);
-		mDirection = player->mDirection;
-		mbIsLeft = player->mbIsLeft;
-		mbIsAttack = false;
 	}
 
 	void PlayerMove::Update(Player* player, float deltaTime)
 	{
-		player->mDirection = mDirection;
-		player->mbIsLeft = mbIsLeft;
+		if (mbIsInput)
+		{
+			if (player->mDirection.Dot(player->mVelocity) < 0)
+			{
+				player->mVelocity = player->mDirection;
+			}
 
-		player->mTranslate.Move(mDirection.GetX() * player->mSpeed * deltaTime, mDirection.GetY() * player->mSpeed * deltaTime);
+			player->mAcceleration += player->mAccelerationIncrement * deltaTime;
+		}
+		else
+		{
+			player->mAcceleration -= player->mAccelerationIncrement * deltaTime * 5;
+		}
+
+		if (player->mAcceleration > player->mMaxAcceleration)
+		{
+			player->mAcceleration = player->mMaxAcceleration;
+		}
+
+		player->mVelocity += player->mDirection * (player->mSpeed + player->mAcceleration) * deltaTime;
+		player->mTranslate.Move(player->mVelocity.GetX() * deltaTime, player->mVelocity.GetY() * deltaTime);
 
 		PlayerState::Update(player, deltaTime);
+		mbIsInput = false;
+	}
+
+	void PlayerMove::Exit(Player* player)
+	{
+		PlayerState::Exit(player);
+		player->mVelocity.SetXY(0, 0);
 	}
 }
