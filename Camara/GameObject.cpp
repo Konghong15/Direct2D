@@ -3,16 +3,6 @@
 #include "GameObject.h"
 #include "RenderManger.h"
 
-
-gameProcessor::hRectangle mRectangle;
-
-gameProcessor::Matrix3X3 mTransform;
-gameProcessor::Vector2 mTranslate;
-gameProcessor::Vector2 mDirection;
-float mScale;
-
-float mSpeed;
-
 namespace camara
 {
 	GameObject::GameObject(const gameProcessor::hRectangle& rectangle, float speed)

@@ -15,6 +15,6 @@ namespace gameProcessor
 		static bool CheckCircleToRectangle(const Circle& circle, const hRectangle& rectangle);
 		static bool CheckCircleToCircle(const Circle& lhs, const Circle& rhs);
 		static bool CheckRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2);
-		static bool ContainRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2);
+		static bool ContainRectangleToRectangle(const hRectangle& outRectangle, const hRectangle& inRectangle);
 	};
 }

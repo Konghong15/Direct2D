@@ -14,7 +14,7 @@ namespace gameProcessor
 		memTopLeft = topLeft;
 		memBottomRight = bottomRight;
 
-		float temp;
+		/*float temp;
 		if (getVertex(eRectangleIndex::TopLeft).GetX() > getVertex(eRectangleIndex::BottomRight).GetX())
 		{
 			temp = memTopLeft.GetX();
@@ -26,7 +26,7 @@ namespace gameProcessor
 			temp = memTopLeft.GetY();
 			memTopLeft.SetY(memBottomRight.GetY());
 			memBottomRight.SetY(temp);
-		}
+		}*/
 
 		getVertex(eRectangleIndex::TopRight) = Vector2(memBottomRight.GetX(), memTopLeft.GetY());
 		getVertex(eRectangleIndex::BottomLeft) = Vector2(memTopLeft.GetX(), memBottomRight.GetY());

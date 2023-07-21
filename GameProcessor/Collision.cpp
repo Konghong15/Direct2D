@@ -185,21 +185,26 @@ namespace gameProcessor
 			eRectangleIndex::BottomLeft,
 		};
 
+		Vector2 normalVectors[VERTEX_COUNT];
+
 		for (size_t i = 0; i < VERTEX_COUNT; ++i)
 		{
 			eRectangleIndex cur = index[i];
 			eRectangleIndex next = index[(i + 1) % 4];
+
 			Vector2 line = rectangle1.GetVertex(cur) - rectangle1.GetVertex(next);
-
 			line.Normalize();
-			Vector2 normalVector(-line.GetY(), line.GetX());
+			normalVectors[i] = { -line.GetY(), line.GetX() };
+		}
 
+		for (size_t i = 0; i < VERTEX_COUNT; ++i)
+		{
 			float rectMin = std::numeric_limits<float>::max();
-			float rectMax = std::numeric_limits<float>::min();
+			float rectMax = -std::numeric_limits<float>::max();
 
 			for (int j = 0; j < VERTEX_COUNT; ++j)
 			{
-				int scalar = normalVector.Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVectors[i].Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -211,12 +216,12 @@ namespace gameProcessor
 				}
 			}
 
-			float otherRectMin = std::numeric_limits<float>::max();;
-			float otherRectMax = std::numeric_limits<float>::min();;
+			float otherRectMin = std::numeric_limits<float>::max();
+			float otherRectMax = -std::numeric_limits<float>::max();
 
 			for (size_t j = 0; j < VERTEX_COUNT; ++j)
 			{
-				int scalar = normalVector.Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVectors[i].Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (otherRectMax < scalar)
 				{
@@ -228,7 +233,7 @@ namespace gameProcessor
 				}
 			}
 
-			if (otherRectMax < rectMin || otherRectMin > rectMax)
+			if (otherRectMax < rectMin || rectMax < otherRectMin)
 			{
 				return false;
 			}
@@ -238,7 +243,7 @@ namespace gameProcessor
 	}
 
 
-	bool Collision::ContainRectangleToRectangle(const hRectangle& rectangle1, const hRectangle& rectangle2)
+	bool Collision::ContainRectangleToRectangle(const hRectangle& outRectangle, const hRectangle& inRectangle)
 	{
 		const size_t VERTEX_COUNT = static_cast<size_t>(eRectangleIndex::Size);
 
@@ -254,7 +259,7 @@ namespace gameProcessor
 		{
 			eRectangleIndex cur = index[i];
 			eRectangleIndex next = index[(i + 1) % 4];
-			Vector2 line = rectangle1.GetVertex(cur) - rectangle1.GetVertex(next);
+			Vector2 line = outRectangle.GetVertex(cur) - outRectangle.GetVertex(next);
 
 			line.Normalize();
 			Vector2 normalVector(-line.GetY(), line.GetX());
@@ -264,7 +269,7 @@ namespace gameProcessor
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				float scalar = normalVector.Dot(rectangle1.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVector.Dot(outRectangle.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (rectMax < scalar)
 				{
@@ -281,7 +286,7 @@ namespace gameProcessor
 
 			for (int j = 0; j < static_cast<int>(eRectangleIndex::Size); ++j)
 			{
-				float scalar = normalVector.Dot(rectangle2.GetVertex(static_cast<eRectangleIndex>(j)));
+				float scalar = normalVector.Dot(inRectangle.GetVertex(static_cast<eRectangleIndex>(j)));
 
 				if (otherRectMax < scalar)
 				{

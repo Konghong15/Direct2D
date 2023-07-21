@@ -141,7 +141,7 @@
       <Filter>헤더 파일\FSM\AbstractFSM</Filter>
     </ClInclude>
     <ClInclude Include="BaseFiniteStateMachine.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\FSM\AbstractFSM</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

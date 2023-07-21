@@ -29,24 +29,28 @@ namespace entityCamara
 		Entity* entity = mEntityManager->CreateEntity(id++);
 		renderComponent = new RenderComponent(entity->GetEntityId(), { -100, -100, 100, 100 });
 		transformComponent = new TransformComponent(entity->GetEntityId(), { 1.f, 1.f }, 0.f, { 0.f, 0.f });
-		camaraComponent = new CamaraComponent(entity->GetEntityId(), { 0, 0, static_cast<float>(mWidth), static_cast<float>(mHeight) }, { 1.f, -1.f }, 0.f, { -static_cast<float>(mWidth) / 2, static_cast<float>(mHeight) / 2 });
-
+		camaraComponent = new CamaraComponent(entity->GetEntityId(), { 0, 0, static_cast<float>(GetWidth()), static_cast<float>(GetHeight()) }, { 1.f, -1.f }, 0.f, { -static_cast<float>(GetWidth()) / 2, static_cast<float>(GetHeight()) / 2 });
+		 
 		entity->AddComponent(renderComponent);
 		entity->AddComponent(transformComponent);
 		entity->AddComponent(camaraComponent);
+
+		// load entity data
+
+		// register callback
 	}
 
 	void D2DEntityCamara::Update()
 	{
+		// manager update
 		mTimeManager.Update();
-		const float DELTA_TIME = mTimeManager.GetDeltaTime();
 
-		mSystem.Update(mEntityManager->GetEntity(), DELTA_TIME);
+		// system update
+		mSystem.Update(mEntityManager->GetEntity());
 	}
 
 	void D2DEntityCamara::Render()
 	{
-		mSystem.Render(mEntityManager->GetEntity(), &mRenderManager);
 	}
 
 	void D2DEntityCamara::Destroy()

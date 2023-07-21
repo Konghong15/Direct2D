@@ -170,8 +170,8 @@ namespace finiteStateMachine
 
 		for (int i = 0; i < SWPAN_MONSTER_COUNT; ++i)
 		{
-			int randX = rand() % GetWidth() - GetWidth() / 2;
-			int randY = rand() % GetHeight() - GetHeight() / 2;
+			int randX = rand() % (GetWidth() - GetWidth() / 2) * 10;
+			int randY = rand() % (GetHeight() - GetHeight() / 2) * 10;
 			weapon = new Toungu(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyWeaponKey), 0, 0, 0.1f), { -10, 0, 10, -40 }, 25, 400.f, 200.f);
 			mEnemies[i] = new Enemy(new AnimationInstance(*mRenderManager.GetAnimationAssetOrNull(enemyKey), 0, 0, 0.1f), { -100.f + randX, 100.f + randY, 100.f + randX, -100.f + randY }, 50, weapon, 200, 700, 200);
 
@@ -190,6 +190,9 @@ namespace finiteStateMachine
 		mInputManager.Update();
 
 		const float DELTA_TIME = mTimeManager.GetDeltaTime();
+
+		// check
+		gameProcessor::hRectangle temp = mPlayer->GetWorldRectangle();
 
 		// player detect emeny
 		Enemy* minEnemy = mEnemies[0];
