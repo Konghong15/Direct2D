@@ -7,6 +7,8 @@
 #include <map>
 #include <vector>
 
+#include "hRectangle.h"
+
 namespace d2dFramework
 {
 	class Vector2;
@@ -28,25 +30,25 @@ namespace d2dFramework
 		void DrawPoint(const D2D1_POINT_2F& point);
 
 		void DrawLine(float x1, float y1, float x2, float y2);
-		void DrawLine(D2D1_POINT_2F start, D2D1_POINT_2F end);
+		void DrawLine(const D2D1_POINT_2F& start, const D2D1_POINT_2F& end);
 
 		void DrawCircle(float x, float y, float radiusX, float radiusY);
 		void DrawCircle(const D2D1_ELLIPSE& ellipse);
 		void FillCircle(float x, float y, float radiusX, float radiusY);
 		void FillCircle(const D2D1_ELLIPSE& ellipse);
 
-		void DrawFillRectangle(float left, float top, float right, float bottom);
-		void DrawFillRectangle(const D2D1_RECT_F& rectangle);
 		void DrawRectangle(float left, float top, float right, float bottom);
 		void DrawRectangle(const D2D1_RECT_F& rectangle);
+		void FillRectangle(float left, float top, float right, float bottom);
+		void FillRectangle(const D2D1_RECT_F& rectangle);
 
-		void DrawPolygon(std::vector<D2D1_POINT_2F>& pointList);
+		void DrawPolygon(const std::vector<D2D1_POINT_2F>& pointList);
 		void DrawGrid(float x, float y, float width, float height, float interval);
 
 		void DrawBitMap(float left, float top, float right, float bottom, float uvLeft, float uvTop, float uvRight, float uvBottom, ID2D1Bitmap* bitmap);
 		void DrawBitMap(const D2D1_RECT_F& rectangle, const D2D1_RECT_F& uvRectangle, ID2D1Bitmap* bitmap);
 
-		void WriteText(const wchar_t* text, float left, float top, float width, float height);
+		void WriteText(const wchar_t* text, float left, float top, float right, float bottom);
 		void WriteText(const wchar_t* text, const D2D1_RECT_F& rectangle);
 
 		HRESULT CreateD2DBitmapFromFile(const WCHAR* imagePath);
@@ -67,6 +69,7 @@ namespace d2dFramework
 
 	private:
 		enum { INIT_FONT_SIZE = 15 };
+		enum { INIT_STROKE_SIZE = 2 };
 
 		ID2D1Factory* mFactory;
 		ID2D1HwndRenderTarget* mRenderTarget;

@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0371c5e5-0286-49b2-9e42-e81be4b235bc}</ProjectGuid>
-    <RootNamespace>D2DFramework</RootNamespace>
+    <ProjectGuid>{d38a2994-8208-4021-a37d-f471748cd246}</ProjectGuid>
+    <RootNamespace>D2DDemo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -74,12 +74,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -89,12 +88,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -104,13 +102,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../D2DFramework/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../$(PlatformTarget)/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,58 +118,29 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <SubSystem>
-      </SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnimationAsset.cpp" />
-    <ClCompile Include="AnimationInstance.cpp" />
-    <ClCompile Include="BoxCollider.cpp" />
-    <ClCompile Include="BoxSprite.cpp" />
-    <ClCompile Include="GameProcessor.cpp" />
-    <ClCompile Include="hRectangle.cpp" />
-    <ClCompile Include="IBaseInterface.cpp" />
-    <ClCompile Include="ICollideable.cpp" />
-    <ClCompile Include="IFixedUpdateable.cpp" />
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="IRenderable.cpp" />
-    <ClCompile Include="IUpdateable.cpp" />
-    <ClCompile Include="Movement.cpp" />
-    <ClCompile Include="RenderManager.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="Vector2.cpp" />
-    <ClCompile Include="WinApp.cpp" />
+    <ProjectReference Include="..\D2DFramework\D2DFramework.vcxproj">
+      <Project>{0371c5e5-0286-49b2-9e42-e81be4b235bc}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationAsset.h" />
-    <ClInclude Include="AnimationInstance.h" />
-    <ClInclude Include="BoxCollider.h" />
-    <ClInclude Include="BoxSprite.h" />
-    <ClInclude Include="IBaseInterface.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameProcessor.h" />
-    <ClInclude Include="hRectangle.h" />
-    <ClInclude Include="ICollideable.h" />
-    <ClInclude Include="IFixedUpdateable.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="IRenderable.h" />
-    <ClInclude Include="IUpdateable.h" />
-    <ClInclude Include="Movement.h" />
-    <ClInclude Include="RenderManger.h" />
-    <ClInclude Include="Rigidbody.h" />
-    <ClInclude Include="TimeManger.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Vector2.h" />
-    <ClInclude Include="WinApp.h" />
+    <ClCompile Include="D2DDemo.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D2DDemo.h" />
+    <ClInclude Include="PlayerComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

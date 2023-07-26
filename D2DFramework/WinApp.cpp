@@ -46,7 +46,6 @@ namespace d2dFramework
 			else
 			{
 				gameProcessor->Update();
-				gameProcessor->Render();
 			}
 		}
 		gameProcessor->Destroy();

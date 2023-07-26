@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HierarchicalObject", "Hiera
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EntityComponentSystem", "EntityComponentSystem\EntityComponentSystem.vcxproj", "{C23E3579-8A90-4A38-8066-002B0486AF15}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Camara", "Camara\Camara.vcxproj", "{A65321C1-AE75-49DC-8D0B-C8328BFD3B9E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Camera", "Camara\Camara.vcxproj", "{A65321C1-AE75-49DC-8D0B-C8328BFD3B9E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EntityCamara", "EntityCamara\EntityCamara.vcxproj", "{4E5182BE-760E-42E0-977E-0DF888AE76F3}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlatformDemo", "PlatformDemo\PlatformDemo.vcxproj", "{39C71DC8-C0DE-44C0-A2A7-1AD3E1AB4529}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D2DFramework", "D2DFramework\D2DFramework.vcxproj", "{0371C5E5-0286-49B2-9E42-E81BE4B235BC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D2DDemo", "D2DDemo\D2DDemo.vcxproj", "{D38A2994-8208-4021-A37D-F471748CD246}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,14 @@ Global
 		{0371C5E5-0286-49B2-9E42-E81BE4B235BC}.Release|x64.Build.0 = Release|x64
 		{0371C5E5-0286-49B2-9E42-E81BE4B235BC}.Release|x86.ActiveCfg = Release|Win32
 		{0371C5E5-0286-49B2-9E42-E81BE4B235BC}.Release|x86.Build.0 = Release|Win32
+		{D38A2994-8208-4021-A37D-F471748CD246}.Debug|x64.ActiveCfg = Debug|x64
+		{D38A2994-8208-4021-A37D-F471748CD246}.Debug|x64.Build.0 = Debug|x64
+		{D38A2994-8208-4021-A37D-F471748CD246}.Debug|x86.ActiveCfg = Debug|Win32
+		{D38A2994-8208-4021-A37D-F471748CD246}.Debug|x86.Build.0 = Debug|Win32
+		{D38A2994-8208-4021-A37D-F471748CD246}.Release|x64.ActiveCfg = Release|x64
+		{D38A2994-8208-4021-A37D-F471748CD246}.Release|x64.Build.0 = Release|x64
+		{D38A2994-8208-4021-A37D-F471748CD246}.Release|x86.ActiveCfg = Release|Win32
+		{D38A2994-8208-4021-A37D-F471748CD246}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

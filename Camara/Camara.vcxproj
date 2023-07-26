@@ -24,6 +24,7 @@
     <ProjectGuid>{a65321c1-ae75-49dc-8d0b-c8328bfd3b9e}</ProjectGuid>
     <RootNamespace>Camara</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Camera</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

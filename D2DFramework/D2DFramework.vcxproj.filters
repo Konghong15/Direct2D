@@ -13,6 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Manager">
+      <UniqueIdentifier>{750e36e5-5b85-4698-b438-6f8cbac87083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Helper">
+      <UniqueIdentifier>{09272ee9-c396-4aae-8f14-de15ffbac501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Component">
+      <UniqueIdentifier>{970072ec-53f2-445d-a2d5-d2275e3ede53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Interface">
+      <UniqueIdentifier>{83103bac-9d6c-46be-92ac-bcae19200418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Component">
+      <UniqueIdentifier>{f3760ba4-9704-431b-9661-2256fe10068d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{81ba0444-9d3a-4d3e-81f5-584315da8eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Helper">
+      <UniqueIdentifier>{2c81a446-163a-4d14-b10f-ac2ab25292e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Interface">
+      <UniqueIdentifier>{ab1d5bc8-1898-4cf7-893c-c5ac5d453a97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinApp.cpp">
@@ -21,19 +45,49 @@
     <ClCompile Include="GameProcessor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
+    <ClCompile Include="IUpdateable.cpp">
+      <Filter>소스 파일\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>소스 파일\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="ICollideable.cpp">
+      <Filter>소스 파일\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Movement.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxSprite.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationAsset.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationInstance.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IFixedUpdateable.cpp">
+      <Filter>소스 파일\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="IBaseInterface.cpp">
+      <Filter>소스 파일\Interface</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Vector2.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Helper</Filter>
     </ClCompile>
     <ClCompile Include="hRectangle.cpp">
+      <Filter>소스 파일\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,21 +99,60 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
     <ClInclude Include="RenderManger.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
     <ClInclude Include="TimeManger.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
     <ClInclude Include="hRectangle.h">
+      <Filter>헤더 파일\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>헤더 파일\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ICollideable.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IUpdateable.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IBaseInterface.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IFixedUpdateable.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Rigidbody.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxSprite.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationAsset.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationInstance.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

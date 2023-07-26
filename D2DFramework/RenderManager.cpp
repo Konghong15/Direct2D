@@ -2,6 +2,7 @@
 #include <d2d1helper.h>
 #include <comdef.h>
 
+#include "AnimationAsset.h"
 #include "RenderManger.h"
 #include "WinApp.h"
 #include "hRectangle.h"
@@ -19,6 +20,7 @@ namespace d2dFramework
 		, mRenderTarget(nullptr)
 		, mWICFactory(nullptr)
 		, mTextFormat(nullptr)
+		, mBeforeColor{ 0.f, }
 	{
 	}
 
@@ -58,7 +60,7 @@ namespace d2dFramework
 
 		SetFontSize(INIT_FONT_SIZE);
 		SetColor({ 0.f,0.f,0.f,1.f });
-		SetStrokeWidth(1.f);
+		SetStrokeWidth(INIT_STROKE_SIZE);
 	}
 
 	void RenderManager::Release()
@@ -136,7 +138,7 @@ namespace d2dFramework
 		HRESULT hr = mRenderTarget->CreateSolidColorBrush(color, &mBrush);
 		assert(SUCCEEDED(hr));
 
-		return mBrush->GetColor()
+		return mBrush->GetColor();
 	}
 
 	void RenderManager::SetStrokeWidth(float strokeWidth)
@@ -144,47 +146,133 @@ namespace d2dFramework
 		mStrokeWidth = strokeWidth;
 	}
 
-	void RenderManager::DrawPoint(float x, float y, const D2D1::ColorF& color) {}
+	void RenderManager::DrawPoint(float x, float y)
+	{
+		mRenderTarget->FillEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), mStrokeWidth, mStrokeWidth), mBrush);
+	}
 
-	void RenderManager::DrawPoint(const D2D1_POINT_2F& point, const D2D1::ColorF& color) {}
+	void RenderManager::DrawPoint(const D2D1_POINT_2F& point)
+	{
+		DrawPoint(point.x, point.y);
+	}
 
+	void RenderManager::DrawLine(float x1, float y1, float x2, float y2)
+	{
+		mRenderTarget->DrawLine(D2D1::Point2F(x1, y1), D2D1::Point2F(x2, y2), mBrush, mStrokeWidth);
+	}
 
-	void RenderManager::DrawLine(float x1, float y1, float x2, float y2, const D2D1::ColorF& color) {}
+	void RenderManager::DrawLine(const D2D1_POINT_2F& start, const D2D1_POINT_2F& end)
+	{
+		DrawLine(start.x, start.y, end.x, end.y);
+	}
 
-	void RenderManager::DrawLine(D2D1_POINT_2F start, D2D1_POINT_2F end, const D2D1::ColorF& color) {}
+	void RenderManager::DrawCircle(float x, float y, float radiusX, float radiusY)
+	{
+		mRenderTarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radiusX, radiusY), mBrush, mStrokeWidth);
+	}
 
+	void RenderManager::DrawCircle(const D2D1_ELLIPSE& ellipse)
+	{
+		DrawCircle(ellipse.point.x, ellipse.point.y, ellipse.radiusX, ellipse.radiusY);
+	}
 
-	void RenderManager::DrawCircle(float x, float y, float radiusX, float radiusY, const D2D1::ColorF& color) {}
+	void RenderManager::FillCircle(float x, float y, float radiusX, float radiusY)
+	{
+		mRenderTarget->FillEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radiusX, radiusY), mBrush);
+	}
 
-	void RenderManager::DrawCircle(const D2D1_ELLIPSE& ellipse, const D2D1::ColorF& color) {}
+	void RenderManager::FillCircle(const D2D1_ELLIPSE& ellipse)
+	{
+		FillCircle(ellipse.point.x, ellipse.point.y, ellipse.radiusX, ellipse.radiusY);
+	}
 
-	void RenderManager::FillCircle(float x, float y, float radiusX, float radiusY, const D2D1::ColorF& color) {}
+	void RenderManager::DrawRectangle(float left, float top, float right, float bottom)
+	{
+		mRenderTarget->DrawRectangle(D2D1::Rect(left, top, right, bottom), mBrush, mStrokeWidth);
+	}
 
-	void RenderManager::FillCircle(const D2D1_ELLIPSE& ellipse, const D2D1::ColorF& color) {}
+	void RenderManager::DrawRectangle(const D2D1_RECT_F& rectangle)
+	{
+		DrawRectangle(rectangle.left, rectangle.top, rectangle.right, rectangle.bottom);
+	}
 
+	void RenderManager::FillRectangle(float left, float top, float right, float bottom)
+	{
+		mRenderTarget->FillRectangle(D2D1::Rect(left, top, right, bottom), mBrush);
+	}
 
-	void RenderManager::DrawFillRectangle(float left, float top, float right, float bottom, const D2D1::ColorF& color) {}
+	void RenderManager::FillRectangle(const D2D1_RECT_F& rectangle)
+	{
+		FillRectangle(rectangle.left, rectangle.top, rectangle.right, rectangle.bottom);
+	}
 
-	void RenderManager::DrawFillRectangle(const D2D1_RECT_F& rectangle, const D2D1::ColorF& color) {}
+	void RenderManager::DrawPolygon(const std::vector<D2D1_POINT_2F>& points)
+	{
+		if (points.size() < 3)
+		{
+			return;
+		}
 
-	void RenderManager::DrawRectangle(float left, float top, float right, float bottom, const D2D1::ColorF& color) {}
+		for (auto iter = points.begin(); iter != points.end();)
+		{
+			auto nextIter = iter + 1;
 
-	void RenderManager::DrawRectangle(const D2D1_RECT_F& rectangle, const D2D1::ColorF& color) {}
+			DrawLine(*iter, *nextIter);
 
-	{}
+			iter = nextIter;
+		}
 
-	void RenderManager::DrawPolygon(std::vector<D2D1_POINT_2F>& pointList, const D2D1::ColorF& color) {}
+		DrawLine(*(points.end() - 1), *(points.begin()));
+	}
 
-	void RenderManager::DrawGrid(float x, float y, float width, float height, float interval, const D2D1::ColorF& color) {}
+	void RenderManager::DrawGrid(float x, float y, float width, float height, float interval)
+	{
+		const float X_END = x + width;
+		const float Y_END = y + height;
 
+		for (float i = x; i < X_END; i += interval)
+		{
+			DrawLine(i, y, i, Y_END);
+		}
 
-	void RenderManager::DrawBitMap(const hRectangle& localRect, const hRectangle& spriteRect, ID2D1Bitmap* bitmap) {}
+		for (float i = y; i < Y_END; i += interval)
+		{
+			DrawLine(x, i, X_END, i);
+		}
+	}
 
+	void RenderManager::DrawBitMap(float left, float top, float right, float bottom, float uvLeft, float uvTop, float uvRight, float uvBottom, ID2D1Bitmap* bitmap)
+	{
+		assert(bitmap != nullptr);
 
-	void RenderManager::WriteText(const wchar_t* text, float left, float top, float width, float height, const D2D1::ColorF& color) {}
+		mRenderTarget->DrawBitmap(bitmap
+			, D2D1::RectF(left, top, right, bottom)
+			, 1.0f
+			, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+			, D2D1::RectF(uvLeft, uvTop, uvRight, uvBottom));
+	}
 
-	void RenderManager::WriteText(const wchar_t* text, const D2D1_RECT_F& rectangle, const D2D1::ColorF& color) {}
+	void RenderManager::DrawBitMap(const D2D1_RECT_F& rectangle, const D2D1_RECT_F& uvRectangle, ID2D1Bitmap* bitmap)
+	{
+		assert(bitmap != nullptr);
 
+		DrawBitMap(rectangle.left, rectangle.top, rectangle.right, rectangle.bottom, uvRectangle.left, uvRectangle.top, uvRectangle.right, uvRectangle.bottom, bitmap);
+	}
+
+	void RenderManager::WriteText(const wchar_t* text, float left, float top, float right, float bottom)
+	{
+		assert(text != nullptr);
+
+		mRenderTarget->DrawText(text, wcslen(text), mTextFormat, { left, top, right, bottom }, mBrush);
+
+	}
+
+	void RenderManager::WriteText(const wchar_t* text, const D2D1_RECT_F& rectangle)
+	{
+		assert(text != nullptr);
+
+		WriteText(text, rectangle.left, rectangle.top, rectangle.right, rectangle.bottom);
+	}
 
 	HRESULT RenderManager::CreateD2DBitmapFromFile(const WCHAR* filePath)
 	{
@@ -218,7 +306,7 @@ namespace d2dFramework
 		if (FAILED(hr)) { goto END; }
 
 		// ∑ª¥ı≈∏∞Ÿ √º≈©
-		hr = createDeviceResources(gameProcessor::WinApp::GetHwnd());
+		hr = createDeviceResources(d2dFramework::WinApp::GetHwnd());
 		if (FAILED(hr)) { goto END; }
 
 		hr = mRenderTarget->CreateBitmapFromWicBitmap(convertedBitmap, NULL, &bitmap);
@@ -241,7 +329,7 @@ namespace d2dFramework
 		if (FAILED(hr))
 		{
 			_com_error err(hr);
-			MessageBox(gameProcessor::WinApp::GetHwnd(), filePath, L"∫Ò∆Æ∏  ∑ŒµÂ ø°∑Ø", MB_OK);
+			MessageBox(d2dFramework::WinApp::GetHwnd(), filePath, L"∫Ò∆Æ∏  ∑ŒµÂ ø°∑Ø", MB_OK);
 		}
 
 		return hr;
@@ -279,7 +367,7 @@ namespace d2dFramework
 		if (FAILED(hr)) { goto END; }
 
 		// ∑ª¥ı≈∏∞Ÿ √º≈©
-		hr = createDeviceResources(gameProcessor::WinApp::GetHwnd());
+		hr = createDeviceResources(d2dFramework::WinApp::GetHwnd());
 		if (FAILED(hr)) { goto END; }
 
 		hr = mRenderTarget->CreateBitmapFromWicBitmap(convertedBitmap, NULL, &bitmap);
@@ -302,7 +390,7 @@ namespace d2dFramework
 		if (FAILED(hr))
 		{
 			_com_error err(hr);
-			MessageBox(gameProcessor::WinApp::GetHwnd(), filePath, L"∫Ò∆Æ∏  ∑ŒµÂ ø°∑Ø", MB_OK);
+			MessageBox(d2dFramework::WinApp::GetHwnd(), filePath, L"∫Ò∆Æ∏  ∑ŒµÂ ø°∑Ø", MB_OK);
 		}
 
 		return hr;
@@ -387,20 +475,5 @@ namespace d2dFramework
 		}
 
 		return hr;
-	}
-
-	D2D1::Matrix3x2F RenderManager::convertMatrix(const Matrix3X3& matrix)
-	{
-		D2D1::Matrix3x2F result;
-
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				result.m[j][i] = matrix.GetValue(i, j);
-			}
-		}
-
-		return result;
 	}
 }
