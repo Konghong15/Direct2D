@@ -4,6 +4,8 @@
 #include "InputManager.h"
 #include "Transform.h"
 #include "GameObject.h"
+#include "BoxCollider.h"
+#include "BoxSprite.h"
 
 namespace d2dDemo
 {
@@ -36,6 +38,20 @@ namespace d2dDemo
 		else if (InputManager::GetInstance()->GetKeyState(VK_RIGHT) == eKeyState::Hold)
 		{
 			transform->AddTranslate({ DELTA_MOVE, 0 });
+		}
+
+		BoxCollider* boxCollider = GetGameObject()->GetComponent<BoxCollider>();
+		assert(boxCollider != nullptr);
+		BoxSprite* boxSprite = GetGameObject()->GetComponent<BoxSprite>();
+		assert(boxSprite != nullptr);
+
+		if (boxCollider->GetIsCollision())
+		{
+			boxSprite->SetBaseColor({ 1,0,0,1 });
+		}
+		else
+		{
+			boxSprite->SetBaseColor({ 1,0,0, 0.5f });
 		}
 	}
 }

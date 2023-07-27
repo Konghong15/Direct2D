@@ -131,10 +131,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="AABB.h" />
     <ClCompile Include="AnimationAsset.cpp" />
     <ClCompile Include="AnimationInstance.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BoxSprite.cpp" />
+    <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="GameProcessor.cpp" />
     <ClCompile Include="hRectangle.cpp" />
     <ClCompile Include="IBaseInterface.cpp" />
@@ -144,6 +148,7 @@
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="IUpdateable.cpp" />
     <ClCompile Include="Movement.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -154,6 +159,9 @@
     <ClInclude Include="AnimationInstance.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BoxSprite.h" />
+    <ClInclude Include="Circle.h" />
+    <ClInclude Include="ColliderInfo.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="IBaseInterface.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
@@ -165,6 +173,7 @@
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
     <ClInclude Include="Movement.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="RenderManger.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="TimeManger.h" />

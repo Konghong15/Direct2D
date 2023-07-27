@@ -37,6 +37,12 @@
     <Filter Include="소스 파일\Interface">
       <UniqueIdentifier>{ab1d5bc8-1898-4cf7-893c-c5ac5d453a97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Structor">
+      <UniqueIdentifier>{69122c97-dca2-4b9f-8f6f-106401927b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Structor">
+      <UniqueIdentifier>{a226677d-9b18-491b-b911-3780c09fbc30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinApp.cpp">
@@ -88,7 +94,22 @@
       <Filter>소스 파일\Helper</Filter>
     </ClCompile>
     <ClCompile Include="BoxCollider.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>소스 파일\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.h">
+      <Filter>헤더 파일\Structor</Filter>
+    </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>소스 파일\Structor</Filter>
+    </ClCompile>
+    <ClCompile Include="OBB.cpp">
+      <Filter>소스 파일\Structor</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>소스 파일\Structor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +175,18 @@
     </ClInclude>
     <ClInclude Include="AnimationInstance.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>헤더 파일\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="OBB.h">
+      <Filter>헤더 파일\Structor</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>헤더 파일\Structor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

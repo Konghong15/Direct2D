@@ -3,12 +3,14 @@
 #include "Transform.h"
 #include "BoxSprite.h"
 #include "PlayerComponent.h"
+#include "BoxCollider.h"
 
 namespace d2dDemo
 {
 	D2DDemo::D2DDemo(UINT width, UINT height, std::wstring name)
 		: GameProcessor(width, height, name)
-		, mGameObject(nullptr)
+		, mGameObject0(nullptr)
+		, mGameObject1(nullptr)
 	{
 	}
 
@@ -17,14 +19,31 @@ namespace d2dDemo
 		using namespace d2dFramework;
 
 		GameProcessor::Init();
-		mGameObject = new GameObject();
-		Transform* transform = mGameObject->CreateComponent<Transform>();
-		transform->SetTranslate({ 800, 500 });
-		BoxSprite* boxSprite = mGameObject->CreateComponent<BoxSprite>();
-		boxSprite->SetRectangle({ -100, -100, 100, 100 });
-		boxSprite->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
-		PlayerComponent* playerComponent = mGameObject->CreateComponent<PlayerComponent>();
+		mGameObject0 = new GameObject();
+		Transform* transform0 = mGameObject0->CreateComponent<Transform>();
+		transform0->SetTranslate({ 800, 500 });
+		BoxSprite* boxSprite0 = mGameObject0->CreateComponent<BoxSprite>();
+		boxSprite0->SetRectangle({ -50, -50, 50, 50 });
+		boxSprite0->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
+		BoxCollider* boxCollider0 = mGameObject0->CreateComponent<BoxCollider>();
+		PlayerComponent* playerComponent0 = mGameObject0->CreateComponent<PlayerComponent>();
 
+
+		mGameObject1 = new GameObject();
+		Transform* transform1 = mGameObject1->CreateComponent<Transform>();
+		transform1->SetTranslate({ 800, 500 });
+		BoxSprite* boxSprite1 = mGameObject1->CreateComponent<BoxSprite>();
+		boxSprite1->SetRectangle({ -50, -50, 50, 50 });
+		boxSprite1->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
+		BoxCollider* boxCollider1 = mGameObject1->CreateComponent<BoxCollider>();
+
+		ColliderInfo info;
+		ZeroMemory(&info, sizeof(info));
+		info.ColliderType = eColliderType::AABB;
+		info.Size = { 100.f, 100.f };
+
+		boxCollider0->SetColliderInfo(info);
+		boxCollider1->SetColliderInfo(info);
 	}
 
 	void D2DDemo::Update()
@@ -34,7 +53,8 @@ namespace d2dDemo
 
 	void D2DDemo::Destroy()
 	{
-		delete mGameObject;
+		delete mGameObject0;
+		delete mGameObject1;
 
 		GameProcessor::Destroy();
 	}

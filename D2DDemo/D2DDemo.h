@@ -21,6 +21,7 @@ namespace d2dDemo
 		virtual void Destroy() override;
 
 	private:
-		d2dFramework::GameObject* mGameObject;
+		d2dFramework::GameObject* mGameObject0;
+		d2dFramework::GameObject* mGameObject1;
 	};
 }

@@ -2,28 +2,45 @@
 
 #include "Component.h"
 #include "ICollideable.h"
-#include "Vector2.h"
+
+#include "ColliderInfo.h"
 
 namespace d2dFramework
 {
 	class GameObject;
 
-	class BoxCollider : public Component, public ICollideable
+	class BoxCollider final : public Component, public ICollideable
 	{
 	public:
 		BoxCollider(GameObject* owner);
 		virtual ~BoxCollider() = default;
 
+		virtual void UpdateColliderInfo();
 		virtual void CheckCollision(ICollideable* other);
-		inline virtual const hRectangle& GetCollider();
+
+		inline void SetColliderInfo(const ColliderInfo& colliderInfo);
+
+		inline const ColliderInfo& GetColliderInfo() override;
+		inline bool GetIsCollision() const;
+
 
 	private:
 		bool mbIsCollision;
-
-		Vector2 mSize;
-		Vector2 mOffset;
+		ColliderInfo mColliderInfo;
 	};
 
-	const hRectangle& BoxCollider::GetCollider();
+	void BoxCollider::SetColliderInfo(const ColliderInfo& colliderInfo)
+	{
+		mColliderInfo = colliderInfo;
+	}
 
+	const ColliderInfo& BoxCollider::GetColliderInfo()
+	{
+		return mColliderInfo;
+	}
+
+	bool BoxCollider::GetIsCollision() const
+	{
+		return mbIsCollision;
+	}
 }

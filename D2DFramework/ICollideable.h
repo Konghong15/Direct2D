@@ -5,6 +5,7 @@
 namespace d2dFramework
 {
 	class hRectangle;
+	class ColliderInfo;
 
 	class ICollideable : public IBaseInterface
 	{
@@ -12,7 +13,8 @@ namespace d2dFramework
 		ICollideable();
 		virtual ~ICollideable();
 
+		virtual void UpdateColliderInfo() = 0;
 		virtual void CheckCollision(ICollideable* other) = 0;
-		inline virtual const hRectangle& GetCollider() = 0; // 나중에는 다형적인 느낌으로
+		virtual inline const ColliderInfo& GetColliderInfo() = 0;
 	};
 }
