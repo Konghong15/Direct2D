@@ -106,7 +106,7 @@ namespace d2dFramework
 		float cosScalr = cos(rotateInRadian);
 		float sinScalr = sin(rotateInRadian);
 
-		Vector2 temp(x * cosScalr - y * sinScalr, x * sinScalr + y * cosScalr);
+		Vector2 temp(x * cosScalr + y * sinScalr, x * -sinScalr + y * cosScalr);
 		*this = temp;
 	}
 }

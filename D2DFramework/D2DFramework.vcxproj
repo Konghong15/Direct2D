@@ -138,6 +138,8 @@
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BoxSprite.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="CircleCollider.cpp" />
+    <ClCompile Include="CircleSprite.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="GameProcessor.cpp" />
     <ClCompile Include="hRectangle.cpp" />
@@ -147,6 +149,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="IUpdateable.cpp" />
+    <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="RenderManager.cpp" />
@@ -160,6 +163,8 @@
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BoxSprite.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="CircleCollider.h" />
+    <ClInclude Include="CircleSprite.h" />
     <ClInclude Include="ColliderInfo.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="IBaseInterface.h" />
@@ -172,6 +177,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
+    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="RenderManger.h" />

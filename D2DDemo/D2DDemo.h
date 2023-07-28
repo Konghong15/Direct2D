@@ -23,5 +23,6 @@ namespace d2dDemo
 	private:
 		d2dFramework::GameObject* mGameObject0;
 		d2dFramework::GameObject* mGameObject1;
+		d2dFramework::GameObject* mCircle;
 	};
 }

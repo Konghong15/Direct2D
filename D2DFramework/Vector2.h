@@ -32,6 +32,9 @@ namespace d2dFramework
 		inline void SetX(float x);
 		inline void SetY(float y);
 		inline void SetXY(float x, float y);
+		inline void AbsX();
+		inline void AbsY();
+		inline void AbsXY();
 
 		float GetMagnitude() const;
 		inline float GetX() const;
@@ -62,6 +65,26 @@ namespace d2dFramework
 	{
 		this->x = x;
 		this->y = y;
+	}
+
+	void Vector2::AbsX()
+	{
+		if (this->x < 0.f)
+		{
+			this->x = -this->x;
+		}
+	}
+	void Vector2::AbsY()
+	{
+		if (this->y < 0.f)
+		{
+			this->y = -this->y;
+		}
+	}
+	void Vector2::AbsXY()
+	{
+		AbsX();
+		AbsY();
 	}
 
 	void Vector2::Move(float x, float y)

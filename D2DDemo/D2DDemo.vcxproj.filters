@@ -24,12 +24,24 @@
     <ClCompile Include="PlayerComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="TempComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TempCircleComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DDemo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PlayerComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TempComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TempCircleComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

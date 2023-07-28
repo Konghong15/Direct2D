@@ -12,8 +12,8 @@ namespace d2dFramework
 {
 	BoxCollider::BoxCollider(GameObject* owner)
 		: Component(owner)
-		, mbIsCollision(false)
 		, mColliderInfo{ eColliderType::AABB, {1, 1}, {0,0}, { 1.f, 1.f}, 0.f, {0.f, 0.f} }
+		, mbIsTrigger(false)
 	{
 	}
 
@@ -23,14 +23,16 @@ namespace d2dFramework
 		assert(transform != nullptr);
 
 		mColliderInfo.Scale = transform->GetScale();
-		mColliderInfo.RotateInRadian = transform->GetRotate();
+		mColliderInfo.RotateInDegree = transform->GetRotate();
 		mColliderInfo.Translate = transform->GetTranslate();
 		mColliderInfo.ColliderType = transform->GetRotate() == 0.f ? eColliderType::AABB : eColliderType::OBB;
+		mColliderInfo.bIsCollision = false;
 	}
 
 	void BoxCollider::CheckCollision(ICollideable* other)
 	{
 		const ColliderInfo& otherColliderInfo = other->GetColliderInfo();
+		bool bIsCollision;
 
 		switch (mColliderInfo.ColliderType)
 		{
@@ -38,13 +40,13 @@ namespace d2dFramework
 			switch (otherColliderInfo.ColliderType)
 			{
 			case eColliderType::AABB:
-				mbIsCollision = Collision::CheckAABBToAABB(Collision::MakeAABB(mColliderInfo), Collision::MakeAABB(otherColliderInfo));
+				bIsCollision = Collision::CheckAABBToAABB(Collision::MakeAABB(mColliderInfo), Collision::MakeAABB(otherColliderInfo));
 				break;
 			case eColliderType::OBB:
-				mbIsCollision = Collision::CheckAABBToOBB(Collision::MakeAABB(mColliderInfo), Collision::MakeOBB(otherColliderInfo));
+				bIsCollision = Collision::CheckAABBToOBB(Collision::MakeAABB(mColliderInfo), Collision::MakeOBB(otherColliderInfo));
 				break;
 			case eColliderType::Circle:
-				mbIsCollision = Collision::CheckAABBToCircle(Collision::MakeAABB(mColliderInfo), Collision::MakeCircle(otherColliderInfo));
+				bIsCollision = Collision::CheckAABBToCircle(Collision::MakeAABB(mColliderInfo), Collision::MakeCircle(otherColliderInfo));
 				break;
 			default:
 				assert(false);
@@ -55,13 +57,13 @@ namespace d2dFramework
 			switch (otherColliderInfo.ColliderType)
 			{
 			case eColliderType::AABB:
-				mbIsCollision = Collision::CheckAABBToOBB(Collision::MakeAABB(otherColliderInfo), Collision::MakeOBB(mColliderInfo));
+				bIsCollision = Collision::CheckAABBToOBB(Collision::MakeAABB(otherColliderInfo), Collision::MakeOBB(mColliderInfo));
 				break;
 			case eColliderType::OBB:
-				mbIsCollision = Collision::CheckOBBToOBB(Collision::MakeOBB(mColliderInfo), Collision::MakeOBB(otherColliderInfo));
+				bIsCollision = Collision::CheckOBBToOBB(Collision::MakeOBB(mColliderInfo), Collision::MakeOBB(otherColliderInfo));
 				break;
 			case eColliderType::Circle:
-				mbIsCollision = Collision::CheckOBBToCircle(Collision::MakeOBB(mColliderInfo), Collision::MakeCircle(otherColliderInfo));
+				bIsCollision = Collision::CheckOBBToCircle(Collision::MakeOBB(mColliderInfo), Collision::MakeCircle(otherColliderInfo));
 				break;
 			default:
 				assert(false);
@@ -75,5 +77,16 @@ namespace d2dFramework
 			assert(false);
 			break;
 		}
+
+		if (bIsCollision)
+		{
+			OnCollision();
+			other->OnCollision();
+		}
+	}
+
+	void BoxCollider::OnCollision()
+	{
+		mColliderInfo.bIsCollision = true;
 	}
 }

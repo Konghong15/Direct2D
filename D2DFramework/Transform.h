@@ -15,18 +15,18 @@ namespace d2dFramework
 		Transform(GameObject* owner)
 			: Component(owner)
 			, mScale(1.f, 1.f)
-			, mRotateInRadian(0.f)
+			, mRotateInDegree(0.f)
 			, mTranslate(0.f, 0.f)
 		{
 		}
 		virtual ~Transform() = default;
 
 		inline void SetScale(const Vector2& scale);
-		inline void SetRotate(float rotateInRadian);
+		inline void SetRotate(float rotateInDegree);
 		inline void SetTranslate(const Vector2& translate);
 
 		inline void AddScale(const Vector2& scale);
-		inline void AddRotate(float rotateInRadian);
+		inline void AddRotate(float rotateInDegree);
 		inline void AddTranslate(const Vector2& translate);
 
 		inline const Vector2& GetScale(void) const;
@@ -38,7 +38,7 @@ namespace d2dFramework
 
 	private:
 		Vector2 mScale;
-		float mRotateInRadian;
+		float mRotateInDegree;
 		Vector2 mTranslate;
 	};
 
@@ -46,9 +46,9 @@ namespace d2dFramework
 	{
 		mScale = scale;
 	}
-	void Transform::SetRotate(float rotateInRadian)
+	void Transform::SetRotate(float rotateInDegree)
 	{
-		mRotateInRadian = rotateInRadian;
+		mRotateInDegree = rotateInDegree;
 	}
 	void Transform::SetTranslate(const Vector2& translate)
 	{
@@ -59,9 +59,9 @@ namespace d2dFramework
 	{
 		mScale += scale;
 	}
-	void Transform::AddRotate(float rotateInRadian)
+	void Transform::AddRotate(float rotateInDegree)
 	{
-		mRotateInRadian += rotateInRadian;
+		mRotateInDegree += rotateInDegree;
 	}
 	void Transform::AddTranslate(const Vector2& translate)
 	{
@@ -74,7 +74,7 @@ namespace d2dFramework
 	}
 	float Transform::GetRotate(void) const
 	{
-		return mRotateInRadian;
+		return mRotateInDegree;
 	}
 	const Vector2& Transform::GetTranslate(void) const
 	{
@@ -83,7 +83,7 @@ namespace d2dFramework
 
 	const D2D1::Matrix3x2F Transform::GetTransform() const
 	{
-		return D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Rotation(mRotateInRadian) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
+		return D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Rotation(mRotateInDegree) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
 	}
 	const D2D1::Matrix3x2F Transform::GetInverseTransform() const
 	{

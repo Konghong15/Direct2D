@@ -14,10 +14,11 @@ namespace d2dFramework
 	struct ColliderInfo
 	{
 		eColliderType ColliderType;
-		Vector2 Size;
+		Vector2 Size; // 너비 높이
 		Vector2 Offset;
-		Vector2 Scale;
-		float RotateInRadian;
-		Vector2 Translate;
+		Vector2 Scale; // 스케일 값
+		float RotateInDegree;
+		Vector2 Translate; // 중심 좌표
+		bool bIsCollision;
 	};
 }

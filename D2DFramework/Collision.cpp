@@ -1,10 +1,12 @@
 #include <limits>
+#include <cmath>
 
 #include "AABB.h"
 #include "Collision.h"
 #include "ColliderInfo.h"
 #include "OBB.h"
 #include "Circle.h"
+#include "MathHelper.h"
 
 namespace d2dFramework
 {
@@ -32,9 +34,15 @@ namespace d2dFramework
 		{
 			{ 0, 1 },
 			{ 0, -1 },
-			{ 1, 0 },
-			{ -1, 0 }
 		};
+
+		for (size_t i = 2; i < 4; ++i)
+		{
+			normalVectors[i] = rhs.mPoints[i % VERTEX_COUNT] - rhs.mPoints[(i + 1) % VERTEX_COUNT];
+			normalVectors->Normalize();
+			normalVectors[i] = { -normalVectors[i].GetY(), normalVectors[i].GetX() };
+		}
+
 
 		for (size_t i = 0; i < VERTEX_COUNT; ++i)
 		{
@@ -83,53 +91,30 @@ namespace d2dFramework
 
 	bool Collision::CheckAABBToCircle(const AABB& lhs, const Circle& rhs)
 	{
-		const size_t VERTEX_COUNT = 4;
-		Vector2 rectangle[VERTEX_COUNT] =
+		const float RECT_HALF_WIDTH = lhs.GetWidth() * 0.5f; 
+		const float RECT_HALF_HEIGHT = lhs.GetHeight() * 0.5f;
+
+		const Vector2 RECT_CENTER = lhs.GetCenter();
+
+		Vector2 distance = rhs.Center - RECT_CENTER;
+		distance.AbsXY();
+
+		if (distance.GetX() > RECT_HALF_WIDTH + rhs.Radius)
 		{
-			{ lhs.left, lhs.top },
-			{ lhs.right, lhs.top },
-			{ lhs.right, lhs.bottom },
-			{ lhs.left, lhs.bottom }
-		};
-		Vector2 normalVectors[VERTEX_COUNT] =
+			return false;
+		}
+		if (distance.GetY() > RECT_HALF_HEIGHT + rhs.Radius)
 		{
-			{ 0, 1 },
-			{ 0, -1 },
-			{ 1, 0 },
-			{ -1, 0 }
-		};
-
-		for (size_t i = 0; i < VERTEX_COUNT; ++i)
-		{
-			float rectMin = FLT_MAX;
-			float rectMax = -FLT_MAX;
-
-			for (int j = 0; j < VERTEX_COUNT; ++j)
-			{
-				float scalar = Vector2::Dot(normalVectors[i], rectangle[j]);
-
-				if (rectMax < scalar)
-				{
-					rectMax = scalar;
-				}
-				if (rectMin > scalar)
-				{
-					rectMin = scalar;
-				}
-			}
-
-			float scalar = Vector2::Dot(normalVectors[i], rhs.Center);
-
-			float circleMin = scalar - rhs.Radius;
-			float circleMax = scalar + rhs.Radius;
-
-			if (circleMax < rectMin || circleMin > rectMax)
-			{
-				return false;
-			}
+			return false;
 		}
 
-		return true;
+		if (distance.GetX() <= RECT_HALF_WIDTH || distance.GetY() <= RECT_HALF_HEIGHT)
+		{
+			return true;
+		}
+
+		float cornerDistance = std::pow(distance.GetX() - RECT_HALF_WIDTH, 2) + std::pow(distance.GetY() - RECT_HALF_HEIGHT, 2);
+		return cornerDistance <= std::pow(rhs.Radius, 2);
 	}
 
 	bool Collision::CheckOBBToOBB(const OBB& lhs, const OBB& rhs)
@@ -137,9 +122,16 @@ namespace d2dFramework
 		const size_t VERTEX_COUNT = 4;
 		Vector2 normalVectors[VERTEX_COUNT];
 
-		for (size_t i = 0; i < VERTEX_COUNT; ++i)
+		for (size_t i = 0; i < 2; ++i)
 		{
 			normalVectors[i] = lhs.mPoints[i % VERTEX_COUNT] - lhs.mPoints[(i + 1) % VERTEX_COUNT];
+			normalVectors->Normalize();
+			normalVectors[i] = { -normalVectors[i].GetY(), normalVectors[i].GetX() };
+		}
+
+		for (size_t i = 2; i < 4; ++i)
+		{
+			normalVectors[i] = rhs.mPoints[i % VERTEX_COUNT] - rhs.mPoints[(i + 1) % VERTEX_COUNT];
 			normalVectors->Normalize();
 			normalVectors[i] = { -normalVectors[i].GetY(), normalVectors[i].GetX() };
 		}
@@ -191,47 +183,29 @@ namespace d2dFramework
 
 	bool Collision::CheckOBBToCircle(const OBB& lhs, const Circle& rhs)
 	{
-		const size_t VERTEX_COUNT = 4;
-		Vector2 normalVectors[VERTEX_COUNT];
+		const Vector2 RECT_HALF_SIZE = lhs.GetSize() * 0.5f;
+		
+		Vector2 distance = rhs.Center - lhs.GetCenter();
+		distance.Rotate(lhs.RotateInRadian);
+		distance.AbsXY();
 
-		for (size_t i = 0; i < VERTEX_COUNT; ++i)
-		{
-			normalVectors[i] = lhs.mPoints[i % VERTEX_COUNT] - lhs.mPoints[(i + 1) % VERTEX_COUNT];
-			normalVectors->Normalize();
-			normalVectors[i] = { -normalVectors[i].GetY(), normalVectors[i].GetX() };
+		// 충돌 검출
+		if (distance.GetX() > RECT_HALF_SIZE.GetX() + rhs.Radius) {
+			return false;
+		}
+		if (distance.GetY() > RECT_HALF_SIZE.GetY() + rhs.Radius) {
+			return false;
 		}
 
-		for (size_t i = 0; i < VERTEX_COUNT; ++i)
-		{
-			float rectMin = FLT_MAX;
-			float rectMax = -FLT_MAX;
-
-			for (int j = 0; j < VERTEX_COUNT; ++j)
-			{
-				float scalar = Vector2::Dot(normalVectors[i], lhs.mPoints[j]);
-
-				if (rectMax < scalar)
-				{
-					rectMax = scalar;
-				}
-				if (rectMin > scalar)
-				{
-					rectMin = scalar;
-				}
-			}
-
-			float scalar = Vector2::Dot(normalVectors[i], rhs.Center);
-
-			float circleMin = scalar - rhs.Radius;
-			float circleMax = scalar + rhs.Radius;
-
-			if (circleMax < rectMin || circleMin > rectMax)
-			{
-				return false;
-			}
+		if (distance.GetX() <= RECT_HALF_SIZE.GetX() || distance.GetY() <= RECT_HALF_SIZE.GetY()) {
+			return true;
 		}
 
-		return true;
+		// OBB의 꼭지점과 원의 중심 간의 거리 계산
+		float cornerDistance = std::pow(distance.GetX() - RECT_HALF_SIZE.GetX(), 2) + std::pow(distance.GetY() - RECT_HALF_SIZE.GetY(), 2);
+		float circleDistance = std::pow(rhs.Radius, 2);
+
+		return cornerDistance <= circleDistance;
 	}
 
 	bool Collision::CheckCircleToCircle(const Circle& lhs, const Circle& rhs)
@@ -265,9 +239,9 @@ namespace d2dFramework
 			{ TL.GetX(), BR.GetY() } // BL
 		};
 
-		D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Scale({ colliderInfo.Scale.GetX(), colliderInfo.Scale.GetY() }) * D2D1::Matrix3x2F::Rotation(colliderInfo.RotateInRadian) * D2D1::Matrix3x2F::Translation({ colliderInfo.Translate.GetX() + colliderInfo.Offset.GetX(), colliderInfo.Translate.GetY() + colliderInfo.Offset.GetY() });
+		D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Scale({ colliderInfo.Scale.GetX(), colliderInfo.Scale.GetY() }) * D2D1::Matrix3x2F::Rotation(colliderInfo.RotateInDegree) * D2D1::Matrix3x2F::Translation({ colliderInfo.Translate.GetX() + colliderInfo.Offset.GetX(), colliderInfo.Translate.GetY() + colliderInfo.Offset.GetY() });
 
-		return OBB(points, matrix);
+		return OBB(points, matrix, MathHelper::DegreeToRadian(colliderInfo.RotateInDegree));
 	}
 
 	Circle Collision::MakeCircle(const ColliderInfo& colliderInfo)

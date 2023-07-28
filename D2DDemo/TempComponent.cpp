@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "PlayerComponent.h"
+#include "TempComponent.h"
 #include "InputManager.h"
 #include "Transform.h"
 #include "GameObject.h"
@@ -9,12 +9,12 @@
 
 namespace d2dDemo
 {
-	PlayerComponent::PlayerComponent(d2dFramework::GameObject* owner)
+	TempComponent::TempComponent(d2dFramework::GameObject* owner)
 		: Component(owner)
 	{
 	}
 
-	void PlayerComponent::Update(float deltaTime)
+	void TempComponent::Update(float deltaTime)
 	{
 		using namespace d2dFramework;
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
@@ -22,29 +22,11 @@ namespace d2dDemo
 
 		const float DELTA_MOVE = 1000 * deltaTime;
 
-		if (InputManager::GetInstance()->GetKeyState(VK_UP) == eKeyState::Hold)
-		{
-			transform->AddTranslate({ 0, -DELTA_MOVE });
-		}
-		else if (InputManager::GetInstance()->GetKeyState(VK_DOWN) == eKeyState::Hold)
-		{
-			transform->AddTranslate({ 0, DELTA_MOVE });
-		}
-
-		if (InputManager::GetInstance()->GetKeyState(VK_LEFT) == eKeyState::Hold)
-		{
-			transform->AddTranslate({ -DELTA_MOVE, 0 });
-		}
-		else if (InputManager::GetInstance()->GetKeyState(VK_RIGHT) == eKeyState::Hold)
-		{
-			transform->AddTranslate({ DELTA_MOVE, 0 });
-		}
-
-		if (InputManager::GetInstance()->GetKeyState('Q') == eKeyState::Hold)
+		if (InputManager::GetInstance()->GetKeyState('R') == eKeyState::Hold)
 		{
 			transform->AddRotate(deltaTime * 90);
 		}
-		else if (InputManager::GetInstance()->GetKeyState('E') == eKeyState::Hold)
+		else if (InputManager::GetInstance()->GetKeyState('T') == eKeyState::Hold)
 		{
 			transform->AddRotate(-deltaTime * 90);
 		}

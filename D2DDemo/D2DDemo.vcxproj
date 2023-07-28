@@ -137,10 +137,14 @@
     <ClCompile Include="D2DDemo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="TempCircleComponent.cpp" />
+    <ClCompile Include="TempComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DDemo.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="TempCircleComponent.h" />
+    <ClInclude Include="TempComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

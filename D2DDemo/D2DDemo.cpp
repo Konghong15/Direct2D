@@ -4,6 +4,13 @@
 #include "BoxSprite.h"
 #include "PlayerComponent.h"
 #include "BoxCollider.h"
+#include "CircleCollider.h"
+#include "TempComponent.h"
+
+#include "Circle.h"
+#include "CircleCollider.h"
+#include "CircleSprite.h"
+#include "TempCircleComponent.h"
 
 namespace d2dDemo
 {
@@ -36,6 +43,18 @@ namespace d2dDemo
 		boxSprite1->SetRectangle({ -50, -50, 50, 50 });
 		boxSprite1->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
 		BoxCollider* boxCollider1 = mGameObject1->CreateComponent<BoxCollider>();
+		mGameObject1->CreateComponent<TempComponent>();
+
+		mCircle = new GameObject();
+		Transform* transform2 = mCircle->CreateComponent<Transform>();
+		transform2->SetTranslate({ 1000, 500 });
+		CircleSprite* circleSprite = mCircle->CreateComponent<CircleSprite>();
+		circleSprite->SetEllipse({ {0, 0}, 100, 100 });
+		circleSprite->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
+		CircleCollider* circleCollider = mCircle->CreateComponent<CircleCollider>();
+		mCircle->CreateComponent<TempCircleComponent>();
+
+		const ColliderInfo& fo = boxCollider0->GetColliderInfo();
 
 		ColliderInfo info;
 		ZeroMemory(&info, sizeof(info));
@@ -44,6 +63,8 @@ namespace d2dDemo
 
 		boxCollider0->SetColliderInfo(info);
 		boxCollider1->SetColliderInfo(info);
+		info.ColliderType = eColliderType::Circle;
+		circleCollider->SetColliderInfo(info);
 	}
 
 	void D2DDemo::Update()
