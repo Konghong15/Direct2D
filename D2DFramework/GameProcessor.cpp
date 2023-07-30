@@ -5,11 +5,9 @@
 #include "TimeManger.h"
 #include "InputManager.h"
 
+#include "Scene.h"
+#include "SceneManager.h"
 #include "IBaseInterface.h"
-#include "ICollideable.h"
-#include "IFixedUpdateable.h"
-#include "IUpdateable.h"
-#include "IRenderable.h"
 
 namespace d2dFramework
 {
@@ -19,6 +17,7 @@ namespace d2dFramework
 		, mTitle(name)
 		, mTimeManager(new TimeManager())
 		, mRenderManager(new RenderManager())
+		, mSceneManager(new SceneManager())
 	{
 		InputManager::mInstance = new InputManager;
 	}
@@ -29,6 +28,7 @@ namespace d2dFramework
 		delete mRenderManager;
 		delete InputManager::mInstance;
 		InputManager::mInstance = nullptr;
+		delete mSceneManager;
 	}
 
 	void GameProcessor::Init()
@@ -39,6 +39,7 @@ namespace d2dFramework
 
 		mRenderManager->Init();
 		mTimeManager->Init();
+		mSceneManager->Init();
 		InputManager::mInstance->Init();
 
 		IBaseInterface::SetGameProcessor(this);
@@ -46,23 +47,35 @@ namespace d2dFramework
 
 	void GameProcessor::Update()
 	{
+		static float s_FixedTime = 0.f;
+
 		mTimeManager->Update();
 		InputManager::mInstance->Update();
 
-		{
-			const float DELTA_TIME = mTimeManager->GetDeltaTime();
-			assert(DELTA_TIME >= 0.f);
+		const float DELTA_TIME = mTimeManager->GetDeltaTime();
+		assert(DELTA_TIME >= 0.f);
 
-			collision();
-			fixedUpdate(DELTA_TIME);
-			update(DELTA_TIME);
-			render();
+		s_FixedTime += DELTA_TIME;
+
+		Scene& curScene = mSceneManager->GetCurrentScene();
+		while (s_FixedTime >= 0.02f)
+		{
+			curScene.FixedUpdate(0.02f);
+			curScene.HandleCollision();
+
+			s_FixedTime -= 0.02f;
 		}
+
+		update(DELTA_TIME);
+		// lateUpdate()
+		render();
+		// handleEvent()
 	}
 
 	void GameProcessor::Destroy()
 	{
 		mRenderManager->Release();
+		mSceneManager->Delete();
 		CoUninitialize();
 		IBaseInterface::SetGameProcessor(nullptr);
 	}

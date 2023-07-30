@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <string>
-#include <vector>
 #include <windows.h>
 
 namespace d2dFramework
@@ -10,11 +9,8 @@ namespace d2dFramework
 	class TimeManager;
 	class RenderManager;
 	class InputManager;
-	class ICollideable;
-	class IFixedUpdateable;
-	class IUpdateable;
-	class IRenderable;
 	class GameObject;
+	class SceneManager;
 
 	class GameProcessor
 	{
@@ -30,24 +26,10 @@ namespace d2dFramework
 		inline UINT GetHeight() const;
 		inline const WCHAR* GetTitle() const;
 
-		inline TimeManager* GetTimeManager() const;
-		inline RenderManager* GetRenderManager() const;
-
-		inline void RegisterCollideable(ICollideable* collideable);
-		inline void RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable);
-		inline void RegisterUpdateable(IUpdateable* updateable);
-		inline void RegisterRenderable(IRenderable* renderable);
-
-		inline void UnregisterCollideable(ICollideable* collideable);
-		inline void UnregisterFixedUpdateable(IFixedUpdateable* fixedUpdateable);
-		inline void UnregisterUpdateable(IUpdateable* updateable);
-		inline void UnregisterRenderable(IRenderable* renderable);
-
-	private:
-		void collision();
-		void fixedUpdate(float deltaTime);
-		void update(float deltaTime);
-		void render();
+	protected:
+		inline TimeManager* getTimeManager() const;
+		inline RenderManager* getRenderManager() const;
+		inline SceneManager* getSceneManager() const;
 
 	private:
 		UINT mWidth;
@@ -56,11 +38,7 @@ namespace d2dFramework
 
 		TimeManager* mTimeManager;
 		RenderManager* mRenderManager;
-
-		std::vector<ICollideable*> mCollideable;
-		std::vector<IFixedUpdateable*> mFixedUpdateable;
-		std::vector<IUpdateable*> mUpdateable;
-		std::vector<IRenderable*> mRenderable;
+		SceneManager* mSceneManager;
 	};
 
 	UINT GameProcessor::GetWidth() const
@@ -78,69 +56,21 @@ namespace d2dFramework
 		return mTitle.c_str();
 	}
 
-	TimeManager* GameProcessor::GetTimeManager() const
+	TimeManager* GameProcessor::getTimeManager() const
 	{
 		assert(mTimeManager != nullptr);
 		return mTimeManager;
 	}
 
-	RenderManager* GameProcessor::GetRenderManager() const
+	RenderManager* GameProcessor::getRenderManager() const
 	{
 		assert(mRenderManager != nullptr);
 		return mRenderManager;
 	}
 
-	void GameProcessor::RegisterCollideable(ICollideable* collideable)
+	SceneManager* GameProcessor::getSceneManager() const
 	{
-		mCollideable.push_back(collideable);
-	}
-	void GameProcessor::RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
-	{
-		mFixedUpdateable.push_back(fixedUpdateable);
-	}
-	void GameProcessor::RegisterUpdateable(IUpdateable* updateable)
-	{
-		mUpdateable.push_back(updateable);
-	}
-	void GameProcessor::RegisterRenderable(IRenderable* renderable)
-	{
-		mRenderable.push_back(renderable);
-	}
-
-	void GameProcessor::UnregisterCollideable(ICollideable* collideable)
-	{
-		auto iter = std::find(mCollideable.begin(), mCollideable.end(), collideable);
-
-		if (iter != mCollideable.end())
-		{
-			mCollideable.erase(iter);
-		}
-	}
-	void GameProcessor::UnregisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
-	{
-		auto iter = std::find(mFixedUpdateable.begin(), mFixedUpdateable.end(), fixedUpdateable);
-
-		if (iter != mFixedUpdateable.end())
-		{
-			mFixedUpdateable.erase(iter);
-		}
-	}
-	void GameProcessor::UnregisterUpdateable(IUpdateable* updateable)
-	{
-		auto iter = std::find(mUpdateable.begin(), mUpdateable.end(), updateable);
-
-		if (iter != mUpdateable.end())
-		{
-			mUpdateable.erase(iter);
-		}
-	}
-	void GameProcessor::UnregisterRenderable(IRenderable* renderable)
-	{
-		auto iter = std::find(mRenderable.begin(), mRenderable.end(), renderable);
-
-		if (iter != mRenderable.end())
-		{
-			mRenderable.erase(iter);
-		}
+		assert(mSceneManager != nullptr);
+		return mSceneManager;
 	}
 }

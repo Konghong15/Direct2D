@@ -31,6 +31,7 @@ namespace d2dRigidbodyAABB
 	{
 		GameProcessor::Init();
 		using namespace d2dFramework;
+		// register Register Scene;
 
 		Transform* transform;
 		AABBCollider* aabbCollider;

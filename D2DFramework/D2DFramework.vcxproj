@@ -152,6 +152,8 @@
     <ClCompile Include="OBBCollider.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -184,6 +186,8 @@
     <ClInclude Include="OBBCollider.h" />
     <ClInclude Include="RenderManger.h" />
     <ClInclude Include="Rigidbody.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="TimeManger.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector2.h" />

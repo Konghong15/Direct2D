@@ -4,7 +4,7 @@
 #include "InputManager.h"
 #include "Transform.h"
 #include "GameObject.h"
-#include "BoxCollider.h"
+#include "OBBCollider.h"
 #include "BoxSprite.h"
 
 namespace d2dDemo
@@ -31,7 +31,7 @@ namespace d2dDemo
 			transform->AddRotate(-deltaTime * 90);
 		}
 
-		BoxCollider* boxCollider = GetGameObject()->GetComponent<BoxCollider>();
+		OBBCollider* boxCollider = GetGameObject()->GetComponent<OBBCollider>();
 		assert(boxCollider != nullptr);
 		BoxSprite* boxSprite = GetGameObject()->GetComponent<BoxSprite>();
 		assert(boxSprite != nullptr);
