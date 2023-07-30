@@ -3,32 +3,41 @@
 
 #include "AABB.h"
 #include "Collision.h"
-#include "ColliderInfo.h"
 #include "OBB.h"
 #include "Circle.h"
 #include "MathHelper.h"
+#include "Transform.h"
+#include "Manifold.h"
 
 namespace d2dFramework
 {
-	bool Collision::CheckAABBToAABB(const AABB& lhs, const AABB& rhs)
+	bool Collision::CheckAABBToAABB(const AABB& lhs, const AABB& rhs, Manifold* outmanifold)
 	{
-		bool result = (lhs.left < rhs.right &&
-			rhs.left < lhs.right &&
-			lhs.top < rhs.bottom &&
-			rhs.top < lhs.bottom);
-
-		return lhs.top < lhs.bottom ? result : !result;
+		if (lhs.TopLeft.GetY() < lhs.BottomRight.GetY())
+		{
+			return lhs.TopLeft.GetX() < rhs.BottomRight.GetX()
+				&& rhs.TopLeft.GetX() < lhs.BottomRight.GetX()
+				&& lhs.TopLeft.GetY() < rhs.BottomRight.GetY()
+				&& rhs.TopLeft.GetY() < lhs.BottomRight.GetY();
+		}
+		else
+		{
+			return lhs.TopLeft.GetX() < rhs.BottomRight.GetX()
+				&& rhs.TopLeft.GetX() < lhs.BottomRight.GetX()
+				&& lhs.BottomRight.GetY() < rhs.TopLeft.GetY()
+				&& rhs.BottomRight.GetY() < lhs.TopLeft.GetY();
+		}
 	}
 
-	bool Collision::CheckAABBToOBB(const AABB& lhs, const OBB& rhs)
+	bool Collision::CheckAABBToOBB(const AABB& lhs, const OBB& rhs, Manifold* outmanifold)
 	{
 		const size_t VERTEX_COUNT = 4;
 		Vector2 rectangle[VERTEX_COUNT] =
 		{
-			{ lhs.left, lhs.top },
-			{ lhs.right, lhs.top },
-			{ lhs.right, lhs.bottom },
-			{ lhs.left, lhs.bottom }
+			{ lhs.TopLeft },
+			{ lhs.BottomRight.GetX(), lhs.TopLeft.GetY() },
+			{ lhs.BottomRight },
+			{ lhs.TopLeft.GetX(), lhs.BottomRight.GetY()  }
 		};
 		Vector2 normalVectors[VERTEX_COUNT] =
 		{
@@ -89,12 +98,12 @@ namespace d2dFramework
 		return true;
 	}
 
-	bool Collision::CheckAABBToCircle(const AABB& lhs, const Circle& rhs)
+	bool Collision::CheckAABBToCircle(const AABB& lhs, const Circle& rhs, Manifold* outmanifold)
 	{
-		const float RECT_HALF_WIDTH = lhs.GetWidth() * 0.5f; 
-		const float RECT_HALF_HEIGHT = lhs.GetHeight() * 0.5f;
+		const float RECT_HALF_WIDTH = GetWidth(lhs) * 0.5f;
+		const float RECT_HALF_HEIGHT = GetHeight(lhs) * 0.5f;
 
-		const Vector2 RECT_CENTER = lhs.GetCenter();
+		const Vector2 RECT_CENTER = GetCenter(lhs);
 
 		Vector2 distance = rhs.Center - RECT_CENTER;
 		distance.AbsXY();
@@ -117,7 +126,7 @@ namespace d2dFramework
 		return cornerDistance <= std::pow(rhs.Radius, 2);
 	}
 
-	bool Collision::CheckOBBToOBB(const OBB& lhs, const OBB& rhs)
+	bool Collision::CheckOBBToOBB(const OBB& lhs, const OBB& rhs, Manifold* outmanifold)
 	{
 		const size_t VERTEX_COUNT = 4;
 		Vector2 normalVectors[VERTEX_COUNT];
@@ -181,11 +190,11 @@ namespace d2dFramework
 		return true;
 	}
 
-	bool Collision::CheckOBBToCircle(const OBB& lhs, const Circle& rhs)
+	bool Collision::CheckOBBToCircle(const OBB& lhs, const Circle& rhs, Manifold* outmanifold)
 	{
-		const Vector2 RECT_HALF_SIZE = lhs.GetSize() * 0.5f;
-		
-		Vector2 distance = rhs.Center - lhs.GetCenter();
+		const Vector2 RECT_HALF_SIZE = GetSize(lhs) * 0.5f;
+
+		Vector2 distance = rhs.Center - GetCenter(lhs);
 		distance.Rotate(lhs.RotateInRadian);
 		distance.AbsXY();
 
@@ -208,51 +217,71 @@ namespace d2dFramework
 		return cornerDistance <= circleDistance;
 	}
 
-	bool Collision::CheckCircleToCircle(const Circle& lhs, const Circle& rhs)
+	bool Collision::CheckCircleToCircle(const Circle& lhs, const Circle& rhs, Manifold* outmanifold)
 	{
-		return Vector2::GetDistance(lhs.Center, rhs.Center) < lhs.Radius + rhs.Radius;
-	}
+		Vector2 diffVec = rhs.Center - lhs.Center; // 언제나 lhs가 기준
 
-	AABB Collision::MakeAABB(const ColliderInfo& colliderInfo)
-	{
-		AABB aabb(colliderInfo.Size.GetX() * -0.5f,
-			colliderInfo.Size.GetY() * -0.5f,
-			colliderInfo.Size.GetX() * 0.5f,
-			colliderInfo.Size.GetY() * 0.5f);
+		float distance = diffVec.GetMagnitude();
+		float sumRadius = lhs.Radius + rhs.Radius;
 
-		aabb.Scale(colliderInfo.Scale);
-		aabb.Translate(colliderInfo.Translate + colliderInfo.Offset);
-
-		return aabb;
-	}
-
-	OBB Collision::MakeOBB(const ColliderInfo& colliderInfo)
-	{
-		const Vector2 TL{ colliderInfo.Size.GetX() * -0.5f, colliderInfo.Size.GetY() * -0.5f };
-		const Vector2 BR{ colliderInfo.Size.GetX() * 0.5f, colliderInfo.Size.GetY() * 0.5f };
-
-		Vector2 points[4] =
+		if (distance > sumRadius)
 		{
-			TL,
-			{ BR.GetX(), TL.GetY() }, // TR
-			BR,
-			{ TL.GetX(), BR.GetY() } // BL
+			return false;
+		}
+
+		if (distance != 0)
+		{
+			outmanifold->Penetration = sumRadius - distance;
+			outmanifold->CollisionNormal = diffVec / distance;
+		}
+		else // 중심이 완전이 같은 경우
+		{
+			outmanifold->Penetration = lhs.Radius;
+			outmanifold->CollisionNormal = Vector2(1, 0);
+		}
+
+		return true;
+	}
+
+	float Collision::GetWidth(const AABB& aabb)
+	{
+		return aabb.BottomRight.GetX() - aabb.TopLeft.GetX();
+	}
+	float Collision::GetWidth(const OBB& obb)
+	{
+		return Vector2::GetDistance(obb.mPoints[0], obb.mPoints[1]);
+	}
+
+	float Collision::GetHeight(const AABB& aabb)
+	{
+		return fabs(aabb.BottomRight.GetY() - aabb.TopLeft.GetY());
+	}
+	float Collision::GetHeight(const OBB& obb)
+	{
+		return Vector2::GetDistance(obb.mPoints[1], obb.mPoints[2]);
+	}
+
+	Vector2 Collision::GetSize(const AABB& aabb)
+	{
+		return { GetWidth(aabb), GetHeight(aabb) };
+	}
+	Vector2 Collision::GetSize(const OBB& obb)
+	{
+		return { GetWidth(obb), GetHeight(obb) };
+	}
+
+	Vector2 Collision::GetCenter(const AABB& aabb)
+	{
+		Vector2 result =
+		{
+			(aabb.TopLeft.GetX() + aabb.BottomRight.GetX()) * 0.5f,
+			(aabb.TopLeft.GetY() + aabb.BottomRight.GetY()) * 0.5f,
 		};
 
-		D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Scale({ colliderInfo.Scale.GetX(), colliderInfo.Scale.GetY() }) * D2D1::Matrix3x2F::Rotation(colliderInfo.RotateInDegree) * D2D1::Matrix3x2F::Translation({ colliderInfo.Translate.GetX() + colliderInfo.Offset.GetX(), colliderInfo.Translate.GetY() + colliderInfo.Offset.GetY() });
-
-		return OBB(points, matrix, MathHelper::DegreeToRadian(colliderInfo.RotateInDegree));
+		return result;
 	}
-
-	Circle Collision::MakeCircle(const ColliderInfo& colliderInfo)
+	Vector2 Collision::GetCenter(const OBB& obb)
 	{
-		float radius = colliderInfo.Size.GetX() > colliderInfo.Size.GetY() ? colliderInfo.Size.GetX() : colliderInfo.Size.GetY();
-		Circle circle({ 0,0 }, radius);
-
-		float scale = colliderInfo.Scale.GetX() > colliderInfo.Scale.GetY() ? colliderInfo.Scale.GetX() : colliderInfo.Scale.GetY();
-		circle.Scale(scale);
-		circle.Translate(colliderInfo.Translate);
-
-		return circle;
+		return (obb.mPoints[0] + obb.mPoints[2]) * 0.5f;
 	}
 }

@@ -12,13 +12,7 @@ namespace d2dFramework
 	class Transform : public Component
 	{
 	public:
-		Transform(GameObject* owner)
-			: Component(owner)
-			, mScale(1.f, 1.f)
-			, mRotateInDegree(0.f)
-			, mTranslate(0.f, 0.f)
-		{
-		}
+		Transform(GameObject* owner);
 		virtual ~Transform() = default;
 
 		inline void SetScale(const Vector2& scale);
@@ -33,8 +27,8 @@ namespace d2dFramework
 		inline float GetRotate(void) const;
 		inline const Vector2& GetTranslate(void) const;
 
-		inline const D2D1::Matrix3x2F GetTransform() const;
-		inline const D2D1::Matrix3x2F GetInverseTransform() const;
+		inline const D2D1::Matrix3x2F GetTransform(void) const;
+		inline const D2D1::Matrix3x2F GetInverseTransform(void) const;
 
 	private:
 		Vector2 mScale;
@@ -81,11 +75,11 @@ namespace d2dFramework
 		return mTranslate;
 	}
 
-	const D2D1::Matrix3x2F Transform::GetTransform() const
+	const D2D1::Matrix3x2F Transform::GetTransform(void) const
 	{
 		return D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Rotation(mRotateInDegree) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
 	}
-	const D2D1::Matrix3x2F Transform::GetInverseTransform() const
+	const D2D1::Matrix3x2F Transform::GetInverseTransform(void) const
 	{
 		D2D1::Matrix3x2F matrix = GetTransform();
 		assert(D2D1InvertMatrix(&matrix));

@@ -17,6 +17,7 @@ namespace d2dDemo
 	void PlayerComponent::Update(float deltaTime)
 	{
 		using namespace d2dFramework;
+		
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 		assert(transform != nullptr);
 

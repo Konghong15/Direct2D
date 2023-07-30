@@ -71,14 +71,14 @@ namespace d2dFramework
 	{
 		for (size_t i = 0; i < mCollideable.size(); ++i)
 		{
-			mCollideable[i]->UpdateColliderInfo();
+			mCollideable[i]->UpdateCollider();
 		}
 
 		for (size_t i = 0; i < mCollideable.size(); ++i)
 		{
 			for (size_t j = i + 1; j < mCollideable.size(); ++j)
 			{
-				mCollideable[i]->CheckCollision(mCollideable[j]);
+				mCollideable[i]->HandleCollision(mCollideable[j]);
 			}
 		}
 	}

@@ -131,13 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="AABB.h" />
+    <ClCompile Include="AABBCollider.cpp" />
     <ClCompile Include="AnimationAsset.cpp" />
     <ClCompile Include="AnimationInstance.cpp" />
-    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BoxSprite.cpp" />
-    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="CircleSprite.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -151,22 +149,24 @@
     <ClCompile Include="IUpdateable.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Movement.cpp" />
-    <ClCompile Include="OBB.cpp" />
+    <ClCompile Include="OBBCollider.cpp" />
     <ClCompile Include="RenderManager.cpp" />
+    <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="TimeManager.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABBCollider.h" />
     <ClInclude Include="AnimationAsset.h" />
     <ClInclude Include="AnimationInstance.h" />
-    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BoxSprite.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="CircleSprite.h" />
-    <ClInclude Include="ColliderInfo.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="eColliderType.h" />
     <ClInclude Include="IBaseInterface.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
@@ -177,9 +177,11 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
+    <ClInclude Include="Manifold.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="OBB.h" />
+    <ClInclude Include="OBBCollider.h" />
     <ClInclude Include="RenderManger.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="TimeManger.h" />

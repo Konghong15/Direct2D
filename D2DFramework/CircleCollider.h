@@ -2,8 +2,7 @@
 
 #include "Component.h"
 #include "ICollideable.h"
-
-#include "ColliderInfo.h"
+#include "Circle.h"
 
 namespace d2dFramework
 {
@@ -15,39 +14,68 @@ namespace d2dFramework
 		CircleCollider(GameObject* owner);
 		virtual ~CircleCollider() = default;
 
-		virtual void UpdateColliderInfo() override;
-		virtual void CheckCollision(ICollideable* other) override;
-		virtual void OnCollision() override;
+		virtual void UpdateCollider() override;
+		virtual void HandleCollision(ICollideable* other) override;
 
-		inline void SetColliderInfo(const ColliderInfo& colliderInfo);
 		inline void SetIsTrigger(bool bisTrigger);
+		inline void SetRadius(float radius);
+		inline void SetOffset(const Vector2& offset);
 
-		inline const ColliderInfo& GetColliderInfo() const override;
+		inline eColliderType GetColliderType() const override;
+		inline GameObject* GetGameObject() const override;
 		inline bool GetIsTrigger() const;
+		inline float GetRadius() const;
+		inline const Vector2& GetOffset() const;
+		inline const Circle& GetWorldCircle() const;
 
+	protected:
+		virtual bool checkCollision(ICollideable* other, Manifold* outManifold) override;
+		virtual void onCollision(ICollideable* other, const Manifold& manifold) override;
 
 	private:
 		bool mbIsTrigger;
-		ColliderInfo mColliderInfo;
-	};
 
-	void CircleCollider::SetColliderInfo(const ColliderInfo& colliderInfo)
-	{
-		mColliderInfo = colliderInfo;
-	}
+		Vector2 mOffset;
+		float mLocalRadius;
+
+		Circle mWorldCircle;
+	};
 
 	void CircleCollider::SetIsTrigger(bool bisTrigger)
 	{
 		mbIsTrigger = bisTrigger;
 	}
-
-	const ColliderInfo& CircleCollider::GetColliderInfo() const
+	void CircleCollider::SetRadius(float radius)
 	{
-		return mColliderInfo;
+		mLocalRadius = radius;
+	}
+	void CircleCollider::SetOffset(const Vector2& offset)
+	{
+		mOffset = offset;
 	}
 
+	eColliderType CircleCollider::GetColliderType() const
+	{
+		return eColliderType::Circle;
+	}
+	GameObject* CircleCollider::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
 	bool CircleCollider::GetIsTrigger() const
 	{
 		return mbIsTrigger;
+	}
+	float CircleCollider::GetRadius() const
+	{
+		return mLocalRadius;
+	}
+	const Vector2& CircleCollider::GetOffset() const
+	{
+		return mOffset;
+	}
+	const Circle& CircleCollider::GetWorldCircle() const
+	{
+		return mWorldCircle;
 	}
 }

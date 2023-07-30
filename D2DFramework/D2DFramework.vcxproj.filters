@@ -40,8 +40,8 @@
     <Filter Include="헤더 파일\Structor">
       <UniqueIdentifier>{69122c97-dca2-4b9f-8f6f-106401927b6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Structor">
-      <UniqueIdentifier>{a226677d-9b18-491b-b911-3780c09fbc30}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Enum">
+      <UniqueIdentifier>{4b489a5c-9135-44f5-bd67-d010c01f7f83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,23 +93,11 @@
     <ClCompile Include="hRectangle.cpp">
       <Filter>소스 파일\Helper</Filter>
     </ClCompile>
-    <ClCompile Include="BoxCollider.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Collision.cpp">
       <Filter>소스 파일\Helper</Filter>
     </ClCompile>
     <ClCompile Include="AABB.h">
       <Filter>헤더 파일\Structor</Filter>
-    </ClCompile>
-    <ClCompile Include="AABB.cpp">
-      <Filter>소스 파일\Structor</Filter>
-    </ClCompile>
-    <ClCompile Include="OBB.cpp">
-      <Filter>소스 파일\Structor</Filter>
-    </ClCompile>
-    <ClCompile Include="Circle.cpp">
-      <Filter>소스 파일\Structor</Filter>
     </ClCompile>
     <ClCompile Include="CircleCollider.cpp">
       <Filter>소스 파일\Component</Filter>
@@ -119,6 +107,18 @@
     </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>소스 파일\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Rigidbody.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="OBBCollider.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AABBCollider.cpp">
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +164,6 @@
     <ClInclude Include="IFixedUpdateable.h">
       <Filter>헤더 파일\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollider.h">
-      <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Rigidbody.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
@@ -194,17 +191,26 @@
     <ClInclude Include="Circle.h">
       <Filter>헤더 파일\Structor</Filter>
     </ClInclude>
-    <ClInclude Include="ColliderInfo.h">
-      <Filter>헤더 파일\Structor</Filter>
-    </ClInclude>
     <ClInclude Include="CircleCollider.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="CircleSprite.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Manifold.h">
+      <Filter>헤더 파일\Structor</Filter>
+    </ClInclude>
+    <ClInclude Include="eColliderType.h">
+      <Filter>헤더 파일\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="AABBCollider.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="OBBCollider.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
     <ClInclude Include="MathHelper.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Helper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@
 #include "CircleCollider.h"
 #include "CircleSprite.h"
 #include "TempCircleComponent.h"
+#include "Rigidbody.h"
 
 namespace d2dDemo
 {
@@ -29,21 +30,20 @@ namespace d2dDemo
 		mGameObject0 = new GameObject();
 		Transform* transform0 = mGameObject0->CreateComponent<Transform>();
 		transform0->SetTranslate({ 800, 500 });
-		BoxSprite* boxSprite0 = mGameObject0->CreateComponent<BoxSprite>();
-		boxSprite0->SetRectangle({ -50, -50, 50, 50 });
-		boxSprite0->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
-		BoxCollider* boxCollider0 = mGameObject0->CreateComponent<BoxCollider>();
-		PlayerComponent* playerComponent0 = mGameObject0->CreateComponent<PlayerComponent>();
+		CircleSprite* sprite = mGameObject0->CreateComponent<CircleSprite>();
+		sprite->SetEllipse({ {0, 0}, 100, 100 });
+		sprite->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
+		CircleCollider* boxCollider0 = mGameObject0->CreateComponent<CircleCollider>();
+		mGameObject0->CreateComponent<Rigidbody>();
 
-
-		mGameObject1 = new GameObject();
+		/*mGameObject1 = new GameObject();
 		Transform* transform1 = mGameObject1->CreateComponent<Transform>();
 		transform1->SetTranslate({ 800, 500 });
 		BoxSprite* boxSprite1 = mGameObject1->CreateComponent<BoxSprite>();
 		boxSprite1->SetRectangle({ -50, -50, 50, 50 });
 		boxSprite1->SetBaseColor({ 0.5f, 0.f, 0.f, 0.5f });
 		BoxCollider* boxCollider1 = mGameObject1->CreateComponent<BoxCollider>();
-		mGameObject1->CreateComponent<TempComponent>();
+		mGameObject1->CreateComponent<TempComponent>();*/
 
 		mCircle = new GameObject();
 		Transform* transform2 = mCircle->CreateComponent<Transform>();
@@ -58,11 +58,12 @@ namespace d2dDemo
 
 		ColliderInfo info;
 		ZeroMemory(&info, sizeof(info));
-		info.ColliderType = eColliderType::AABB;
 		info.Size = { 100.f, 100.f };
 
+		info.ColliderType = eColliderType::Circle;
 		boxCollider0->SetColliderInfo(info);
-		boxCollider1->SetColliderInfo(info);
+		//info.ColliderType = eColliderType::AABB;
+		//boxCollider1->SetColliderInfo(info);
 		info.ColliderType = eColliderType::Circle;
 		circleCollider->SetColliderInfo(info);
 	}

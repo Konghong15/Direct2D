@@ -4,9 +4,9 @@
 
 namespace d2dFramework
 {
-	struct OBB
+	struct Manifold
 	{
-		Vector2 mPoints[4];
-		float RotateInRadian;
+		float Penetration;
+		Vector2 CollisionNormal;
 	};
 }

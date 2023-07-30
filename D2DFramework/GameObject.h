@@ -51,7 +51,11 @@ namespace d2dFramework
 	{
 		size_t hash = typeid(T).hash_code();
 		auto iter = mComponents.find(hash);
-		assert(iter != mComponents.end());
+
+		if (iter == mComponents.end())
+		{
+			return nullptr;
+		}
 
 		T* find = static_cast<T*>((*iter).second);
 

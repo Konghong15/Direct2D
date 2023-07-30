@@ -14,6 +14,7 @@ namespace d2dFramework
 		Vector2(float x, float y);
 
 		static float GetDistance(const Vector2& vector, const Vector2& other);
+		static float GetDistanceSquared(const Vector2& vector, const Vector2& other);
 		static float Dot(const Vector2& vector, const Vector2& other);
 
 		// operator 
@@ -22,6 +23,7 @@ namespace d2dFramework
 		Vector2 operator-(const Vector2& other) const;
 		Vector2 operator+(const Vector2& other) const;
 		Vector2 operator*(float scalar) const;
+		Vector2 operator/(float scalar) const;
 		Vector2 operator*(const D2D1::Matrix3x2F& matrix) const;
 		Vector2& operator+=(const Vector2& other);
 		Vector2& operator*=(const D2D1::Matrix3x2F& matrix);
@@ -37,6 +39,7 @@ namespace d2dFramework
 		inline void AbsXY();
 
 		float GetMagnitude() const;
+		float GetMagnitudeSquared() const;
 		inline float GetX() const;
 		inline float GetY() const;
 	};

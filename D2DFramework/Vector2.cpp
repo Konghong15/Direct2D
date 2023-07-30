@@ -21,10 +21,15 @@ namespace d2dFramework
 
 	float Vector2::GetDistance(const Vector2& vector, const Vector2& other)
 	{
+		return sqrtf(GetDistanceSquared(vector, other));
+	}
+
+	float Vector2::GetDistanceSquared(const Vector2& vector, const Vector2& other)
+	{
 		float x = abs(vector.x - other.x);
 		float y = abs(vector.y - other.y);
 
-		return sqrtf(x * x + y * y);
+		return (x * x + y * y);
 	}
 
 	float Vector2::Dot(const Vector2& vector, const Vector2& other)
@@ -51,6 +56,11 @@ namespace d2dFramework
 	Vector2 Vector2::operator*(float scalar) const
 	{
 		return Vector2(x * scalar, y * scalar);
+	}
+
+	Vector2 Vector2::operator/(float scalar) const
+	{
+		return Vector2(x / scalar, y / scalar);
 	}
 
 	Vector2 Vector2::operator+(const Vector2& other) const
@@ -83,6 +93,11 @@ namespace d2dFramework
 	float Vector2::GetMagnitude() const
 	{
 		return sqrt(x * x + y * y);
+	}
+
+	float Vector2::GetMagnitudeSquared() const
+	{
+		return (x * x + y * y);
 	}
 
 	void Vector2::Normalize()
