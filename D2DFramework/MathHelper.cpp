@@ -13,4 +13,18 @@ namespace d2dFramework
 	{
 		return degree * PI_F / 180.f;
 	}
+
+	float MathHelper::Clamp(float num, float min, float max)
+	{
+		if (num > max)
+		{
+			return max;
+		}
+		else if (num < min)
+		{
+			return min;
+		}
+
+		return num;
+	}
 }

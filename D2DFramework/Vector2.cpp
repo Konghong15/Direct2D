@@ -83,6 +83,22 @@ namespace d2dFramework
 		return *this;
 	}
 
+	Vector2& Vector2::operator*=(int scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+
+		return *this;
+	}
+
+	Vector2& Vector2::operator*=(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+
+		return *this;
+	}
+
 	Vector2& Vector2::operator*=(const D2D1::Matrix3x2F& matrix)
 	{
 		*this = *this * matrix;

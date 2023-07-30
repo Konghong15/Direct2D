@@ -7,5 +7,6 @@ namespace d2dFramework
 	public:
 		static float RadianToDegree(float radian);
 		static float DegreeToRadian(float degree);
+		static float Clamp(float num, float min, float max);
 	};
 }

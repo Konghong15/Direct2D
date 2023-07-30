@@ -3,12 +3,15 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "BoxSprite.h"
-#include "CircleCollider.h"
 
-#include "Circle.h"
+#include "BoxSprite.h"
+#include "AABBCollider.h"
+#include "Rigidbody.h"
+#include "BoxPlayerComponent.h"
+
 #include "CircleCollider.h"
 #include "CircleSprite.h"
-#include "Rigidbody.h"
+#include "CirclePlayerComponent.h"
 
 namespace d2dRigidbodyAABB
 {
@@ -20,6 +23,7 @@ namespace d2dRigidbodyAABB
 		, mCeiling(nullptr)
 		, mBoxPlayer(nullptr)
 		, mDummy{ nullptr, }
+		, mCirclePlayer(nullptr)
 	{
 	}
 
@@ -29,46 +33,58 @@ namespace d2dRigidbodyAABB
 		using namespace d2dFramework;
 
 		Transform* transform;
-		CircleCollider* circleCollider;
-		CircleSprite* circleSprite;
+		AABBCollider* aabbCollider;
+		BoxSprite* boxSprite;
 		Rigidbody* rigidbody;
 
 		// make player, dummy
 		{
-			float radius = 50.f;
+			float size = 50.f;
 
-			mBounceBall = new GameObject();
-			transform = mBounceBall->CreateComponent<Transform>();
-			transform->SetTranslate({ GetWidth() * 0.5f, GetHeight() * 0.5f });
-			circleCollider = mBounceBall->CreateComponent<CircleCollider>();
-			circleCollider->SetRadius(radius);
-			circleSprite = mBounceBall->CreateComponent<CircleSprite>();
-			circleSprite->SetEllipse({ { 0,0 }, radius,radius });
-			circleSprite->SetBaseColor({ 1, 0, 0, 0.5f });
-			circleSprite->SetBorderColor({ 1, 0, 0, 1.f });
-			rigidbody = mBounceBall->CreateComponent<Rigidbody>();
-			BounceBallComponent* bounceBall = mBounceBall->CreateComponent<BounceBallComponent>();
-			bounceBall->SetSpped({ 1000, 1000 });
+			mBoxPlayer = new GameObject();
+			transform = mBoxPlayer->CreateComponent<Transform>();
+			transform->SetTranslate({ GetWidth() * 0.6f, GetHeight() * 0.6f });
+			aabbCollider = mBoxPlayer->CreateComponent<AABBCollider>();
+			aabbCollider->SetSize({ size, size });
+			boxSprite = mBoxPlayer->CreateComponent<BoxSprite>();
+			boxSprite->SetRectangle({ -size / 2, -size / 2, size / 2, size / 2 });
+			boxSprite->SetBaseColor({ 1, 0, 0, 0.5f });
+			boxSprite->SetBorderColor({ 1, 0, 0, 1.f });
+			rigidbody = mBoxPlayer->CreateComponent<Rigidbody>();
+			BoxPlayerComponent* boxCo = mBoxPlayer->CreateComponent<BoxPlayerComponent>();
+			boxCo->SetSpped({ 100, 100 });
+			rigidbody->SetMass(100);
 
+			mCirclePlayer = new GameObject();
+			transform = mCirclePlayer->CreateComponent<Transform>();
+			transform->SetTranslate({ GetWidth() * 0.4f, GetHeight() * 0.4f });
+			CircleCollider* circleCollider = mCirclePlayer->CreateComponent<CircleCollider>();
+			circleCollider->SetRadius(size);
+			CircleSprite* circleSprite = mCirclePlayer->CreateComponent<CircleSprite>();
+			circleSprite->SetEllipse({ { 0,0 }, size , size });
+			boxSprite->SetBaseColor({ 1, 0, 0, 0.5f });
+			boxSprite->SetBorderColor({ 1, 0, 0, 1.f });
+			rigidbody = mCirclePlayer->CreateComponent<Rigidbody>();
+			CirclePlayerComponent* circleCo = mCirclePlayer->CreateComponent<CirclePlayerComponent>();
+			circleCo->SetSpped({ 100, 100 });
 			rigidbody->SetMass(100);
 
 			for (size_t i = 0u; i < DUMMY_COUNT; ++i)
 			{
-
-				radius = (rand() % 200) + 10;
+				size = (rand() % 200) + 10;
 
 				mDummy[i] = new GameObject();
 				transform = mDummy[i]->CreateComponent<Transform>();
 				transform->SetTranslate({ GetWidth() / static_cast<float>(DUMMY_COUNT) * i, static_cast<float>(rand() % GetHeight()) });
-				circleCollider = mDummy[i]->CreateComponent<CircleCollider>();
-				circleCollider->SetRadius(radius);
-				circleSprite = mDummy[i]->CreateComponent<CircleSprite>();
-				circleSprite->SetEllipse({ { 0,0 }, radius, radius });
-				circleSprite->SetBaseColor({ 1, 0, 0, 0.5f });
-				circleSprite->SetBorderColor({ 1, 0, 0, 1.f });
+				aabbCollider = mDummy[i]->CreateComponent<AABBCollider>();
+				aabbCollider->SetSize({ size, size });
+				boxSprite = mDummy[i]->CreateComponent<BoxSprite>();
+				boxSprite->SetRectangle({ -size / 2, -size / 2, size / 2 , size / 2 });
+				boxSprite->SetBaseColor({ 1, 0, 0, 0.5f });
+				boxSprite->SetBorderColor({ 1, 0, 0, 1.f });
 				rigidbody = mDummy[i]->CreateComponent<Rigidbody>();
 
-				rigidbody->SetMass(0);
+				rigidbody->SetMass(size);
 			}
 		}
 	}
@@ -84,9 +100,10 @@ namespace d2dRigidbodyAABB
 		delete mRightWall;
 		delete mGround;
 		delete mCeiling;
-		delete mBounceBall;
+		delete mCirclePlayer;
+		delete mBoxPlayer;
 
-		for (size_t i = 0; i < 10; ++i)
+		for (size_t i = 0; i < DUMMY_COUNT; ++i)
 		{
 			delete mDummy[i];
 		}

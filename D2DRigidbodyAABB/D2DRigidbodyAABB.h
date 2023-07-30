@@ -28,6 +28,7 @@ namespace d2dRigidbodyAABB
 		d2dFramework::GameObject* mCeiling;
 
 		d2dFramework::GameObject* mBoxPlayer;
+		d2dFramework::GameObject* mCirclePlayer;
 
 		d2dFramework::GameObject* mDummy[DUMMY_COUNT];
 	};

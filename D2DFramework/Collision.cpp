@@ -13,20 +13,47 @@ namespace d2dFramework
 {
 	bool Collision::CheckAABBToAABB(const AABB& lhs, const AABB& rhs, Manifold* outmanifold)
 	{
-		if (lhs.TopLeft.GetY() < lhs.BottomRight.GetY())
+		Vector2 diffVec = GetCenter(rhs) - GetCenter(lhs);
+
+		const float LHS_HALF_X = GetWidth(lhs) * 0.5f;
+		const float LHS_HALF_Y = GetHeight(lhs) * 0.5f;
+		const float RHS_HALF_X = GetWidth(rhs) * 0.5f;
+		const float RHS_HALF_Y = GetHeight(rhs) * 0.5f;
+
+		const float X_OVERLAP = LHS_HALF_X + RHS_HALF_X - fabsf(diffVec.GetX());
+		const float Y_OVERLAP = LHS_HALF_Y + RHS_HALF_Y - fabsf(diffVec.GetY());
+
+		if (X_OVERLAP < 0 || Y_OVERLAP < 0)
 		{
-			return lhs.TopLeft.GetX() < rhs.BottomRight.GetX()
-				&& rhs.TopLeft.GetX() < lhs.BottomRight.GetX()
-				&& lhs.TopLeft.GetY() < rhs.BottomRight.GetY()
-				&& rhs.TopLeft.GetY() < lhs.BottomRight.GetY();
+			return false;
+		}
+
+		if (X_OVERLAP > Y_OVERLAP)
+		{
+			if (diffVec.GetY() < 0)
+			{
+				outmanifold->CollisionNormal = Vector2(0, -1);
+			}
+			else
+			{
+				outmanifold->CollisionNormal = Vector2(0, 1);
+			}
+			outmanifold->Penetration = Y_OVERLAP;
 		}
 		else
 		{
-			return lhs.TopLeft.GetX() < rhs.BottomRight.GetX()
-				&& rhs.TopLeft.GetX() < lhs.BottomRight.GetX()
-				&& lhs.BottomRight.GetY() < rhs.TopLeft.GetY()
-				&& rhs.BottomRight.GetY() < lhs.TopLeft.GetY();
+			if (diffVec.GetX() < 0)
+			{
+				outmanifold->CollisionNormal = Vector2(-1, 0);
+			}
+			else
+			{
+				outmanifold->CollisionNormal = Vector2(1, 0);
+			}
+			outmanifold->Penetration = X_OVERLAP;
 		}
+
+		return true;
 	}
 
 	bool Collision::CheckAABBToOBB(const AABB& lhs, const OBB& rhs, Manifold* outmanifold)
@@ -103,27 +130,37 @@ namespace d2dFramework
 		const float RECT_HALF_WIDTH = GetWidth(lhs) * 0.5f;
 		const float RECT_HALF_HEIGHT = GetHeight(lhs) * 0.5f;
 
-		const Vector2 RECT_CENTER = GetCenter(lhs);
+		Vector2 diffVec = rhs.Center - GetCenter(lhs);
+		Vector2 closet =
+		{
+			MathHelper::Clamp(diffVec.GetX(), -RECT_HALF_WIDTH, RECT_HALF_WIDTH),
+			MathHelper::Clamp(diffVec.GetY(), -RECT_HALF_HEIGHT, RECT_HALF_HEIGHT)
+		};
 
-		Vector2 distance = rhs.Center - RECT_CENTER;
-		distance.AbsXY();
+		bool inside = closet == diffVec;
 
-		if (distance.GetX() > RECT_HALF_WIDTH + rhs.Radius)
+		Vector2 normal = diffVec - closet;
+		float normalLengthSquard = normal.GetMagnitudeSquared();
+		float radiusSquard = rhs.Radius * rhs.Radius;
+
+		if (normalLengthSquard > radiusSquard && !inside)
 		{
 			return false;
 		}
-		if (distance.GetY() > RECT_HALF_HEIGHT + rhs.Radius)
+
+		outmanifold->Penetration = rhs.Radius - sqrt(normalLengthSquard);
+		normal.Normalize();
+
+		if (inside)
 		{
-			return false;
+			outmanifold->CollisionNormal = normal * -1;
+		}
+		else
+		{
+			outmanifold->CollisionNormal = normal;
 		}
 
-		if (distance.GetX() <= RECT_HALF_WIDTH || distance.GetY() <= RECT_HALF_HEIGHT)
-		{
-			return true;
-		}
-
-		float cornerDistance = std::pow(distance.GetX() - RECT_HALF_WIDTH, 2) + std::pow(distance.GetY() - RECT_HALF_HEIGHT, 2);
-		return cornerDistance <= std::pow(rhs.Radius, 2);
+		return true;
 	}
 
 	bool Collision::CheckOBBToOBB(const OBB& lhs, const OBB& rhs, Manifold* outmanifold)
@@ -217,6 +254,15 @@ namespace d2dFramework
 		return cornerDistance <= circleDistance;
 	}
 
+	bool Collision::CheckCircleToAABB(const Circle& lhs, const AABB& rhs, Manifold* outManifold)
+	{
+		bool result = CheckAABBToCircle(rhs, lhs, outManifold);
+
+		outManifold->CollisionNormal *= -1.f;
+
+		return result;
+	}
+
 	bool Collision::CheckCircleToCircle(const Circle& lhs, const Circle& rhs, Manifold* outmanifold)
 	{
 		Vector2 diffVec = rhs.Center - lhs.Center; // 언제나 lhs가 기준
@@ -242,6 +288,8 @@ namespace d2dFramework
 
 		return true;
 	}
+
+
 
 	float Collision::GetWidth(const AABB& aabb)
 	{

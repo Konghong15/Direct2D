@@ -11,6 +11,8 @@ namespace d2dFramework
 	class Collision
 	{
 	public:
+		// 모든 충돌로 생성된 manifold는 lhs->rhs로 가는 방향으로 생성되므로 lhs는 역방향에 대한 임펄스를 가해야한다.
+
 		static bool CheckAABBToAABB(const AABB& lhs, const AABB& rhs, Manifold* outManifold);
 		static bool CheckAABBToOBB(const AABB& lhs, const OBB& rhs, Manifold* outManifold);
 		static bool CheckAABBToCircle(const AABB& lhs, const Circle& rhs, Manifold* outManifold);
@@ -18,6 +20,7 @@ namespace d2dFramework
 		static bool CheckOBBToOBB(const OBB& lhs, const OBB& rhs, Manifold* outManifold);
 		static bool CheckOBBToCircle(const OBB& lhs, const Circle& rhs, Manifold* outManifold);
 
+		static bool CheckCircleToAABB(const Circle& lhs, const AABB& rhs, Manifold* outManifold);
 		static bool CheckCircleToCircle(const Circle& lhs, const Circle& rhs, Manifold* outManifold);
 
 		static float GetWidth(const AABB& aabb);

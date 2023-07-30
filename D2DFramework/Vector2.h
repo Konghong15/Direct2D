@@ -26,6 +26,8 @@ namespace d2dFramework
 		Vector2 operator/(float scalar) const;
 		Vector2 operator*(const D2D1::Matrix3x2F& matrix) const;
 		Vector2& operator+=(const Vector2& other);
+		Vector2& operator*=(int scalar);
+		Vector2& operator*=(float scalar);
 		Vector2& operator*=(const D2D1::Matrix3x2F& matrix);
 
 		void Normalize();

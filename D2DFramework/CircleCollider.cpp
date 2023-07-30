@@ -50,7 +50,7 @@ namespace d2dFramework
 		case eColliderType::AABB:
 		{
 			AABBCollider* concreteOther = static_cast<AABBCollider*>(other);
-			return Collision::CheckAABBToCircle(concreteOther->GetWorldAABB(), GetWorldCircle(), outManifold);
+			return Collision::CheckCircleToAABB(GetWorldCircle(), concreteOther->GetWorldAABB(), outManifold);
 		}
 		break;
 		case eColliderType::OBB:

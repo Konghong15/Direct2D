@@ -14,25 +14,29 @@ namespace d2dFramework
 		AABBCollider(GameObject* owner);
 		virtual ~AABBCollider() = default;
 
-		virtual void UpdateCollider();
-		virtual void HandleCollision(ICollideable* other);
+		virtual void UpdateCollider() override;
+		virtual void HandleCollision(ICollideable* other) override;
 
 		inline void SetIsTrigger(bool bisTrigger);
+		inline void SetOffSet(const Vector2& offset);
+		inline void SetSize(const Vector2& size);
 
+		inline GameObject* GetGameObject() const override;
+		inline eColliderType GetColliderType() const override;
 		inline bool GetIsTrigger() const;
+		inline const Vector2& GetOffset() const;
+		inline const Vector2& GetSize() const;
 		inline const AABB& GetWorldAABB() const;
 
 	protected:
 		virtual bool checkCollision(ICollideable* other, Manifold* outManifold) override;
 		virtual void onCollision(ICollideable* other, const Manifold& manifold) override;
 
-		using Component::GetGameObject;
-
 	private:
 		bool mbIsTrigger;
 
 		Vector2 mOffset;
-		AABB mLocalAABB;
+		Vector2 mSize;
 
 		AABB mWorldAABB;
 	};
@@ -41,10 +45,34 @@ namespace d2dFramework
 	{
 		mbIsTrigger = bisTrigger;
 	}
+	void AABBCollider::SetOffSet(const Vector2& offset)
+	{
+		mOffset = offset;
+	}
+	void AABBCollider::SetSize(const Vector2& size)
+	{
+		mSize = size;
+	}
 
+	GameObject* AABBCollider::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	eColliderType AABBCollider::GetColliderType() const
+	{
+		return eColliderType::AABB;
+	}
 	bool AABBCollider::GetIsTrigger() const
 	{
 		return mbIsTrigger;
+	}
+	const Vector2& AABBCollider::GetOffset() const
+	{
+		return mOffset;
+	}
+	const Vector2& AABBCollider::GetSize() const
+	{
+		return mSize;
 	}
 	const AABB& AABBCollider::GetWorldAABB() const
 	{
