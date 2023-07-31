@@ -1,13 +1,14 @@
-#include <cassert>
-
 #include "GameProcessor.h"
+
 #include "RenderManger.h"
 #include "TimeManger.h"
 #include "InputManager.h"
-
+#include "IBaseInterface.h"
 #include "Scene.h"
 #include "SceneManager.h"
-#include "IBaseInterface.h"
+#include "EventManager.h"
+
+#include <cassert>
 
 namespace d2dFramework
 {
@@ -20,15 +21,18 @@ namespace d2dFramework
 		, mSceneManager(new SceneManager())
 	{
 		InputManager::mInstance = new InputManager;
+		EventManager::mInstance = new EventManager;
 	}
 
 	GameProcessor::~GameProcessor()
 	{
 		delete mTimeManager;
 		delete mRenderManager;
+		delete mSceneManager;
 		delete InputManager::mInstance;
 		InputManager::mInstance = nullptr;
-		delete mSceneManager;
+		delete EventManager::mInstance;
+		EventManager::mInstance = nullptr;
 	}
 
 	void GameProcessor::Init()
@@ -41,7 +45,6 @@ namespace d2dFramework
 		mTimeManager->Init();
 		mSceneManager->Init();
 		InputManager::mInstance->Init();
-
 		IBaseInterface::SetGameProcessor(this);
 	}
 
@@ -56,8 +59,8 @@ namespace d2dFramework
 		assert(DELTA_TIME >= 0.f);
 
 		s_FixedTime += DELTA_TIME;
-
 		Scene& curScene = mSceneManager->GetCurrentScene();
+
 		while (s_FixedTime >= 0.02f)
 		{
 			curScene.FixedUpdate(0.02f);
@@ -66,63 +69,19 @@ namespace d2dFramework
 			s_FixedTime -= 0.02f;
 		}
 
-		update(DELTA_TIME);
+		curScene.Update(DELTA_TIME);
 		// lateUpdate()
-		render();
-		// handleEvent()
+		curScene.Render(mRenderManager);
+
+		EventManager::mInstance->handleEvent();
 	}
 
 	void GameProcessor::Destroy()
 	{
 		mRenderManager->Release();
-		mSceneManager->Delete();
-		CoUninitialize();
+		mSceneManager->Release();
+		EventManager::mInstance->release();
 		IBaseInterface::SetGameProcessor(nullptr);
-	}
-
-	void GameProcessor::collision()
-	{
-		for (size_t i = 0; i < mCollideable.size(); ++i)
-		{
-			mCollideable[i]->UpdateCollider();
-		}
-
-		for (size_t i = 0; i < mCollideable.size(); ++i)
-		{
-			for (size_t j = i + 1; j < mCollideable.size(); ++j)
-			{
-				mCollideable[i]->HandleCollision(mCollideable[j]);
-			}
-		}
-	}
-
-	void GameProcessor::fixedUpdate(float deltaTime)
-	{
-		for (IFixedUpdateable* fixedUpdateable : mFixedUpdateable)
-		{
-			fixedUpdateable->FixedUpdate(deltaTime);
-		}
-	}
-
-	void GameProcessor::update(float deltaTime)
-	{
-		for (IUpdateable* updateable : mUpdateable)
-		{
-			updateable->Update(deltaTime);
-		}
-	}
-
-	void GameProcessor::render()
-	{
-		assert(mRenderManager != nullptr);
-
-		mRenderManager->BeginDraw();
-
-		for (IRenderable* renderable : mRenderable)
-		{
-			renderable->Render(mRenderManager);
-		}
-
-		mRenderManager->EndDraw();
+		CoUninitialize();
 	}
 }

@@ -54,7 +54,7 @@ namespace d2dRigidbodyAABB
 			rigidbody = mBoxPlayer->CreateComponent<Rigidbody>();
 			BoxPlayerComponent* boxCo = mBoxPlayer->CreateComponent<BoxPlayerComponent>();
 			boxCo->SetSpped({ 100, 100 });
-			rigidbody->SetMass(100);
+			rigidbody->SetMass(100);  
 
 			mCirclePlayer = new GameObject();
 			transform = mCirclePlayer->CreateComponent<Transform>();

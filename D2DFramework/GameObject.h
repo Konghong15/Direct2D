@@ -11,14 +11,8 @@ namespace d2dFramework
 	class GameObject
 	{
 	public:
-		GameObject() = default;
-		~GameObject()
-		{
-			for (auto pair : mComponents)
-			{
-				delete pair.second;
-			}
-		}
+		GameObject(unsigned int id);
+		~GameObject();
 
 		template <typename T>
 		T* CreateComponent();
@@ -29,7 +23,10 @@ namespace d2dFramework
 		// 각자 시스템에 ID 동록해서 관련 처리하는 방식
 		// 크게 렌더링과 충돌 검출, 이동처리 정도? 나머지는 고유한 시스템이나 관련스크립트로 뺴서 처리하면 될 거 같다.
 
+		inline unsigned int GetId() const;
+
 	private:
+		unsigned int mId;
 		std::unordered_map<size_t, Component*> mComponents;
 	};
 
@@ -60,5 +57,10 @@ namespace d2dFramework
 		T* find = static_cast<T*>((*iter).second);
 
 		return find;
+	}
+
+	unsigned int GameObject::GetId() const
+	{
+		return mId;
 	}
 }

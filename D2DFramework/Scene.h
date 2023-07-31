@@ -9,6 +9,7 @@ namespace d2dFramework
 	class IFixedUpdateable;
 	class IUpdateable;
 	class IRenderable;
+	class RenderManager;
 
 	class Scene
 	{
@@ -23,7 +24,8 @@ namespace d2dFramework
 		void HandleCollision();
 		void FixedUpdate(float deltaTime);
 		void Update(float deltaTime);
-		void Render();
+		void Render(RenderManager* renderManager);
+		void HandleObjectReference(); // create, delete handling 
 
 		inline void RegisterCollideable(ICollideable* collideable);
 		inline void RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable);
@@ -42,59 +44,50 @@ namespace d2dFramework
 		std::vector<IFixedUpdateable*> mFixedUpdateable;
 		std::vector<IUpdateable*> mUpdateable;
 		std::vector<IRenderable*> mRenderable;
+
+		std::vector<ICollideable*> mCreateCollideable;
+		std::vector<IFixedUpdateable*> mCreateFixedUpdateable;
+		std::vector<IUpdateable*> mCreateUpdateable;
+		std::vector<IRenderable*> mCreateRenderable;
+
+		// 지연 소멸되는 개체는 실제로는 댕글링 포인터로 참조를 지우는 역할만을 수행해야 한다.
+		std::vector<ICollideable*> mDeleteCollideable;
+		std::vector<IFixedUpdateable*> mDeleteFixedUpdateable;
+		std::vector<IUpdateable*> mDeleteUpdateable;
+		std::vector<IRenderable*> mDeleteRenderable;
 	};
 
 	void Scene::RegisterCollideable(ICollideable* collideable)
 	{
-		mCollideable.push_back(collideable);
+		mCreateCollideable.push_back(collideable);
 	}
 	void Scene::RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
 	{
-		mFixedUpdateable.push_back(fixedUpdateable);
+		mCreateFixedUpdateable.push_back(fixedUpdateable);
 	}
 	void Scene::RegisterUpdateable(IUpdateable* updateable)
 	{
-		mUpdateable.push_back(updateable);
+		mCreateUpdateable.push_back(updateable);
 	}
 	void Scene::RegisterRenderable(IRenderable* renderable)
 	{
-		mRenderable.push_back(renderable);
+		mCreateRenderable.push_back(renderable);
 	}
 
 	void Scene::UnregisterCollideable(ICollideable* collideable)
 	{
-		auto iter = std::find(mCollideable.begin(), mCollideable.end(), collideable);
-
-		if (iter != mCollideable.end())
-		{
-			mCollideable.erase(iter);
-		}
+		mDeleteCollideable.push_back(collideable);
 	}
 	void Scene::UnregisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
 	{
-		auto iter = std::find(mFixedUpdateable.begin(), mFixedUpdateable.end(), fixedUpdateable);
-
-		if (iter != mFixedUpdateable.end())
-		{
-			mFixedUpdateable.erase(iter);
-		}
+		mDeleteFixedUpdateable.push_back(fixedUpdateable);
 	}
 	void Scene::UnregisterUpdateable(IUpdateable* updateable)
 	{
-		auto iter = std::find(mUpdateable.begin(), mUpdateable.end(), updateable);
-
-		if (iter != mUpdateable.end())
-		{
-			mUpdateable.erase(iter);
-		}
+		mDeleteUpdateable.push_back(updateable);
 	}
 	void Scene::UnregisterRenderable(IRenderable* renderable)
 	{
-		auto iter = std::find(mRenderable.begin(), mRenderable.end(), renderable);
-
-		if (iter != mRenderable.end())
-		{
-			mRenderable.erase(iter);
-		}
+		mDeleteRenderable.push_back(renderable);
 	}
 }

@@ -43,6 +43,12 @@
     <Filter Include="헤더 파일\Enum">
       <UniqueIdentifier>{4b489a5c-9135-44f5-bd67-d010c01f7f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\ManagedClass">
+      <UniqueIdentifier>{03fe6d9d-dbf0-47db-a69a-13ce8893f0ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ManagedClass">
+      <UniqueIdentifier>{8b7f5549-9d3e-48b4-99b5-8d397d2370d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinApp.cpp">
@@ -65,12 +71,6 @@
     </ClCompile>
     <ClCompile Include="BoxSprite.cpp">
       <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationAsset.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationInstance.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="IFixedUpdateable.cpp">
       <Filter>소스 파일\Interface</Filter>
@@ -120,11 +120,26 @@
     <ClCompile Include="AABBCollider.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\ManagedClass</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationAsset.cpp">
+      <Filter>소스 파일\ManagedClass</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationInstance.cpp">
+      <Filter>소스 파일\ManagedClass</Filter>
+    </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\ManagedClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +167,6 @@
     <ClInclude Include="Component.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="IRenderable.h">
       <Filter>헤더 파일\Interface</Filter>
     </ClInclude>
@@ -181,12 +193,6 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationAsset.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationInstance.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>헤더 파일\Helper</Filter>
@@ -222,6 +228,21 @@
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
+      <Filter>헤더 파일\ManagedClass</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationAsset.h">
+      <Filter>헤더 파일\ManagedClass</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationInstance.h">
+      <Filter>헤더 파일\ManagedClass</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>헤더 파일\ManagedClass</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

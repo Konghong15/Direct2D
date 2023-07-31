@@ -16,19 +16,16 @@ namespace d2dFramework
 		SceneManager(const SceneManager&) = delete;
 		SceneManager& operator=(const SceneManager&) = delete;
 
-		inline Scene& GetCurrentScene() const;
+		void Init();
+		void Release();
+
 		inline void RegisterScene(const std::string& sceneName, Scene* scene);
+		inline Scene& GetCurrentScene() const;
 
 	private:
 		Scene* mCurrentScene;
 		std::map<std::string, Scene*> mSceneMap;
 	};
-
-	Scene& SceneManager::GetCurrentScene() const
-	{
-		assert(mCurrentScene != nullptr);
-		return *mCurrentScene;
-	}
 
 	void SceneManager::RegisterScene(const std::string& sceneName, Scene* scene)
 	{
@@ -41,5 +38,10 @@ namespace d2dFramework
 		assert(iter == mSceneMap.end()); // 동일한 이름의 씬을 등록하면 안댐
 
 		mSceneMap.insert({ sceneName, scene });
+	}
+
+	Scene& SceneManager::GetCurrentScene() const
+	{
+		return *mCurrentScene;
 	}
 }

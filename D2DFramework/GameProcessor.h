@@ -9,7 +9,7 @@ namespace d2dFramework
 	class TimeManager;
 	class RenderManager;
 	class InputManager;
-	class GameObject;
+	class EventManager;
 	class SceneManager;
 
 	class GameProcessor
@@ -45,29 +45,24 @@ namespace d2dFramework
 	{
 		return mWidth;
 	}
-
 	UINT GameProcessor::GetHeight() const
 	{
 		return mHeight;
 	}
-
 	const WCHAR* GameProcessor::GetTitle() const
 	{
 		return mTitle.c_str();
 	}
-
 	TimeManager* GameProcessor::getTimeManager() const
 	{
 		assert(mTimeManager != nullptr);
 		return mTimeManager;
 	}
-
 	RenderManager* GameProcessor::getRenderManager() const
 	{
 		assert(mRenderManager != nullptr);
 		return mRenderManager;
 	}
-
 	SceneManager* GameProcessor::getSceneManager() const
 	{
 		assert(mSceneManager != nullptr);
