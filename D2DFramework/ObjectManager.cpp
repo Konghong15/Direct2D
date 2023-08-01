@@ -2,20 +2,47 @@
 
 namespace d2dFramework
 {
+	ObjectManager* ObjectManager::mInstance = nullptr;
+
+	ObjectManager* ObjectManager::GetInstance()
+	{
+		assert(mInstance != nullptr);
+		return mInstance;
+	}
+
 	ObjectManager::ObjectManager()
 	{
-		mObjectMap.reserve(RESERVE_SIZE);
+		mValidObjectMap.reserve(RESERVE_SIZE);
 	}
 
 	ObjectManager::~ObjectManager()
 	{
-		for (auto iter = mObjectMap.begin(); iter != mObjectMap.end(); ++iter)
+		release();
+	}
+
+	void ObjectManager::handleDeleteObject()
+	{
+		while (!mDeleteObject.empty())
+		{
+			auto iter = mValidObjectMap.find(mDeleteObject.front());
+
+			if (iter != mValidObjectMap.end())
+			{
+				delete iter->second;
+				mValidObjectMap.erase(iter);
+			}
+		}
+	}
+
+	void ObjectManager::release()
+	{
+		for (auto iter = mValidObjectMap.begin(); iter != mValidObjectMap.end(); ++iter)
 		{
 			GameObject* gameObject = iter->second;
 
 			delete gameObject;
 		}
 
-		mObjectMap.clear();
+		mValidObjectMap.clear();
 	}
 }

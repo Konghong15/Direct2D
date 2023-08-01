@@ -6,6 +6,7 @@
 #include "IBaseInterface.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "ObjectManager.h"
 #include "EventManager.h"
 
 #include <cassert>
@@ -22,6 +23,7 @@ namespace d2dFramework
 	{
 		InputManager::mInstance = new InputManager;
 		EventManager::mInstance = new EventManager;
+		ObjectManager::mInstance = new ObjectManager;
 	}
 
 	GameProcessor::~GameProcessor()
@@ -33,6 +35,8 @@ namespace d2dFramework
 		InputManager::mInstance = nullptr;
 		delete EventManager::mInstance;
 		EventManager::mInstance = nullptr;
+		delete ObjectManager::mInstance;
+		ObjectManager::mInstance = nullptr;
 	}
 
 	void GameProcessor::Init()
@@ -70,8 +74,11 @@ namespace d2dFramework
 		}
 
 		curScene.Update(DELTA_TIME);
-		// lateUpdate()
+		// lateUpdate?
 		curScene.Render(mRenderManager);
+
+		curScene.HandleSpawnObject();
+		ObjectManager::mInstance->handleDeleteObject();
 
 		EventManager::mInstance->handleEvent();
 	}

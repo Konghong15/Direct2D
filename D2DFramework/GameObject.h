@@ -10,10 +10,9 @@ namespace d2dFramework
 
 	class GameObject
 	{
-	public:
-		GameObject(unsigned int id);
-		~GameObject();
+		friend class ObjectManager;
 
+	public:
 		template <typename T>
 		T* CreateComponent();
 		template <typename T>
@@ -24,6 +23,10 @@ namespace d2dFramework
 		// 크게 렌더링과 충돌 검출, 이동처리 정도? 나머지는 고유한 시스템이나 관련스크립트로 뺴서 처리하면 될 거 같다.
 
 		inline unsigned int GetId() const;
+
+	private:
+		GameObject(unsigned int id);
+		~GameObject();
 
 	private:
 		unsigned int mId;

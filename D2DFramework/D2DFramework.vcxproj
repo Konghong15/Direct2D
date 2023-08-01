@@ -139,6 +139,7 @@
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="CircleSprite.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameProcessor.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="CircleCollider.h" />
     <ClInclude Include="CircleSprite.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="eColliderType.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="IBaseInterface.h" />
