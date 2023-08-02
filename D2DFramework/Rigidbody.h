@@ -11,10 +11,12 @@ namespace d2dFramework
 	class Rigidbody final : public Component, public IFixedUpdateable
 	{
 	public:
-		Rigidbody(GameObject* owner);
+		Rigidbody(unsigned int id, GameObject* owner);
 		~Rigidbody() = default;
 
-		virtual void FixedUpdate(float deltaTime);
+		void Init() override;
+		void FixedUpdate(float deltaTime) override;
+		void Release() override;
 
 		inline void SetVelocity(const Vector2& velocity);
 		inline void SetAcceleartion(const Vector2& acceleration);

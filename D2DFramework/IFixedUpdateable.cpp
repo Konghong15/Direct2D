@@ -1,15 +1,23 @@
 #include "IFixedUpdateable.h"
-#include "GameProcessor.h"
+
+#include "SceneManager.h"
 
 namespace d2dFramework
 {
-	IFixedUpdateable::IFixedUpdateable()
+	SceneManager* IFixedUpdateable::mSceneManager = nullptr;
+
+	void IFixedUpdateable::SetSceneManager(SceneManager* sceneManager)
 	{
-		GetGameProcessor()->RegisterFixedUpdateable(this);
+		mSceneManager = sceneManager;
 	}
 
-	IFixedUpdateable::~IFixedUpdateable()
+	void IFixedUpdateable::Init()
 	{
-		GetGameProcessor()->UnregisterFixedUpdateable(this);
+		mSceneManager->RegisterFixedUpdateable(this);
+	}
+
+	void IFixedUpdateable::Release()
+	{
+		mSceneManager->UnregisterFixedUpdateable(this);
 	}
 }

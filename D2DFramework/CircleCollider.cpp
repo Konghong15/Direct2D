@@ -15,10 +15,15 @@
 
 namespace d2dFramework
 {
-	CircleCollider::CircleCollider(GameObject* owner)
-		: Component(owner)
+	CircleCollider::CircleCollider(unsigned int id, GameObject* owner)
+		: Component(id, owner)
 		, mbIsTrigger(false)
 	{
+	}
+
+	void CircleCollider::Init()
+	{
+		ICollideable::Init();
 	}
 
 	void CircleCollider::UpdateCollider()
@@ -33,17 +38,7 @@ namespace d2dFramework
 		mWorldCircle.Radius = mLocalRadius * (SCALE.GetX() > SCALE.GetY() ? SCALE.GetX() : SCALE.GetY());
 	}
 
-	void CircleCollider::HandleCollision(ICollideable* other)
-	{
-		Manifold manifold;
-
-		if (checkCollision(other, &manifold))
-		{
-			onCollision(other, manifold);
-		}
-	}
-
-	bool CircleCollider::checkCollision(ICollideable* other, Manifold* outManifold)
+	bool CircleCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
 	{
 		switch (other->GetColliderType())
 		{
@@ -67,11 +62,12 @@ namespace d2dFramework
 		break;
 		default:
 			assert(false);
+			return false;
 			break;
 		}
 	}
 
-	void CircleCollider::onCollision(ICollideable* other, const Manifold& manifold)
+	void CircleCollider::OnCollision(ICollideable* other, const Manifold& manifold)
 	{
 		Rigidbody* rigidBody = GetGameObject()->GetComponent<Rigidbody>();
 		Rigidbody* otherRigidBody = other->GetGameObject()->GetComponent<Rigidbody>();
@@ -111,6 +107,11 @@ namespace d2dFramework
 
 		rigidBody->AddVelocity(correction * -rigidBody->GetInvMass());
 		otherRigidBody->AddVelocity(correction * otherRigidBody->GetInvMass());
+	}
+
+	void CircleCollider::Release()
+	{
+		ICollideable::Release();
 	}
 
 	//void CircleCollider::CheckCollision(ICollideable* other)

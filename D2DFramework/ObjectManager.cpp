@@ -1,5 +1,7 @@
 #include "ObjectManager.h"
 
+#include "eFrameworkID.h"
+
 namespace d2dFramework
 {
 	ObjectManager* ObjectManager::mInstance = nullptr;
@@ -11,6 +13,7 @@ namespace d2dFramework
 	}
 
 	ObjectManager::ObjectManager()
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::ObjectManager))
 	{
 		mValidObjectMap.reserve(RESERVE_SIZE);
 	}

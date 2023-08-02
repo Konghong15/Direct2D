@@ -1,30 +1,46 @@
 #pragma once
 
-#include "IBaseInterface.h"
 #include "eColliderType.h"
+
+#include <cassert>
 
 namespace d2dFramework
 {
 	class hRectangle;
 	class GameObject;
+	class CollisionManager;
 	struct Manifold;
 
-	class ICollideable : public IBaseInterface
+	class ICollideable
 	{
+		friend class GameProcessor;
+
 	public:
-		ICollideable();
-		virtual ~ICollideable();
+		ICollideable() = default;
+		virtual ~ICollideable() = default;
 
-		virtual void UpdateCollider() = 0; // 매 충돌 처리마다 행렬 연산하기 아까워서 한 번 업데이트 시킨 거 사용함
-		virtual bool CheckCollision(ICollideable* other, Manifold* outManifold) = 0; // 충돌 검출
-		
-		virtual void onCollision(ICollideable* other, const Manifold& manifold) = 0; // 충돌 반응
+		virtual void Init() = 0;
+		virtual void UpdateCollider() = 0;
+		virtual bool CheckCollision(ICollideable* other, Manifold* outManifold) = 0;
+		virtual void OnCollision(ICollideable* other, const Manifold& manifold) = 0;
+		virtual void Release() = 0;
 
-
-		/* 	충돌 관련 처리는 인터페이스 클래스에 의존하지만 GameObject에 접근할 방법이 필요함
-		해당 함수는 순수 가상 함수이므로 다중 상속으로 인한 구현 충돌 없이 사용 가능하다. */
 		virtual inline GameObject* GetGameObject() const = 0;
-		virtual inline eColliderType GetColliderType() const = 0; // 런타임에 캐스팅을 위한 정보
+		virtual inline eColliderType GetColliderType() const = 0;
 
+	protected:
+		inline CollisionManager* GetCollisionManager();
+
+	private:
+		static void SetCollisionManager(CollisionManager* collisionManager);
+
+	private:
+		static CollisionManager* mCollisionManager;
 	};
+
+	CollisionManager* ICollideable::GetCollisionManager()
+	{
+		assert(mCollisionManager != nullptr);
+		return mCollisionManager;
+	}
 }

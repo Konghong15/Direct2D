@@ -9,13 +9,18 @@
 
 namespace d2dFramework
 {
-	AABBCollider::AABBCollider(GameObject* owner)
-		: Component(owner)
+	AABBCollider::AABBCollider(unsigned int id, GameObject* owner)
+		: Component(id, owner)
 		, mbIsTrigger(false)
 		, mOffset(0.f, 0.f)
 		, mSize(1.f, 1.f)
 		, mWorldAABB{ Vector2(-0.5f, -0.5f), Vector2(0.5f, 0.5f) }
 	{
+	}
+
+	void AABBCollider::Init()
+	{
+		ICollideable::Init();
 	}
 
 	void AABBCollider::UpdateCollider()
@@ -31,17 +36,7 @@ namespace d2dFramework
 		mWorldAABB.BottomRight = (size * 0.5f) + mOffset + TRANSLATE;
 	}
 
-	void AABBCollider::HandleCollision(ICollideable* other)
-	{
-		Manifold manifold;
-
-		if (checkCollision(other, &manifold))
-		{
-			onCollision(other, manifold);
-		}
-	}
-
-	bool AABBCollider::checkCollision(ICollideable* other, Manifold* outManifold)
+	bool AABBCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
 	{
 		switch (other->GetColliderType())
 		{
@@ -65,10 +60,13 @@ namespace d2dFramework
 		break;
 		default:
 			assert(false);
+			return false;
 			break;
 		}
 	}
-	void AABBCollider::onCollision(ICollideable* other, const Manifold& manifold)
+
+
+	void AABBCollider::OnCollision(ICollideable* other, const Manifold& manifold)
 	{
 		Rigidbody* rigidBody = GetGameObject()->GetComponent<Rigidbody>();
 		Rigidbody* otherRigidBody = other->GetGameObject()->GetComponent<Rigidbody>();
@@ -108,5 +106,10 @@ namespace d2dFramework
 
 		rigidBody->AddVelocity(correction * -rigidBody->GetInvMass());
 		otherRigidBody->AddVelocity(correction * otherRigidBody->GetInvMass());
+	}
+
+	void AABBCollider::Release()
+	{
+		ICollideable::Release();
 	}
 }

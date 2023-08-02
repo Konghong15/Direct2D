@@ -1,12 +1,16 @@
 #include "SceneManager.h"
 
+#include "IFixedUpdateable.h"
+#include "IUpdateable.h"
+#include "eFrameworkID.h"
 #include "EventManager.h"
 #include "Scene.h"
 
 namespace d2dFramework
 {
 	SceneManager::SceneManager()
-		: mCurrentScene(nullptr)
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::SceneManager))
+		, mCurrentScene(nullptr)
 	{
 	}
 
@@ -38,7 +42,23 @@ namespace d2dFramework
 			mCurrentScene = nextScene->second;
 			mCurrentScene->Enter();
 		};
-		EventManager::GetInstance()->RegisterEventHandler(key, changeScene);
+		EventManager::GetInstance()->RegisterEventHandler(key, BaseEntity::GetId(), changeScene);
+	}
+
+	void SceneManager::FixedUpdate(float deltaTime)
+	{
+		for (IFixedUpdateable* fixedUpdateable : mFixedUpdateable)
+		{
+			fixedUpdateable->FixedUpdate(deltaTime);
+		}
+	}
+
+	void SceneManager::Update(float deltaTime)
+	{
+		for (IUpdateable* updateable : mUpdateable)
+		{
+			updateable->Update(deltaTime);
+		}
 	}
 
 	void SceneManager::Release()

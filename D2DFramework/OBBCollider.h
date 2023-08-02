@@ -12,22 +12,21 @@ namespace d2dFramework
 	class OBBCollider final : public Component, public ICollideable
 	{
 	public:
-		OBBCollider(GameObject* owner);
+		OBBCollider(unsigned int id, GameObject* owner);
 		virtual ~OBBCollider() = default;
 
-		virtual void UpdateCollider();
-		virtual void HandleCollision(ICollideable* other);
+		void Init() override;
+		void UpdateCollider() override;
+		bool CheckCollision(ICollideable* other, Manifold* outManifold) override;
+		void OnCollision(ICollideable* other, const Manifold& manifold) override;
+		void Release() override;
 
 		inline void SetIsTrigger(bool bisTrigger);
 
+		inline GameObject* GetGameObject() const override;
+		inline eColliderType GetColliderType() const override;
 		inline bool GetIsTrigger() const;
 		inline const OBB& GetWorldOBB() const;
-
-	protected:
-		virtual bool checkCollision(ICollideable* other, Manifold* outManifold) override;
-		virtual void onCollision(ICollideable* other, const Manifold& manifold) override;
-
-		using Component::GetGameObject;
 
 	private:
 		bool mbIsTrigger;
@@ -43,6 +42,14 @@ namespace d2dFramework
 		mbIsTrigger = bisTrigger;
 	}
 
+	GameObject* OBBCollider::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	eColliderType OBBCollider::GetColliderType() const
+	{
+		return eColliderType::OBB;
+	}
 	bool OBBCollider::GetIsTrigger() const
 	{
 		return mbIsTrigger;

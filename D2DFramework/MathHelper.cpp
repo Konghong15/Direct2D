@@ -1,5 +1,7 @@
 #include "MathHelper.h"
 
+#include "Vector2.h"
+
 #define PI_F (3.141592f)
 
 namespace d2dFramework
@@ -26,5 +28,18 @@ namespace d2dFramework
 		}
 
 		return num;
+	}
+
+	D2D1_RECT_F MathHelper::CreateRectangle(const Vector2& offset, const Vector2& size)
+	{
+		D2D1_RECT_F result =
+		{
+			-size.GetX() + offset.GetX(),
+			-size.GetY() + offset.GetY(),
+			size.GetX() + offset.GetX(),
+			size.GetY() + offset.GetY()
+		};
+
+		return result;
 	}
 }

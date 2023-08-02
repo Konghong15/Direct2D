@@ -11,11 +11,14 @@ namespace d2dFramework
 	class CircleCollider final : public Component, public ICollideable
 	{
 	public:
-		CircleCollider(GameObject* owner);
-		virtual ~CircleCollider() = default;
+		CircleCollider(unsigned int id, GameObject* owner);
+		~CircleCollider() override = default;
 
-		virtual void UpdateCollider() override;
-		virtual void HandleCollision(ICollideable* other) override;
+		void Init() override;
+		void UpdateCollider() override;
+		bool CheckCollision(ICollideable* other, Manifold* outManifold) override;
+		void OnCollision(ICollideable* other, const Manifold& manifold) override;
+		void Release() override;
 
 		inline void SetIsTrigger(bool bisTrigger);
 		inline void SetRadius(float radius);
@@ -27,10 +30,6 @@ namespace d2dFramework
 		inline float GetRadius() const;
 		inline const Vector2& GetOffset() const;
 		inline const Circle& GetWorldCircle() const;
-
-	protected:
-		virtual bool checkCollision(ICollideable* other, Manifold* outManifold) override;
-		virtual void onCollision(ICollideable* other, const Manifold& manifold) override;
 
 	private:
 		bool mbIsTrigger;

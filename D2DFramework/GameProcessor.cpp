@@ -3,11 +3,15 @@
 #include "RenderManger.h"
 #include "TimeManger.h"
 #include "InputManager.h"
-#include "IBaseInterface.h"
-#include "Scene.h"
 #include "SceneManager.h"
 #include "ObjectManager.h"
 #include "EventManager.h"
+#include "CollisionManager.h"
+
+#include "IUpdateable.h"
+#include "IFixedUpdateable.h"
+#include "ICollideable.h"
+#include "IRenderable.h"
 
 #include <cassert>
 
@@ -20,6 +24,7 @@ namespace d2dFramework
 		, mTimeManager(new TimeManager())
 		, mRenderManager(new RenderManager())
 		, mSceneManager(new SceneManager())
+		, mCollisionManager(new CollisionManager())
 	{
 		InputManager::mInstance = new InputManager;
 		EventManager::mInstance = new EventManager;
@@ -31,6 +36,7 @@ namespace d2dFramework
 		delete mTimeManager;
 		delete mRenderManager;
 		delete mSceneManager;
+		delete mCollisionManager;
 		delete InputManager::mInstance;
 		InputManager::mInstance = nullptr;
 		delete EventManager::mInstance;
@@ -45,11 +51,15 @@ namespace d2dFramework
 		hr = CoInitialize(NULL);
 		assert(SUCCEEDED(hr));
 
+		ICollideable::SetCollisionManager(mCollisionManager);
+		IRenderable::SetRenderManager(mRenderManager);
+		IUpdateable::SetSceneManager(mSceneManager);
+		IFixedUpdateable::SetSceneManager(mSceneManager);
+
 		mRenderManager->Init();
 		mTimeManager->Init();
 		mSceneManager->Init();
 		InputManager::mInstance->Init();
-		IBaseInterface::SetGameProcessor(this);
 	}
 
 	void GameProcessor::Update()
@@ -63,23 +73,21 @@ namespace d2dFramework
 		assert(DELTA_TIME >= 0.f);
 
 		s_FixedTime += DELTA_TIME;
-		Scene& curScene = mSceneManager->GetCurrentScene();
 
-		while (s_FixedTime >= 0.02f)
+		const float FIXED_DELTA_TIME = 0.02f;
+		while (s_FixedTime >= FIXED_DELTA_TIME)
 		{
-			curScene.FixedUpdate(0.02f);
-			curScene.HandleCollision();
+			mSceneManager->FixedUpdate(FIXED_DELTA_TIME);
+			mCollisionManager->Update(); 
 
-			s_FixedTime -= 0.02f;
+			s_FixedTime -= FIXED_DELTA_TIME; // FIXED_DELTA_TIME;
 		}
 
-		curScene.Update(DELTA_TIME);
+		mSceneManager->Update(DELTA_TIME);
 		// lateUpdate?
-		curScene.Render(mRenderManager);
+		mRenderManager->Render();
 
-		curScene.HandleSpawnObject();
 		ObjectManager::mInstance->handleDeleteObject();
-
 		EventManager::mInstance->handleEvent();
 	}
 
@@ -87,8 +95,14 @@ namespace d2dFramework
 	{
 		mRenderManager->Release();
 		mSceneManager->Release();
+		mCollisionManager->Release();
 		EventManager::mInstance->release();
-		IBaseInterface::SetGameProcessor(nullptr);
+
+		ICollideable::SetCollisionManager(nullptr);
+		IRenderable::SetRenderManager(nullptr);
+		IUpdateable::SetSceneManager(nullptr);
+		IFixedUpdateable::SetSceneManager(nullptr);
+
 		CoUninitialize();
 	}
 }

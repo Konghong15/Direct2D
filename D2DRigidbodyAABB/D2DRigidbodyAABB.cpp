@@ -90,11 +90,6 @@ namespace d2dRigidbodyAABB
 		}
 	}
 
-	void D2DRigidbodyAABB::Update()
-	{
-		GameProcessor::Update();
-	}
-
 	void D2DRigidbodyAABB::Destroy()
 	{
 		delete mLeftWall;

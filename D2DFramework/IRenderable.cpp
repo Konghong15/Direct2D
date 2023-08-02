@@ -1,15 +1,23 @@
 #include "IRenderable.h"
 #include "GameProcessor.h"
+#include "RenderManger.h"
 
 namespace d2dFramework
 {
-	IRenderable::IRenderable()
+	RenderManager* IRenderable::mRenderManager = nullptr;
+
+	void IRenderable::SetRenderManager(RenderManager* renderManager)
 	{
-		GetGameProcessor()->RegisterRenderable(this);
+		mRenderManager = renderManager;
 	}
 
-	IRenderable::~IRenderable()
+	void IRenderable::Init()
 	{
-		GetGameProcessor()->UnregisterRenderable(this);
+		GetRenderManager()->RegisterRenderable(this);
+	}
+
+	void IRenderable::Release()
+	{
+		GetRenderManager()->UnregisterRenderable(this);
 	}
 }

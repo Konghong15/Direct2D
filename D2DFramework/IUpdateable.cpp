@@ -1,15 +1,23 @@
 #include "IUpdateable.h"
-#include "GameProcessor.h"
+
+#include "SceneManager.h"
 
 namespace d2dFramework
 {
-	IUpdateable::IUpdateable()
+	SceneManager* IUpdateable::mSceneManager = nullptr;
+
+	void IUpdateable::SetSceneManager(SceneManager* sceneManager)
 	{
-		GetGameProcessor()->RegisterUpdateable(this);
+		mSceneManager = sceneManager;
 	}
 
-	IUpdateable::~IUpdateable()
+	void IUpdateable::Init()
 	{
-		GetGameProcessor()->UnregisterUpdateable(this);
+		mSceneManager->RegisterUpdateable(this);
+	}
+
+	void IUpdateable::Release()
+	{
+		mSceneManager->UnregisterUpdateable(this);
 	}
 }

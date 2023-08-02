@@ -3,9 +3,14 @@
 
 namespace d2dFramework
 {
-	OBBCollider::OBBCollider(GameObject* owner)
-		: Component(owner)
+	OBBCollider::OBBCollider(unsigned int id, GameObject* owner)
+		: Component(id, owner)
 	{
+	}
+
+	void OBBCollider::Init()
+	{
+		ICollideable::Init();
 	}
 
 	void OBBCollider::UpdateCollider()
@@ -13,18 +18,18 @@ namespace d2dFramework
 
 	}
 
-	void OBBCollider::HandleCollision(ICollideable* other)
-	{
-
-	}
-
-	bool OBBCollider::checkCollision(ICollideable* other, Manifold* outManifold)
+	bool OBBCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
 	{
 		return true;
 	}
 
-	void OBBCollider::onCollision(ICollideable* other, const Manifold& manifold)
+	void OBBCollider::OnCollision(ICollideable* other, const Manifold& manifold)
 	{
 
+	}
+
+	void OBBCollider::Release()
+	{
+		ICollideable::Release();
 	}
 }

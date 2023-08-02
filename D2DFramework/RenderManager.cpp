@@ -1,11 +1,15 @@
+#include "RenderManger.h"
+
+#include "IRenderable.h"
+#include "eFrameworkID.h"
+#include "AnimationAsset.h"
+#include "WinApp.h"
+#include "MathHelper.h"
+#include "Vector2.h"
+
 #include <cassert>
 #include <d2d1helper.h>
 #include <comdef.h>
-
-#include "AnimationAsset.h"
-#include "RenderManger.h"
-#include "WinApp.h"
-#include "hRectangle.h"
 
 #define DEFAULT_DPI 96.f
 
@@ -16,7 +20,8 @@
 namespace d2dFramework
 {
 	RenderManager::RenderManager()
-		: mFactory(nullptr)
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::RenderManager))
+		, mFactory(nullptr)
 		, mRenderTarget(nullptr)
 		, mWICFactory(nullptr)
 		, mTextFormat(nullptr)
@@ -91,6 +96,18 @@ namespace d2dFramework
 		mRenderTarget->BeginDraw();
 		mRenderTarget->Clear({ 255,255,255 });
 		D2D1_SIZE_F rtSize = mRenderTarget->GetSize();
+	}
+
+	void RenderManager::Render()
+	{
+		BeginDraw();
+
+		for (IRenderable* renderable : mRenderable)
+		{
+			renderable->Render();
+		}
+
+		EndDraw();
 	}
 
 	void RenderManager::Clear(D2D1::Matrix3x2F matrix, D2D1_COLOR_F color)
@@ -171,6 +188,11 @@ namespace d2dFramework
 		mRenderTarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radiusX, radiusY), mBrush, mStrokeWidth);
 	}
 
+	void RenderManager::DrawCircle(const Vector2& offset, const Vector2& size)
+	{
+		DrawCircle(offset.GetX(), offset.GetY(), size.GetX(), size.GetY());
+	}
+
 	void RenderManager::DrawCircle(const D2D1_ELLIPSE& ellipse)
 	{
 		DrawCircle(ellipse.point.x, ellipse.point.y, ellipse.radiusX, ellipse.radiusY);
@@ -179,6 +201,11 @@ namespace d2dFramework
 	void RenderManager::FillCircle(float x, float y, float radiusX, float radiusY)
 	{
 		mRenderTarget->FillEllipse(D2D1::Ellipse(D2D1::Point2F(x, y), radiusX, radiusY), mBrush);
+	}
+
+	void RenderManager::FillCircle(const Vector2& offset, const Vector2& size)
+	{
+		FillCircle(offset.GetX(), offset.GetY(), size.GetX(), size.GetY());
 	}
 
 	void RenderManager::FillCircle(const D2D1_ELLIPSE& ellipse)
@@ -191,6 +218,11 @@ namespace d2dFramework
 		mRenderTarget->DrawRectangle(D2D1::Rect(left, top, right, bottom), mBrush, mStrokeWidth);
 	}
 
+	void RenderManager::DrawRectangle(const Vector2& offset, const Vector2& size)
+	{
+		DrawRectangle(MathHelper::CreateRectangle(offset, size));
+	}
+
 	void RenderManager::DrawRectangle(const D2D1_RECT_F& rectangle)
 	{
 		DrawRectangle(rectangle.left, rectangle.top, rectangle.right, rectangle.bottom);
@@ -199,6 +231,11 @@ namespace d2dFramework
 	void RenderManager::FillRectangle(float left, float top, float right, float bottom)
 	{
 		mRenderTarget->FillRectangle(D2D1::Rect(left, top, right, bottom), mBrush);
+	}
+
+	void RenderManager::FillRectangle(const Vector2& offset, const Vector2& size)
+	{
+		FillRectangle(MathHelper::CreateRectangle(offset, size));
 	}
 
 	void RenderManager::FillRectangle(const D2D1_RECT_F& rectangle)
@@ -245,18 +282,25 @@ namespace d2dFramework
 	{
 		assert(bitmap != nullptr);
 
-		mRenderTarget->DrawBitmap(bitmap
-			, D2D1::RectF(left, top, right, bottom)
-			, 1.0f
-			, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
-			, D2D1::RectF(uvLeft, uvTop, uvRight, uvBottom));
+		DrawBitMap(left, top, right, bottom, uvLeft, uvTop, uvRight, uvBottom, bitmap);
+	}
+
+	void RenderManager::DrawBitMap(const Vector2& offset, const Vector2& size, const D2D1_RECT_F& uvRectangle, ID2D1Bitmap* bitmap)
+	{
+		assert(bitmap != nullptr);
+
+		DrawBitMap(MathHelper::CreateRectangle(offset, size), uvRectangle, bitmap);
 	}
 
 	void RenderManager::DrawBitMap(const D2D1_RECT_F& rectangle, const D2D1_RECT_F& uvRectangle, ID2D1Bitmap* bitmap)
 	{
 		assert(bitmap != nullptr);
 
-		DrawBitMap(rectangle.left, rectangle.top, rectangle.right, rectangle.bottom, uvRectangle.left, uvRectangle.top, uvRectangle.right, uvRectangle.bottom, bitmap);
+		mRenderTarget->DrawBitmap(bitmap
+			, rectangle
+			, 1.0f
+			, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR
+			, uvRectangle);
 	}
 
 	void RenderManager::WriteText(const wchar_t* text, float left, float top, float right, float bottom)
@@ -396,7 +440,7 @@ namespace d2dFramework
 		return hr;
 	}
 
-	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo)
+	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* imagePath, const std::vector<std::vector<FrameInfomation>>& frameInfo)
 	{
 		auto iter = mAnimationAssetMap.find(imagePath);
 
@@ -420,7 +464,7 @@ namespace d2dFramework
 		mAnimationAssetMap.emplace(imagePath, new AnimationAsset(bitmap, frameInfo));
 	}
 
-	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* key, const WCHAR* imagePath, const std::vector<std::vector<hRectangle>>& frameInfo)
+	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* key, const WCHAR* imagePath, const std::vector<std::vector<FrameInfomation>>& frameInfo)
 	{
 		auto iter = mAnimationAssetMap.find(key);
 

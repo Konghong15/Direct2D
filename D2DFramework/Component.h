@@ -1,13 +1,15 @@
 #pragma once
 
+#include "BaseEntity.h"
+
 namespace d2dFramework
 {
 	class GameObject;
 
-	class Component
+	class Component : public BaseEntity
 	{
 	public:
-		Component(GameObject* owner) : mOwner(owner) {}
+		Component(unsigned int id, GameObject* owner);
 		virtual ~Component() = default;
 
 	protected:

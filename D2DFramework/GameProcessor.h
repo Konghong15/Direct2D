@@ -11,6 +11,7 @@ namespace d2dFramework
 	class InputManager;
 	class EventManager;
 	class SceneManager;
+	class CollisionManager;
 
 	class GameProcessor
 	{
@@ -30,6 +31,7 @@ namespace d2dFramework
 		inline TimeManager* getTimeManager() const;
 		inline RenderManager* getRenderManager() const;
 		inline SceneManager* getSceneManager() const;
+		inline CollisionManager* getCollisionManager() const;
 
 	private:
 		UINT mWidth;
@@ -39,6 +41,7 @@ namespace d2dFramework
 		TimeManager* mTimeManager;
 		RenderManager* mRenderManager;
 		SceneManager* mSceneManager;
+		CollisionManager* mCollisionManager;
 	};
 
 	UINT GameProcessor::GetWidth() const
@@ -67,5 +70,10 @@ namespace d2dFramework
 	{
 		assert(mSceneManager != nullptr);
 		return mSceneManager;
+	}
+	CollisionManager* GameProcessor::getCollisionManager() const
+	{
+		assert(mCollisionManager != nullptr);
+		return mCollisionManager;
 	}
 }

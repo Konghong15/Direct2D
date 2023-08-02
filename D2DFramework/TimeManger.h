@@ -1,10 +1,12 @@
 #pragma once
 
+#include "BaseEntity.h"
+
 #include <Windows.h>
 
 namespace d2dFramework
 {
-	class TimeManager
+	class TimeManager final : public BaseEntity
 	{
 	public:
 		TimeManager();

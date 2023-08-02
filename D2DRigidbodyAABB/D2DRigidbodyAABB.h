@@ -16,7 +16,6 @@ namespace d2dRigidbodyAABB
 		virtual ~D2DRigidbodyAABB() = default;
 
 		virtual void Init() override;
-		virtual void Update() override;
 		virtual void Destroy() override;
 
 	private:

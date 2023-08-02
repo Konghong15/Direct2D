@@ -66,16 +66,10 @@
     <ClCompile Include="ICollideable.cpp">
       <Filter>소스 파일\Interface</Filter>
     </ClCompile>
-    <ClCompile Include="Movement.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxSprite.cpp">
+    <ClCompile Include="SpriteRenderer.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="IFixedUpdateable.cpp">
-      <Filter>소스 파일\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="IBaseInterface.cpp">
       <Filter>소스 파일\Interface</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
@@ -102,9 +96,6 @@
     <ClCompile Include="CircleCollider.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
-    <ClCompile Include="CircleSprite.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>소스 파일\Helper</Filter>
     </ClCompile>
@@ -129,9 +120,6 @@
     <ClCompile Include="AnimationAsset.cpp">
       <Filter>소스 파일\ManagedClass</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationInstance.cpp">
-      <Filter>소스 파일\ManagedClass</Filter>
-    </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
@@ -143,6 +131,18 @@
     </ClCompile>
     <ClCompile Include="CollisionManager.cpp">
       <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEntity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Camara.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,19 +179,13 @@
     <ClInclude Include="IUpdateable.h">
       <Filter>헤더 파일\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="IBaseInterface.h">
-      <Filter>헤더 파일\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="IFixedUpdateable.h">
       <Filter>헤더 파일\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="BoxSprite.h">
-      <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Movement.h">
+    <ClInclude Include="SpriteRenderer.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
@@ -207,9 +201,6 @@
       <Filter>헤더 파일\Structor</Filter>
     </ClInclude>
     <ClInclude Include="CircleCollider.h">
-      <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="CircleSprite.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="Manifold.h">
@@ -236,9 +227,6 @@
     <ClInclude Include="AnimationAsset.h">
       <Filter>헤더 파일\ManagedClass</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationInstance.h">
-      <Filter>헤더 파일\ManagedClass</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>헤더 파일\ManagedClass</Filter>
     </ClInclude>
@@ -250,6 +238,21 @@
     </ClInclude>
     <ClInclude Include="ObjectManager.h">
       <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEntity.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationRenderer.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="eFrameworkID.h">
+      <Filter>헤더 파일\Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameInfomation.h">
+      <Filter>헤더 파일\Structor</Filter>
+    </ClInclude>
+    <ClInclude Include="Camara.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

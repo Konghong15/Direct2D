@@ -11,11 +11,14 @@ namespace d2dFramework
 	class AABBCollider final : public Component, public ICollideable
 	{
 	public:
-		AABBCollider(GameObject* owner);
-		virtual ~AABBCollider() = default;
+		AABBCollider(unsigned int id, GameObject* owner);
+		~AABBCollider() override = default;
 
-		virtual void UpdateCollider() override;
-		virtual void HandleCollision(ICollideable* other) override;
+		void Init() override;
+		void UpdateCollider() override;
+		bool CheckCollision(ICollideable* other, Manifold* outManifold) override;
+		void OnCollision(ICollideable* other, const Manifold& manifold) override;
+		void Release() override;
 
 		inline void SetIsTrigger(bool bisTrigger);
 		inline void SetOffSet(const Vector2& offset);
@@ -27,10 +30,6 @@ namespace d2dFramework
 		inline const Vector2& GetOffset() const;
 		inline const Vector2& GetSize() const;
 		inline const AABB& GetWorldAABB() const;
-
-	protected:
-		virtual bool checkCollision(ICollideable* other, Manifold* outManifold) override;
-		virtual void onCollision(ICollideable* other, const Manifold& manifold) override;
 
 	private:
 		bool mbIsTrigger;

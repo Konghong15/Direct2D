@@ -1,28 +1,41 @@
 #pragma once
 
+#include "BaseEntity.h"
+
 #include <cassert>
 #include <map>
+#include <unordered_map>
 #include <queue>
 #include <functional>
 #include <string>
 
 namespace d2dFramework
 {
-	enum class eDefaultEvent
+	enum class eDefaultEvent 
 	{
 		ChangeScene,
+		EnterCollision,
+		OnCollision,
+		ExitCollision,
+		// CreateObject,
+		// DeleteObject
 	};
 
-	class EventManager
+	class EventManager final : public BaseEntity
 	{
 		friend class GameProcessor;
 
 	public:
 		static EventManager* GetInstance();
 
-		inline void RegisterEvent(eDefaultEvent defaultSceneEvent, const std::string& data);
-		inline void RegisterEvent(const std::string& event, const std::string& data);
-		inline void RegisterEventHandler(const std::string& event, std::function<void(const std::string&)> callback);
+		void BroadcastEvent(const std::string& event, const std::string& data);
+		void SendEvent(const std::string& event, unsigned int id, const std::string& data);
+
+		inline void AddLateBroadcastEvent(const std::string& event, const std::string& data);
+		inline void AddLateSendEvent(const std::string& event, unsigned int id, const std::string& data);
+
+		inline void RegisterEventHandler(const std::string& event, unsigned int id, std::function<void(const std::string&)> callback);
+		inline void UnRegisterEventHandler(const std::string& event, unsigned int id);
 
 		inline const std::string& GetEventName(eDefaultEvent defaultSceneEvent);
 
@@ -37,24 +50,28 @@ namespace d2dFramework
 		static EventManager* mInstance;
 
 		std::map<eDefaultEvent, std::string> mDefaultEventNameMap;
-		std::map<std::string, std::function<void(const std::string& data)>> mEventCallbackMap;
-		std::queue<std::pair<std::string, std::string>> mEventQueue;
+		std::unordered_map<std::string, std::unordered_map<unsigned int, std::function<void(const std::string& data)>>> mEventCallbackMap;
+		std::queue<std::pair<std::string, std::string>> mBroadcastEventQueue;
+		std::queue<std::tuple<std::string, unsigned int, std::string>> mSendEventQueue;
 	};
 
-	void EventManager::RegisterEvent(eDefaultEvent defaultSceneEvent, const std::string& data)
+	void EventManager::AddLateBroadcastEvent(const std::string& event, const std::string& data)
 	{
-		auto keyName = mDefaultEventNameMap.find(defaultSceneEvent);
-		assert(keyName != mDefaultEventNameMap.end());
+		mBroadcastEventQueue.push({ event, data });
+	}
+	void EventManager::AddLateSendEvent(const std::string& event, unsigned int id, const std::string& data)
+	{
+		mSendEventQueue.push({ event, id, data });
+	}
+	void EventManager::RegisterEventHandler(const std::string& event, unsigned int id, std::function<void(const std::string&)> callback)
+	{
+		mEventCallbackMap.insert({ event, std::unordered_map<unsigned int, std::function<void(const std::string & data)>>() });
+		mEventCallbackMap.find(event)->second.insert({ id, callback });
+	}
 
-		RegisterEvent(keyName->second, data);
-	}
-	void EventManager::RegisterEvent(const std::string& event, const std::string& data)
+	void EventManager::UnRegisterEventHandler(const std::string& event, unsigned int id)
 	{
-		mEventQueue.push({ event, data });
-	}
-	void EventManager::RegisterEventHandler(const std::string& event, std::function<void(const std::string&)> callback)
-	{
-		mEventCallbackMap.insert({ event, callback });
+		mEventCallbackMap.find(event)->second.erase(id);
 	}
 
 	const std::string& EventManager::GetEventName(eDefaultEvent defaultEvent)

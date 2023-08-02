@@ -1,14 +1,15 @@
 #pragma once
 
+#include "BaseEntity.h"
+#include "GameObject.h"
+
 #include <cassert>
 #include <unordered_map>
 #include <queue>
 
-#include "GameObject.h"
-
 namespace d2dFramework
 {
-	class ObjectManager
+	class ObjectManager final : public BaseEntity
 	{
 		friend class GameProcessor;
 
@@ -35,6 +36,8 @@ namespace d2dFramework
 
 		std::unordered_map<unsigned int, GameObject*> mValidObjectMap;
 		std::queue<unsigned int> mDeleteObject;
+
+		// GameObject object pool
 	};
 
 	GameObject* ObjectManager::CreateObject(unsigned int id)

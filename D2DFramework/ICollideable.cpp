@@ -1,15 +1,23 @@
 #include "ICollideable.h"
 #include "GameProcessor.h"
+#include "CollisionManager.h"
 
 namespace d2dFramework
 {
-	ICollideable::ICollideable()
+	CollisionManager* ICollideable::mCollisionManager = nullptr;
+
+	void ICollideable::SetCollisionManager(CollisionManager* collisionManager)
 	{
-		GetGameProcessor()->RegisterCollideable(this);
+		mCollisionManager = collisionManager;
 	}
 
-	ICollideable::~ICollideable()
+	void ICollideable::Init()
 	{
-		GetGameProcessor()->UnregisterCollideable(this);
+		GetCollisionManager()->RegisterCollideable(this);
+	}
+
+	void ICollideable::Release()
+	{
+		GetCollisionManager()->UnregisterCollideable(this);
 	}
 }

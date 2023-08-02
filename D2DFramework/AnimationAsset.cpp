@@ -2,9 +2,9 @@
 
 namespace d2dFramework
 {
-	AnimationAsset::AnimationAsset(ID2D1Bitmap* bitmap, const std::vector<std::vector<hRectangle>>& frameAnimationInfo)
+	AnimationAsset::AnimationAsset(ID2D1Bitmap* bitmap, const std::vector<std::vector<FrameInfomation>>& frameInfomations)
 		: mBitmap(bitmap)
-		, mFrameAnimaitonInfo(frameAnimationInfo)
+		, mFrameInfomations(frameInfomations)
 	{
 		int count = mBitmap->AddRef();
 	}

@@ -1,17 +1,19 @@
 #include "CollisionManager.h"
-#include "ICollideable.h"
-#include "GameObject.h"
+
+#include "eFrameworkID.h"
+#include "EventManager.h"
 
 namespace d2dFramework
 {
 	CollisionManager::CollisionManager()
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::CollisionManager))
 	{
-		mOnCollisionObjectIDMap.reserve(RESERVE_SIZE);
+		mOnCollisionObjectMap.reserve(RESERVE_SIZE);
 	}
 
 	CollisionManager::~CollisionManager()
 	{
-		mOnCollisionObjectIDMap.clear();
+		Release();
 	}
 
 	void CollisionManager::Update()
@@ -26,34 +28,50 @@ namespace d2dFramework
 		{
 			for (size_t j = i + 1; j < mCollideable.size(); ++j)
 			{
+				unsigned int lhsId = mCollideable[i]->GetGameObject()->GetId();
+				unsigned int rhsId = mCollideable[j]->GetGameObject()->GetId();
+
+				auto iter = mOnCollisionObjectMap.find(lhsId);
+				std::unordered_map<unsigned int, Manifold>& collisionDataMap = iter->second;
+
 				if (mCollideable[i]->CheckCollision(mCollideable[j], &manifold))
 				{
+					if (collisionDataMap.find(rhsId) != collisionDataMap.end())
+					{
+						mExitCollisionQueue.push({ lhsId, rhsId });
+					}
+
 					continue;
 				}
 
-				mEnterCollisionQueue.push({ mCollideable[i]->GetGameObject()->GetId(), mCollideable[j]->GetGameObject()->GetId(), manifold });
+				mCollideable[i]->OnCollision(mCollideable[j], manifold);
+				mEnterCollisionQueue.push({ lhsId, rhsId , manifold });
 				manifold.CollisionNormal *= -1;
-				mEnterCollisionQueue.push({ mCollideable[j]->GetGameObject()->GetId(), mCollideable[i]->GetGameObject()->GetId(), manifold });
+
+				mCollideable[j]->OnCollision(mCollideable[i], manifold);
+				mEnterCollisionQueue.push({ rhsId, lhsId, manifold });
+
+				// EventManager::GetInstance()->SendEvent("OnCollision", lhsId, "");
+				// EventManager::GetInstance()->SendEvent("OnCollision", rhsId, "");
 			}
 		}
 
 		while (!mEnterCollisionQueue.empty())
 		{
-			auto pair = mEnterCollisionQueue.front();
+			auto tuple = mEnterCollisionQueue.front();
 			mEnterCollisionQueue.pop();
 
-			auto iter = mOnCollisionObjectIDMap.find(std::get<0>(pair));
-			if (iter == mOnCollisionObjectIDMap.end())
-			{
-				mOnCollisionObjectIDMap.insert(std::get<0>(pair), std::list<std::pair<unsigned int, Manifold>>());
-				m
-			}
-			else
-			{
+			unsigned int lhsId = std::get<0>(tuple);
+			unsigned int rhsId = std::get<1>(tuple);
+			Manifold manifold = std::get<2>(tuple);
 
-			}
+			auto lhsIter = mOnCollisionObjectMap.find(lhsId);
+			assert(lhsIter != mOnCollisionObjectMap.end());
 
-			// handle OnEnterCollision
+			std::unordered_map<unsigned int, Manifold>& collisionDataMap = lhsIter->second;
+			collisionDataMap.insert(std::make_pair(rhsId, manifold));
+
+			EventManager::GetInstance()->SendEvent("EnterCollision", lhsId, "");
 		}
 
 		while (!mExitCollisionQueue.empty())
@@ -61,31 +79,35 @@ namespace d2dFramework
 			auto pair = mExitCollisionQueue.front();
 			mEnterCollisionQueue.pop();
 
-			auto findLhs = mOnCollisionObjectIDMap.find(pair.first);
-			auto findRhs = mOnCollisionObjectIDMap.find(pair.second);
+			unsigned int lhsId = pair.first;
+			unsigned int rhsId = pair.second;
 
-			std::list < std::pair<unsigned int, Manifold>>& lhsList = findLhs->second;
-			std::list < std::pair<unsigned int, Manifold>>& rhsList = findRhs->second;
+			auto findLhs = mOnCollisionObjectMap.find(lhsId);
+			auto findRhs = mOnCollisionObjectMap.find(rhsId);
 
-			lhsList.erase(std::find(lhsList.begin(), lhsList.end(), findRhs->first));
-			rhsList.erase(std::find(rhsList.begin(), rhsList.end(), findLhs->first));
+			std::unordered_map<unsigned int, Manifold>& lhsCollisionDataMap = findLhs->second;
+			std::unordered_map<unsigned int, Manifold>& rhsCollisionDataMap = findRhs->second;
 
-			// handle OnExitCollision
+			lhsCollisionDataMap.erase(findRhs->first);
+			rhsCollisionDataMap.erase(findLhs->first);
+
+			EventManager::GetInstance()->SendEvent("ExitCollision", lhsId, "");
+			EventManager::GetInstance()->SendEvent("ExitCollision", rhsId, "");
 		}
 	}
 
-	void CollisionManager::EnterCollisionCallback()
+	void CollisionManager::Release()
 	{
+		mOnCollisionObjectMap.clear();
 
-	}
+		while (!mEnterCollisionQueue.empty())
+		{
+			mEnterCollisionQueue.pop();
+		}
 
-	void CollisionManager::OnCollsionCallback()
-	{
-
-	}
-
-	void CollisionManager::ExitCollisionCallback()
-	{
-
+		while (!mExitCollisionQueue.empty())
+		{
+			mExitCollisionQueue.pop();
+		}
 	}
 }

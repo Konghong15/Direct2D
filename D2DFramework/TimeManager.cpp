@@ -1,8 +1,10 @@
 #include "TimeManger.h"
+#include "eFrameworkID.h"
 
 namespace d2dFramework
 {
 	TimeManager::TimeManager()
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::TimeManager))
 	{
 		Init();
 	}

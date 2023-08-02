@@ -12,7 +12,7 @@ namespace d2dFramework
 	class Transform : public Component
 	{
 	public:
-		Transform(GameObject* owner);
+		Transform(unsigned int id, GameObject* owner);
 		virtual ~Transform() = default;
 
 		inline void SetScale(const Vector2& scale);

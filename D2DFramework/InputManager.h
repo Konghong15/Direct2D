@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BaseEntity.h"
+
 #include <Windows.h>
 
 namespace d2dFramework
@@ -12,7 +14,7 @@ namespace d2dFramework
 		Pop,
 	};
 
-	class InputManager final
+	class InputManager final : public BaseEntity
 	{
 		friend class GameProcessor;
 

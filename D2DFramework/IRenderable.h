@@ -1,17 +1,33 @@
 #pragma once
 
-#include "IBaseInterface.h"
-
 namespace d2dFramework
 {
 	class RenderManager;
 
-	class IRenderable : public IBaseInterface
+	class IRenderable
 	{
-	public:
-		IRenderable();
-		virtual ~IRenderable();
+		friend class GameProcessor;
 
-		virtual void Render(RenderManager* renderManager) = 0;
+	public:
+		IRenderable() = default;
+		virtual ~IRenderable() = default;
+
+		virtual void Init() = 0; 
+		virtual void Render() = 0;
+		virtual void Release() = 0; 
+
+	protected:
+		inline RenderManager* GetRenderManager() const;
+
+	private:
+		static void SetRenderManager(RenderManager* renderManager);
+
+	private:
+		static RenderManager* mRenderManager;
 	};
+
+	RenderManager* IRenderable::GetRenderManager() const
+	{
+		return mRenderManager;
+	}
 }

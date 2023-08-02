@@ -1,8 +1,11 @@
+#include "InputManager.h"
+
+#include "eFrameworkID.h"
+#include "WinApp.h"
+
 #include <cassert>
 #include <Windows.h>
 
-#include "InputManager.h"
-#include "WinApp.h"
 
 namespace d2dFramework
 {
@@ -15,7 +18,8 @@ namespace d2dFramework
 	}
 
 	InputManager::InputManager()
-		: mKeyStates{ eKeyState::None, }
+		: BaseEntity(static_cast<unsigned int>(eFramworkID::InputManager))
+		, mKeyStates{ eKeyState::None, }
 		, mMousePos{}
 	{
 	}
