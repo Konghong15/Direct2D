@@ -16,8 +16,8 @@ namespace d2dFramework
 		Scene(const std::string& string);
 		virtual ~Scene() = default;
 
-		virtual void Enter() = 0;
-		virtual void Exit() = 0;
+		virtual void Enter() {};
+		virtual void Exit() {};
 
 	private:
 		std::string mName;

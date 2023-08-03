@@ -35,13 +35,14 @@ namespace d2dFramework
 		std::queue<std::pair<unsigned int, unsigned int>> mExitCollisionQueue;
 
 		std::vector<ICollideable*> mCollideable;
-		std::vector<ICollideable*> mCreateCollideable;
 	};
 
 	void CollisionManager::RegisterCollideable(ICollideable* collideable)
 	{
-		mCreateCollideable.push_back(collideable);
-		mOnCollisionObjectMap.insert({ collideable->GetGameObject()->GetId(), std::unordered_map<unsigned int, Manifold>() });
+		mCollideable.push_back(collideable);
+		GameObject* gameobject = collideable->GetGameObject();
+		unsigned int ownerId = gameobject->GetId();
+		mOnCollisionObjectMap.insert({ ownerId, std::unordered_map<unsigned int, Manifold>() });
 	}
 
 	void CollisionManager::UnregisterCollideable(ICollideable* collideable)

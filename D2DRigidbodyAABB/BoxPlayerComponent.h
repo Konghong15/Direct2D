@@ -13,10 +13,12 @@ namespace d2dRigidbodyAABB
 		, public d2dFramework::IUpdateable
 	{
 	public:
-		BoxPlayerComponent(d2dFramework::GameObject* owner);
+		BoxPlayerComponent(unsigned int id, d2dFramework::GameObject* owner);
 		virtual ~BoxPlayerComponent() = default;
 
+		virtual void Init() override;
 		virtual void Update(float deltaTime) override;
+		virtual void Release() override;
 
 		inline void SetSpped(const d2dFramework::Vector2& speed);
 

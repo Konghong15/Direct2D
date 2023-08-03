@@ -27,13 +27,7 @@ namespace d2dFramework
 	{
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 
-		const Vector2& SCALE = transform->GetScale();
-		const Vector2& TRANSLATE = transform->GetTranslate();
-
-		Vector2 size{ mSize.GetX() * SCALE.GetX(), mSize.GetY() * SCALE.GetY() };
-
-		mWorldAABB.TopLeft = (size * -0.5f) + mOffset + TRANSLATE;
-		mWorldAABB.BottomRight = (size * 0.5f) + mOffset + TRANSLATE;
+		mWorldAABB = Collision::MakeAABB(mOffset, mSize, transform->GetScale(), transform->GetTranslate());
 	}
 
 	bool AABBCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
@@ -71,8 +65,31 @@ namespace d2dFramework
 		Rigidbody* rigidBody = GetGameObject()->GetComponent<Rigidbody>();
 		Rigidbody* otherRigidBody = other->GetGameObject()->GetComponent<Rigidbody>();
 
-		if (rigidBody == nullptr || otherRigidBody == nullptr)
+		if (rigidBody == nullptr && otherRigidBody == nullptr)
 		{
+			return;
+		}
+		if (otherRigidBody == nullptr)
+		{
+			Transform* transform = GetGameObject()->GetComponent<Transform>();
+			transform->AddTranslate(manifold.CollisionNormal * -manifold.Penetration);
+
+			float scalar = rigidBody->GetVelocity().GetMagnitude() * (1 + rigidBody->GetCOR());
+
+			rigidBody->AddVelocity(manifold.CollisionNormal * scalar);
+
+			return;
+		}
+		if (rigidBody == nullptr)
+		{
+			Transform* transform = other->GetGameObject()->GetComponent<Transform>();
+			transform->AddTranslate(manifold.CollisionNormal * manifold.Penetration);
+
+
+			float scalar = otherRigidBody->GetVelocity().GetMagnitude() * (1 + otherRigidBody->GetCOR());
+
+			otherRigidBody->AddVelocity(manifold.CollisionNormal * scalar);
+
 			return;
 		}
 

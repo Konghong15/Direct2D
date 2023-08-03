@@ -32,7 +32,7 @@ namespace d2dFramework
 		bool mbIsTrigger;
 
 		Vector2 mOffset;
-		AABB mLocalAABB;
+		Vector2 mSize;
 
 		OBB mWorldOBB;
 	};

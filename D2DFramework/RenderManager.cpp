@@ -6,6 +6,8 @@
 #include "WinApp.h"
 #include "MathHelper.h"
 #include "Vector2.h"
+#include "CameraManager.h"
+#include "AABB.h"
 
 #include <cassert>
 #include <d2d1helper.h>
@@ -98,13 +100,23 @@ namespace d2dFramework
 		D2D1_SIZE_F rtSize = mRenderTarget->GetSize();
 	}
 
-	void RenderManager::Render()
+	void RenderManager::Render(CameraManager* cameraManager)
 	{
+		assert(cameraManager != nullptr);
+
 		BeginDraw();
+
+		AABB cameraAABB = { {0, 0 }, cameraManager->GetScrennSize() };
+		D2D1::Matrix3x2F matrix = cameraManager->GetCombineMatrix();
 
 		for (IRenderable* renderable : mRenderable)
 		{
-			renderable->Render();
+			if (renderable->IsOutsideBoundingBox(matrix, cameraAABB))
+			{
+				continue;
+			}
+
+			renderable->Render(matrix);
 		}
 
 		EndDraw();
@@ -190,7 +202,7 @@ namespace d2dFramework
 
 	void RenderManager::DrawCircle(const Vector2& offset, const Vector2& size)
 	{
-		DrawCircle(offset.GetX(), offset.GetY(), size.GetX(), size.GetY());
+		DrawCircle(offset.GetX(), offset.GetY(), size.GetX() * 0.5f, size.GetY() * 0.5f);
 	}
 
 	void RenderManager::DrawCircle(const D2D1_ELLIPSE& ellipse)
@@ -205,7 +217,7 @@ namespace d2dFramework
 
 	void RenderManager::FillCircle(const Vector2& offset, const Vector2& size)
 	{
-		FillCircle(offset.GetX(), offset.GetY(), size.GetX(), size.GetY());
+		FillCircle(offset.GetX(), offset.GetY(), size.GetX() * 0.5f, size.GetY() * 0.5f);
 	}
 
 	void RenderManager::FillCircle(const D2D1_ELLIPSE& ellipse)
@@ -282,7 +294,7 @@ namespace d2dFramework
 	{
 		assert(bitmap != nullptr);
 
-		DrawBitMap(left, top, right, bottom, uvLeft, uvTop, uvRight, uvBottom, bitmap);
+		DrawBitMap({ left, top, right, bottom }, { uvLeft, uvTop, uvRight, uvBottom }, bitmap);
 	}
 
 	void RenderManager::DrawBitMap(const Vector2& offset, const Vector2& size, const D2D1_RECT_F& uvRectangle, ID2D1Bitmap* bitmap)
@@ -462,6 +474,8 @@ namespace d2dFramework
 		bitmap = GetBitmapOrNull(imagePath);
 		assert(bitmap != nullptr);
 		mAnimationAssetMap.emplace(imagePath, new AnimationAsset(bitmap, frameInfo));
+
+		return S_OK;
 	}
 
 	HRESULT RenderManager::CreateAnimationAsset(const WCHAR* key, const WCHAR* imagePath, const std::vector<std::vector<FrameInfomation>>& frameInfo)
@@ -486,6 +500,8 @@ namespace d2dFramework
 		bitmap = GetBitmapOrNull(key);
 		assert(bitmap != nullptr);
 		mAnimationAssetMap.emplace(key, new AnimationAsset(bitmap, frameInfo));
+
+		return S_OK;
 	}
 
 	HRESULT RenderManager::createDeviceResources(HWND hWnd)

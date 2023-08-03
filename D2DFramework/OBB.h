@@ -4,9 +4,18 @@
 
 namespace d2dFramework
 {
+	enum eOBBIndex
+	{
+		TopLeft,
+		TopRight,
+		BottomRight,
+		BottomLeft,
+		Size
+	};
+
 	struct OBB
 	{
-		Vector2 mPoints[4];
+		Vector2 mPoints[eOBBIndex::Size];
 		float RotateInRadian;
 	};
 }

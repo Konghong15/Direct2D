@@ -56,6 +56,73 @@ namespace d2dFramework
 		return true;
 	}
 
+	bool Collision::CheckAABBToOBB(const AABB& lhs, const OBB& rhs)
+	{
+		const size_t VERTEX_COUNT = 4;
+		Vector2 rectangle[VERTEX_COUNT] =
+		{
+			{ lhs.TopLeft },
+			{ lhs.BottomRight.GetX(), lhs.TopLeft.GetY() },
+			{ lhs.BottomRight },
+			{ lhs.TopLeft.GetX(), lhs.BottomRight.GetY()  }
+		};
+		Vector2 normalVectors[VERTEX_COUNT] =
+		{
+			{ 0, 1 },
+			{ 0, -1 },
+		};
+
+		for (size_t i = 2; i < 4; ++i)
+		{
+			normalVectors[i] = rhs.mPoints[i % VERTEX_COUNT] - rhs.mPoints[(i + 1) % VERTEX_COUNT];
+			normalVectors->Normalize();
+			normalVectors[i] = { -normalVectors[i].GetY(), normalVectors[i].GetX() };
+		}
+
+		for (size_t i = 0; i < VERTEX_COUNT; ++i)
+		{
+			float rectMin = FLT_MAX;
+			float rectMax = -FLT_MAX;
+
+			for (int j = 0; j < VERTEX_COUNT; ++j)
+			{
+				float scalar = Vector2::Dot(normalVectors[i], rectangle[j]);
+
+				if (rectMax < scalar)
+				{
+					rectMax = scalar;
+				}
+				if (rectMin > scalar)
+				{
+					rectMin = scalar;
+				}
+			}
+
+			float otherRectMin = FLT_MAX;
+			float otherRectMax = -FLT_MAX;
+
+			for (size_t j = 0; j < VERTEX_COUNT; ++j)
+			{
+				float scalar = Vector2::Dot(normalVectors[i], rhs.mPoints[j]);
+
+				if (otherRectMax < scalar)
+				{
+					otherRectMax = scalar;
+				}
+				if (otherRectMin > scalar)
+				{
+					otherRectMin = scalar;
+				}
+			}
+
+			if (otherRectMax < rectMin || rectMax < otherRectMin)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 	bool Collision::CheckAABBToOBB(const AABB& lhs, const OBB& rhs, Manifold* outmanifold)
 	{
 		const size_t VERTEX_COUNT = 4;
@@ -248,8 +315,8 @@ namespace d2dFramework
 		}
 
 		// OBB의 꼭지점과 원의 중심 간의 거리 계산
-		float cornerDistance = std::pow(distance.GetX() - RECT_HALF_SIZE.GetX(), 2) + std::pow(distance.GetY() - RECT_HALF_SIZE.GetY(), 2);
-		float circleDistance = std::pow(rhs.Radius, 2);
+		float cornerDistance = std::powf(distance.GetX() - RECT_HALF_SIZE.GetX(), 2) + std::pow(distance.GetY() - RECT_HALF_SIZE.GetY(), 2);
+		float circleDistance = std::powf(rhs.Radius, 2);
 
 		return cornerDistance <= circleDistance;
 	}
@@ -289,8 +356,6 @@ namespace d2dFramework
 		return true;
 	}
 
-
-
 	float Collision::GetWidth(const AABB& aabb)
 	{
 		return aabb.BottomRight.GetX() - aabb.TopLeft.GetX();
@@ -302,7 +367,7 @@ namespace d2dFramework
 
 	float Collision::GetHeight(const AABB& aabb)
 	{
-		return fabs(aabb.BottomRight.GetY() - aabb.TopLeft.GetY());
+		return fabs(aabb.TopLeft.GetY() - aabb.BottomRight.GetY());
 	}
 	float Collision::GetHeight(const OBB& obb)
 	{
@@ -331,5 +396,53 @@ namespace d2dFramework
 	Vector2 Collision::GetCenter(const OBB& obb)
 	{
 		return (obb.mPoints[0] + obb.mPoints[2]) * 0.5f;
+	}
+
+	AABB Collision::MakeAABB(const Vector2& offset, const Vector2& size, const Vector2& scale, const Vector2& translate)
+	{
+		AABB result;
+
+		Vector2 resultSize{ size.GetX() * scale.GetX(), size.GetY() * scale.GetY() };
+
+		result.TopLeft.SetXY(resultSize.GetX() * -0.5f, resultSize.GetY() * 0.5f);
+		result.BottomRight.SetXY(resultSize.GetX() * 0.5f, resultSize.GetY() * -0.5f);
+
+		result.TopLeft += (offset + translate);
+		result.BottomRight += (offset + translate);
+
+		return result;
+	}
+
+	OBB Collision::MakeOBB(const Vector2& offset, const Vector2& size, D2D1::Matrix3x2F transform)
+	{
+		OBB result;
+
+		D2D1_POINT_2F temp;
+		temp = transform.TransformPoint({ result.mPoints[TopLeft].GetX(), result.mPoints[TopLeft].GetY() });
+		result.mPoints[TopLeft].SetX(temp.x); result.mPoints[TopLeft].SetY(temp.y);
+
+		temp = transform.TransformPoint({ result.mPoints[TopRight].GetX(), result.mPoints[TopRight].GetY() });
+		result.mPoints[TopRight].SetX(temp.x); result.mPoints[TopRight].SetY(temp.y);
+
+		temp = transform.TransformPoint({ result.mPoints[BottomRight].GetX(), result.mPoints[BottomRight].GetY() });
+		result.mPoints[BottomRight].SetX(temp.x); result.mPoints[BottomRight].SetY(temp.y);
+
+		temp = transform.TransformPoint({ result.mPoints[BottomLeft].GetX(), result.mPoints[BottomLeft].GetY() });
+		result.mPoints[BottomLeft].SetX(temp.x); result.mPoints[BottomLeft].SetY(temp.y);
+
+		return result;
+	}
+
+	Circle Collision::MakeCircle(const Vector2& offset, float radius, const Vector2& scale, const Vector2& translate)
+	{
+		Circle result;
+
+		result.Center.SetX(offset.GetX() * scale.GetX());
+		result.Center.SetY(offset.GetY() * scale.GetY());
+		result.Center += translate;
+
+		result.Radius = radius * (scale.GetX() > scale.GetY() ? scale.GetX() : scale.GetY());
+
+		return result;
 	}
 }

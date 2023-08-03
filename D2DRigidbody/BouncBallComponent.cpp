@@ -18,11 +18,11 @@ namespace d2dRigidbody
 
 		if (InputManager::GetInstance()->GetKeyState(VK_UP) == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
 		}
 		else if (InputManager::GetInstance()->GetKeyState(VK_DOWN) == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
 		}
 
 		if (InputManager::GetInstance()->GetKeyState(VK_LEFT) == eKeyState::Hold)

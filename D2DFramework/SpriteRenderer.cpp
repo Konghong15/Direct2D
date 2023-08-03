@@ -3,6 +3,9 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "RenderManger.h"
+#include "AABB.h"
+#include "OBB.h"
+#include "Collision.h"
 
 #include <cassert>
 
@@ -25,13 +28,23 @@ namespace d2dFramework
 		IRenderable::Init();
 	}
 
-	void SpriteRenderer::Render()
+	bool SpriteRenderer::IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox)
+	{
+		Transform* transform = GetGameObject()->GetComponent<Transform>();
+		D2D1::Matrix3x2F combineTransform = transform->GetTransform() * cameraTransform;
+
+		OBB rendererOBB = Collision::MakeOBB(mSize, mOffset, combineTransform);
+
+		return !Collision::CheckAABBToOBB(boundingBox, rendererOBB);
+	}
+
+	void SpriteRenderer::Render(const D2D1::Matrix3x2F& cameraTransform)
 	{
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 		D2D1::Matrix3x2F matrix = transform->GetTransform();
 
 		D2D1_COLOR_F prevColor = GetRenderManager()->SetColor(mBorderColor);
-		GetRenderManager()->SetTransform(matrix);
+		GetRenderManager()->SetTransform(matrix * cameraTransform);
 		switch (mSpriteType)
 		{
 		case d2dFramework::eSpriteType::Rectangle:

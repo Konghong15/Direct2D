@@ -29,10 +29,8 @@ namespace d2dFramework
 		static EventManager* GetInstance();
 
 		void BroadcastEvent(const std::string& event, const std::string& data);
-		void SendEvent(const std::string& event, unsigned int id, const std::string& data);
 
 		inline void AddLateBroadcastEvent(const std::string& event, const std::string& data);
-		inline void AddLateSendEvent(const std::string& event, unsigned int id, const std::string& data);
 
 		inline void RegisterEventHandler(const std::string& event, unsigned int id, std::function<void(const std::string&)> callback);
 		inline void UnRegisterEventHandler(const std::string& event, unsigned int id);
@@ -52,16 +50,11 @@ namespace d2dFramework
 		std::map<eDefaultEvent, std::string> mDefaultEventNameMap;
 		std::unordered_map<std::string, std::unordered_map<unsigned int, std::function<void(const std::string& data)>>> mEventCallbackMap;
 		std::queue<std::pair<std::string, std::string>> mBroadcastEventQueue;
-		std::queue<std::tuple<std::string, unsigned int, std::string>> mSendEventQueue;
 	};
 
 	void EventManager::AddLateBroadcastEvent(const std::string& event, const std::string& data)
 	{
 		mBroadcastEventQueue.push({ event, data });
-	}
-	void EventManager::AddLateSendEvent(const std::string& event, unsigned int id, const std::string& data)
-	{
-		mSendEventQueue.push({ event, id, data });
 	}
 	void EventManager::RegisterEventHandler(const std::string& event, unsigned int id, std::function<void(const std::string&)> callback)
 	{

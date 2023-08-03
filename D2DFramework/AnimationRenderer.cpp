@@ -5,6 +5,8 @@
 #include "Transform.h"
 #include "RenderManger.h"
 #include "EventManager.h"
+#include "Collision.h"
+#include "OBB.h"
 
 #include <cassert>
 
@@ -12,7 +14,13 @@ namespace d2dFramework
 {
 	AnimationRenderer::AnimationRenderer(unsigned int id, GameObject* owner)
 		: Component(id, owner)
+		, mOffset(0, 0)
+		, mSize(10, 10)
 		, mbIsLoop(false)
+		, mAccumulatedTime(0.f)
+		, mFrameIndex(0)
+		, mAnimationIndex(0)
+		, mAnimationAsset(nullptr)
 	{
 	}
 
@@ -41,8 +49,6 @@ namespace d2dFramework
 				{
 					--mFrameIndex;
 				}
-
-				EventManager::GetInstance()->SendEvent("AnimationEnd", BaseEntity::GetId(), "");
 			}
 
 			mAccumulatedTime -= current.AnimationTime;
@@ -50,11 +56,21 @@ namespace d2dFramework
 		}
 	}
 
-	void AnimationRenderer::Render()
+	bool AnimationRenderer::IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox)
+	{
+		Transform* transform = GetGameObject()->GetComponent<Transform>();
+		D2D1::Matrix3x2F combineTransform = transform->GetTransform() * cameraTransform;
+
+		OBB rendererOBB = Collision::MakeOBB(mSize, mOffset, combineTransform);
+
+		return !Collision::CheckAABBToOBB(boundingBox, rendererOBB);
+	}
+
+	void AnimationRenderer::Render(const D2D1::Matrix3x2F& cameraTransform)
 	{
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 		D2D1::Matrix3x2F matrix = transform->GetTransform();
-		GetRenderManager()->SetTransform(matrix);
+		GetRenderManager()->SetTransform(matrix * cameraTransform);
 		{
 			const FrameInfomation& frameInfo = mAnimationAsset->GetFrameInfomation(mAnimationIndex, mFrameIndex);
 			GetRenderManager()->DrawBitMap(mOffset, mSize, frameInfo.UVRectangle, mAnimationAsset->GetBitmap());

@@ -10,7 +10,7 @@ namespace d2dFramework
 		BaseEntity(unsigned int id);
 		~BaseEntity();
 
-		unsigned int GetId() const;
+		inline unsigned int GetId();
 
 	private:
 		static std::unordered_set<unsigned int> mIDSet;
@@ -19,7 +19,7 @@ namespace d2dFramework
 		// 로깅 남길 거면 개체 생성 삭제 시간 정도?
 	};
 
-	unsigned int BaseEntity::GetId() const
+	unsigned int BaseEntity::GetId()
 	{
 		return mId;
 	}

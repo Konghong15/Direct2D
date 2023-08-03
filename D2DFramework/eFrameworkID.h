@@ -10,6 +10,8 @@ namespace d2dFramework
 		RenderManager,
 		TimeManager,
 		SceneManager,
-		EventManager
+		EventManager,
+		DefaultCamera,
+		DefaultCameraTransform
 	};
 }

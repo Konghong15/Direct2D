@@ -15,6 +15,7 @@ namespace d2dFramework
 	class Vector2;
 	class AnimationAsset;
 	class IRenderable;
+	class CameraManager;
 
 	class RenderManager final : public BaseEntity
 	{
@@ -24,7 +25,7 @@ namespace d2dFramework
 
 		void Init();
 		void BeginDraw();
-		void Render();
+		void Render(CameraManager* cameraManager);
 		void Clear(D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Identity(), D2D1_COLOR_F color = { 1.f, 1.f, 1.f, 1.f });
 		void EndDraw();
 		void Release();

@@ -31,12 +31,11 @@ namespace d2dFramework
 				unsigned int lhsId = mCollideable[i]->GetGameObject()->GetId();
 				unsigned int rhsId = mCollideable[j]->GetGameObject()->GetId();
 
-				auto iter = mOnCollisionObjectMap.find(lhsId);
-				std::unordered_map<unsigned int, Manifold>& collisionDataMap = iter->second;
-
-				if (mCollideable[i]->CheckCollision(mCollideable[j], &manifold))
+				if (!mCollideable[i]->CheckCollision(mCollideable[j], &manifold))
 				{
-					if (collisionDataMap.find(rhsId) != collisionDataMap.end())
+					auto lhsIter = mOnCollisionObjectMap.find(lhsId);
+			
+					if (lhsIter->second.find(rhsId) != lhsIter->second.end())
 					{
 						mExitCollisionQueue.push({ lhsId, rhsId });
 					}
@@ -45,10 +44,9 @@ namespace d2dFramework
 				}
 
 				mCollideable[i]->OnCollision(mCollideable[j], manifold);
+
 				mEnterCollisionQueue.push({ lhsId, rhsId , manifold });
 				manifold.CollisionNormal *= -1;
-
-				mCollideable[j]->OnCollision(mCollideable[i], manifold);
 				mEnterCollisionQueue.push({ rhsId, lhsId, manifold });
 
 				// EventManager::GetInstance()->SendEvent("OnCollision", lhsId, "");
@@ -71,13 +69,13 @@ namespace d2dFramework
 			std::unordered_map<unsigned int, Manifold>& collisionDataMap = lhsIter->second;
 			collisionDataMap.insert(std::make_pair(rhsId, manifold));
 
-			EventManager::GetInstance()->SendEvent("EnterCollision", lhsId, "");
+			// EventManager::GetInstance()->SendEvent("EnterCollision", lhsId, "");
 		}
 
 		while (!mExitCollisionQueue.empty())
 		{
 			auto pair = mExitCollisionQueue.front();
-			mEnterCollisionQueue.pop();
+			mExitCollisionQueue.pop();
 
 			unsigned int lhsId = pair.first;
 			unsigned int rhsId = pair.second;
@@ -91,8 +89,8 @@ namespace d2dFramework
 			lhsCollisionDataMap.erase(findRhs->first);
 			rhsCollisionDataMap.erase(findLhs->first);
 
-			EventManager::GetInstance()->SendEvent("ExitCollision", lhsId, "");
-			EventManager::GetInstance()->SendEvent("ExitCollision", rhsId, "");
+			// EventManager::GetInstance()->SendEvent("ExitCollision", lhsId, "");
+			// EventManager::GetInstance()->SendEvent("ExitCollision", rhsId, "");
 		}
 	}
 

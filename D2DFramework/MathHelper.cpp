@@ -34,10 +34,10 @@ namespace d2dFramework
 	{
 		D2D1_RECT_F result =
 		{
-			-size.GetX() + offset.GetX(),
-			-size.GetY() + offset.GetY(),
-			size.GetX() + offset.GetX(),
-			size.GetY() + offset.GetY()
+			-size.GetX() * 0.5f + offset.GetX(),
+			-size.GetY() * 0.5f + offset.GetY(),
+			size.GetX() * 0.5f + offset.GetX(),
+			size.GetY() * 0.5f + offset.GetY()
 		};
 
 		return result;

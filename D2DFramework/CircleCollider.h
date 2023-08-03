@@ -24,8 +24,8 @@ namespace d2dFramework
 		inline void SetRadius(float radius);
 		inline void SetOffset(const Vector2& offset);
 
-		inline eColliderType GetColliderType() const override;
 		inline GameObject* GetGameObject() const override;
+		inline eColliderType GetColliderType() const override;
 		inline bool GetIsTrigger() const;
 		inline float GetRadius() const;
 		inline const Vector2& GetOffset() const;
@@ -53,13 +53,13 @@ namespace d2dFramework
 		mOffset = offset;
 	}
 
-	eColliderType CircleCollider::GetColliderType() const
-	{
-		return eColliderType::Circle;
-	}
 	GameObject* CircleCollider::GetGameObject() const
 	{
 		return Component::GetGameObject();
+	}
+	eColliderType CircleCollider::GetColliderType() const
+	{
+		return eColliderType::Circle;
 	}
 	bool CircleCollider::GetIsTrigger() const
 	{

@@ -25,15 +25,22 @@ namespace d2dFramework
 
 	void ObjectManager::handleDeleteObject()
 	{
+		GameObject* gameObject = nullptr;
+
+		while (!mCreateObject.empty())
+		{
+			gameObject = mCreateObject.front();
+			mCreateObject.pop();
+
+			gameObject->Init();
+		}
 		while (!mDeleteObject.empty())
 		{
-			auto iter = mValidObjectMap.find(mDeleteObject.front());
+			gameObject = mDeleteObject.front();
+			mDeleteObject.pop();
 
-			if (iter != mValidObjectMap.end())
-			{
-				delete iter->second;
-				mValidObjectMap.erase(iter);
-			}
+			gameObject->Release();
+			delete gameObject;
 		}
 	}
 

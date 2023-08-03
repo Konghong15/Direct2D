@@ -1,8 +1,11 @@
 #pragma once
 
+#include <d2d1.h>
+
 namespace d2dFramework
 {
 	class RenderManager;
+	struct AABB;
 
 	class IRenderable
 	{
@@ -12,9 +15,10 @@ namespace d2dFramework
 		IRenderable() = default;
 		virtual ~IRenderable() = default;
 
-		virtual void Init() = 0; 
-		virtual void Render() = 0;
-		virtual void Release() = 0; 
+		virtual void Init() = 0;
+		virtual bool IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox) = 0;
+		virtual void Render(const D2D1::Matrix3x2F& cameraTransform) = 0;
+		virtual void Release() = 0;
 
 	protected:
 		inline RenderManager* GetRenderManager() const;

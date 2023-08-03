@@ -135,14 +135,17 @@
     <ClCompile Include="BaseEntity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationRenderer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camara.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationRenderer.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,7 +254,10 @@
     <ClInclude Include="FrameInfomation.h">
       <Filter>헤더 파일\Structor</Filter>
     </ClInclude>
-    <ClInclude Include="Camara.h">
+    <ClInclude Include="Camera.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

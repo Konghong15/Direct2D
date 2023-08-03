@@ -18,24 +18,14 @@ namespace d2dFramework
 		return mInstance;
 	}
 
-	void EventManager::SendEvent(const std::string& event, unsigned int id, const std::string& data)
-	{
-		auto keyCallback = mEventCallbackMap.find(event);
-		assert(keyCallback != mEventCallbackMap.end());
-
-		std::unordered_map<unsigned int, std::function<void(const std::string& data)>> listeners = keyCallback->second;
-		auto listener = listeners.find(id);
-
-		if (listener != listeners.end())
-		{
-			listener->second(data);
-		}
-	}
-
 	void EventManager::BroadcastEvent(const std::string& event, const std::string& data)
 	{
 		auto keyCallback = mEventCallbackMap.find(event);
-		assert(keyCallback != mEventCallbackMap.end());
+
+		if (keyCallback == mEventCallbackMap.end())
+		{
+			return;
+		}
 
 		std::unordered_map<unsigned int, std::function<void(const std::string& data)>> listener = keyCallback->second;
 
@@ -54,14 +44,6 @@ namespace d2dFramework
 
 			BroadcastEvent(keyData.first, keyData.second);
 		}
-
-		while (!mSendEventQueue.empty())
-		{
-			auto tupleData = mSendEventQueue.front();
-			mSendEventQueue.pop();
-
-			SendEvent(std::get<0>(tupleData), std::get<1>(tupleData), std::get<2>(tupleData));
-		}
 	}
 
 	void EventManager::release()
@@ -69,10 +51,6 @@ namespace d2dFramework
 		while (!mBroadcastEventQueue.empty())
 		{
 			mBroadcastEventQueue.pop();
-		}
-		while (!mSendEventQueue.empty())
-		{
-			mSendEventQueue.pop();
 		}
 
 		mEventCallbackMap.clear();

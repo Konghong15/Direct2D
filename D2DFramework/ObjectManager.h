@@ -35,7 +35,8 @@ namespace d2dFramework
 		static ObjectManager* mInstance;
 
 		std::unordered_map<unsigned int, GameObject*> mValidObjectMap;
-		std::queue<unsigned int> mDeleteObject;
+		std::queue<GameObject*> mCreateObject;
+		std::queue<GameObject*> mDeleteObject;
 
 		// GameObject object pool
 	};
@@ -45,7 +46,11 @@ namespace d2dFramework
 		auto iter = mValidObjectMap.find(id);
 		assert(iter == mValidObjectMap.end());
 
-		return new GameObject(id);
+		GameObject* gameObject = new GameObject(id);
+		mValidObjectMap.insert({ id, gameObject });
+		mCreateObject.push(gameObject);
+
+		return gameObject;
 	}
 
 	GameObject* ObjectManager::FindObjectOrNull(unsigned int id)
@@ -61,6 +66,13 @@ namespace d2dFramework
 
 	void ObjectManager::DeletObject(unsigned int id)
 	{
-		mDeleteObject.push(id);
+		auto iter = mValidObjectMap.find(id);
+
+		if (iter == mValidObjectMap.end())
+		{
+			return;
+		}
+
+		mDeleteObject.push(iter->second);
 	}
 }

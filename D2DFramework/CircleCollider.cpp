@@ -30,12 +30,7 @@ namespace d2dFramework
 	{
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 
-		const Vector2& SCALE = transform->GetScale();
-		mWorldCircle.Center.SetX(mOffset.GetX() * SCALE.GetX());
-		mWorldCircle.Center.SetY(mOffset.GetY() * SCALE.GetY());
-		mWorldCircle.Center += transform->GetTranslate();
-
-		mWorldCircle.Radius = mLocalRadius * (SCALE.GetX() > SCALE.GetY() ? SCALE.GetX() : SCALE.GetY());
+		mWorldCircle = Collision::MakeCircle(mOffset, mLocalRadius, transform->GetScale(), transform->GetTranslate());
 	}
 
 	bool CircleCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
@@ -72,8 +67,22 @@ namespace d2dFramework
 		Rigidbody* rigidBody = GetGameObject()->GetComponent<Rigidbody>();
 		Rigidbody* otherRigidBody = other->GetGameObject()->GetComponent<Rigidbody>();
 
-		if (rigidBody == nullptr || otherRigidBody == nullptr)
+		if (rigidBody == nullptr)
 		{
+			return;
+		}
+		if (otherRigidBody == nullptr)
+		{
+			Transform* transform = GetGameObject()->GetComponent<Transform>();
+			transform->AddTranslate(manifold.CollisionNormal * manifold.Penetration);
+
+			return;
+		}
+		if (rigidBody == nullptr)
+		{
+			Transform* transform = other->GetGameObject()->GetComponent<Transform>();
+			transform->AddTranslate(manifold.CollisionNormal * -manifold.Penetration);
+
 			return;
 		}
 

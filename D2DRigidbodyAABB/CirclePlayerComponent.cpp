@@ -5,9 +5,14 @@
 
 namespace d2dRigidbodyAABB
 {
-	CirclePlayerComponent::CirclePlayerComponent(d2dFramework::GameObject* owner)
-		: Component(owner)
+	CirclePlayerComponent::CirclePlayerComponent(unsigned int id, d2dFramework::GameObject* owner)
+		: Component(id, owner)
 	{
+	}
+
+	void CirclePlayerComponent::Init()
+	{
+		IUpdateable::Init();
 	}
 
 	void CirclePlayerComponent::Update(float deltaTime)
@@ -18,11 +23,11 @@ namespace d2dRigidbodyAABB
 
 		if (InputManager::GetInstance()->GetKeyState('W') == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
 		}
 		else if (InputManager::GetInstance()->GetKeyState('S') == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
 		}
 
 		if (InputManager::GetInstance()->GetKeyState('A') == eKeyState::Hold)
@@ -33,5 +38,10 @@ namespace d2dRigidbodyAABB
 		{
 			rigidbody->AddVelocity({ mSpeed.GetX() * deltaTime , 0 });
 		}
+	}
+
+	void CirclePlayerComponent::Release()
+	{
+		IUpdateable::Release();
 	}
 }

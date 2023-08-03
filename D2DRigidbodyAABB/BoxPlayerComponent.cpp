@@ -5,9 +5,14 @@
 
 namespace d2dRigidbodyAABB
 {
-	BoxPlayerComponent::BoxPlayerComponent(d2dFramework::GameObject* owner)
-		: Component(owner)
+	BoxPlayerComponent::BoxPlayerComponent(unsigned int id, d2dFramework::GameObject* owner)
+		: Component(id, owner)
 	{
+	}
+
+	void BoxPlayerComponent::Init()
+	{
+		IUpdateable::Init();
 	}
 
 	void BoxPlayerComponent::Update(float deltaTime)
@@ -18,11 +23,11 @@ namespace d2dRigidbodyAABB
 
 		if (InputManager::GetInstance()->GetKeyState(VK_UP) == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
 		}
 		else if (InputManager::GetInstance()->GetKeyState(VK_DOWN) == eKeyState::Hold)
 		{
-			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, -mSpeed.GetY() * deltaTime });
 		}
 
 		if (InputManager::GetInstance()->GetKeyState(VK_LEFT) == eKeyState::Hold)
@@ -33,5 +38,10 @@ namespace d2dRigidbodyAABB
 		{
 			rigidbody->AddVelocity({ mSpeed.GetX() * deltaTime , 0 });
 		}
+	}
+
+	void BoxPlayerComponent::Release()
+	{
+		IUpdateable::Release();
 	}
 }

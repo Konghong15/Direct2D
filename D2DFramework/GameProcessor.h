@@ -12,6 +12,8 @@ namespace d2dFramework
 	class EventManager;
 	class SceneManager;
 	class CollisionManager;
+	class CameraManager;
+	class GameObject;
 
 	class GameProcessor
 	{
@@ -42,6 +44,9 @@ namespace d2dFramework
 		RenderManager* mRenderManager;
 		SceneManager* mSceneManager;
 		CollisionManager* mCollisionManager;
+		CameraManager* mCameraManager;
+
+		GameObject* mDefaultCamera;
 	};
 
 	UINT GameProcessor::GetWidth() const

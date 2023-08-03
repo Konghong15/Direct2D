@@ -20,7 +20,8 @@ namespace d2dFramework
 
 		void Init() override;
 		void Update(float deltaTime) override;
-		void Render() override;
+		bool IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox) override;
+		void Render(const D2D1::Matrix3x2F& cameraTransform) override;
 		void Release() override;
 
 		inline void SetOffSet(const Vector2& offset);

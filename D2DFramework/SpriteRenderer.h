@@ -24,7 +24,8 @@ namespace d2dFramework
 		~SpriteRenderer() override = default;
 
 		void Init() override;
-		void Render() override;
+		bool IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox) override;
+		void Render(const D2D1::Matrix3x2F& cameraTransform) override;
 		void Release() override;
 
 		inline void SetOffSet(const Vector2& offset);
@@ -56,7 +57,7 @@ namespace d2dFramework
 		eSpriteType mSpriteType;
 	};
 
-	void SpriteRenderer::SetOffSet(const Vector2& offset)
+ 	void SpriteRenderer::SetOffSet(const Vector2& offset)
 	{
 		mOffset = offset;
 	}

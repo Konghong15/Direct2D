@@ -7,11 +7,16 @@
 #include "ObjectManager.h"
 #include "EventManager.h"
 #include "CollisionManager.h"
+#include "CameraManager.h"
 
 #include "IUpdateable.h"
 #include "IFixedUpdateable.h"
 #include "ICollideable.h"
 #include "IRenderable.h"
+
+#include "eFrameworkID.h"
+
+#include "Scene.h"
 
 #include <cassert>
 
@@ -25,6 +30,8 @@ namespace d2dFramework
 		, mRenderManager(new RenderManager())
 		, mSceneManager(new SceneManager())
 		, mCollisionManager(new CollisionManager())
+		, mCameraManager(new CameraManager())
+		, mDefaultCamera(nullptr)
 	{
 		InputManager::mInstance = new InputManager;
 		EventManager::mInstance = new EventManager;
@@ -58,8 +65,14 @@ namespace d2dFramework
 
 		mRenderManager->Init();
 		mTimeManager->Init();
+
+		mSceneManager->RegisterScene("defaultScene", new Scene("defaultScene"));
 		mSceneManager->Init();
 		InputManager::mInstance->Init();
+		mCameraManager->SetScreenSize({ static_cast<float>(mWidth), static_cast<float>(mHeight) });
+		mDefaultCamera = ObjectManager::mInstance->CreateObject(static_cast<unsigned int>(eFramworkID::DefaultCamera));
+		mDefaultCamera->CreateComponent<Transform>(static_cast<unsigned int>(eFramworkID::DefaultCameraTransform));
+		mCameraManager->RegisterCamera(mDefaultCamera);
 	}
 
 	void GameProcessor::Update()
@@ -78,14 +91,14 @@ namespace d2dFramework
 		while (s_FixedTime >= FIXED_DELTA_TIME)
 		{
 			mSceneManager->FixedUpdate(FIXED_DELTA_TIME);
-			mCollisionManager->Update(); 
+			mCollisionManager->Update();
 
 			s_FixedTime -= FIXED_DELTA_TIME; // FIXED_DELTA_TIME;
 		}
 
 		mSceneManager->Update(DELTA_TIME);
 		// lateUpdate?
-		mRenderManager->Render();
+		mRenderManager->Render(mCameraManager);
 
 		ObjectManager::mInstance->handleDeleteObject();
 		EventManager::mInstance->handleEvent();
@@ -97,6 +110,7 @@ namespace d2dFramework
 		mSceneManager->Release();
 		mCollisionManager->Release();
 		EventManager::mInstance->release();
+		ObjectManager::mInstance->release();
 
 		ICollideable::SetCollisionManager(nullptr);
 		IRenderable::SetRenderManager(nullptr);

@@ -42,6 +42,7 @@ namespace d2dFramework
 			mCurrentScene = nextScene->second;
 			mCurrentScene->Enter();
 		};
+
 		EventManager::GetInstance()->RegisterEventHandler(key, BaseEntity::GetId(), changeScene);
 	}
 
@@ -63,6 +64,9 @@ namespace d2dFramework
 
 	void SceneManager::Release()
 	{
+		const std::string& key = EventManager::GetInstance()->GetEventName(eDefaultEvent::ChangeScene);
+		EventManager::GetInstance()->UnRegisterEventHandler(key, BaseEntity::GetId()); 
+
 		for (auto iter = mSceneMap.begin(); iter != mSceneMap.end(); ++iter)
 		{
 			Scene* scene = iter->second;

@@ -44,11 +44,11 @@ namespace d2dFramework
 	}
 	unsigned int AnimationAsset::GetAnimationSize() const
 	{
-		return mFrameInfomations.size();
+		return static_cast<unsigned int>(mFrameInfomations.size());
 	}
 	unsigned int AnimationAsset::GetFrameSize(unsigned int animationIndex) const
 	{
 		assert(animationIndex < GetAnimationSize());
-		return mFrameInfomations[animationIndex].size();
+		return static_cast<unsigned int>(mFrameInfomations[animationIndex].size());
 	}
 }
