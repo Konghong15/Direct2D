@@ -63,7 +63,6 @@ namespace d2dRigidbodyAABB
 			spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
 			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
 
-
 			x *= -1;
 			mRightWall = ObjectManager::GetInstance()->CreateObject(tempId++);
 			transform = mRightWall->CreateComponent<Transform>(tempId++);
@@ -74,10 +73,22 @@ namespace d2dRigidbodyAABB
 			spriteRenderer->SetSize({ w, h });
 			spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
 			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
-			rigidbody = mRightWall->CreateComponent<Rigidbody>(tempId++);
-			rigidbody->SetMass(0);
 
+			x = 0;
+			y = GetHeight() * -0.5f;
+			w = (float)GetWidth();
+			h = 100;
 			mGround = ObjectManager::GetInstance()->CreateObject(tempId++);
+			transform = mGround->CreateComponent<Transform>(tempId++);
+			transform->SetTranslate({ x, y });
+			aabbCollider = mGround->CreateComponent<AABBCollider>(tempId++);
+			aabbCollider->SetSize({ w, h });
+			spriteRenderer = mGround->CreateComponent<SpriteRenderer>(tempId++);
+			spriteRenderer->SetSize({ w, h });
+			spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
+			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
+
+
 			mCeiling = ObjectManager::GetInstance()->CreateObject(tempId++);
 
 		}

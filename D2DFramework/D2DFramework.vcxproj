@@ -136,7 +136,6 @@
     <ClCompile Include="AnimationAsset.cpp" />
     <ClCompile Include="AnimationRenderer.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
@@ -170,7 +169,6 @@
     <ClInclude Include="AnimationRenderer.h" />
     <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="FrameInfomation.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="Circle.h" />

@@ -138,9 +138,6 @@
     <ClCompile Include="Component.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationRenderer.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
@@ -254,11 +251,8 @@
     <ClInclude Include="FrameInfomation.h">
       <Filter>헤더 파일\Structor</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
     <ClInclude Include="CameraManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

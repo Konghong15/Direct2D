@@ -23,6 +23,7 @@ namespace d2dFramework
 		inline void SetReflection(const Vector2& reflection);
 		inline void SetMass(float mass);
 		inline void SetCOR(float COR);
+		inline void SetGravityScale(float gravityScale);
 
 		inline void AddVelocity(const Vector2& velocity);
 		inline void AddAcceleartion(const Vector2& acceleration);
@@ -36,6 +37,8 @@ namespace d2dFramework
 		inline float GetCOR(void);
 
 	private:
+		static float mGravityWeight;
+
 		Vector2 mVelocity;
 		Vector2 mAcceleartion;
 		Vector2 mReflection;
@@ -43,6 +46,7 @@ namespace d2dFramework
 		float mMass;
 		float mInvMass;
 		float mCOR; // 반발계수 0~1
+		float mGravityScale;
 	};
 
 	void Rigidbody::SetVelocity(const Vector2& velocity)
@@ -82,6 +86,11 @@ namespace d2dFramework
 		{
 			COR = 0.f;
 		}
+	}
+
+	void Rigidbody::SetGravityScale(float gravityScale)
+	{
+		mGravityScale = gravityScale;
 	}
 
 	void Rigidbody::AddVelocity(const Vector2& velocity)
