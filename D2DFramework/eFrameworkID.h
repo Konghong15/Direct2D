@@ -2,7 +2,7 @@
 
 namespace d2dFramework
 {
-	enum class eFramworkID
+	enum class eFrameworkID
 	{
 		CollisionManager,
 		InputManager,
@@ -11,6 +11,7 @@ namespace d2dFramework
 		TimeManager,
 		SceneManager,
 		EventManager,
+		SoundManager,
 		DefaultCamera,
 		DefaultCameraTransform
 	};

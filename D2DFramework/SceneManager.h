@@ -1,16 +1,18 @@
 #pragma once
 
 #include "BaseEntity.h"
+#include "GameObject.h"
+#include "IFixedUpdateable.h"
+#include "IUpdateable.h"
 
 #include <cassert>
 #include <string>
 #include <map>
+#include <unordered_map>
 
 namespace d2dFramework
 {
 	class Scene;
-	class IFixedUpdateable;
-	class IUpdateable;
 
 	class SceneManager final : public BaseEntity
 	{
@@ -25,7 +27,7 @@ namespace d2dFramework
 		void Update(float deltaTime);
 		void Release();
 
-		inline void RegisterScene(const std::string& sceneName, Scene* scene);
+		void RegisterScene(const std::string& sceneName, Scene* scene);
 		inline void RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable);
 		inline void RegisterUpdateable(IUpdateable* updateable);
 
@@ -38,38 +40,30 @@ namespace d2dFramework
 		Scene* mCurrentScene;
 		std::map<std::string, Scene*> mSceneMap;
 
-		std::vector<IFixedUpdateable*> mFixedUpdateable;
-		std::vector<IUpdateable*> mUpdateable;
+		std::unordered_map<unsigned int, IFixedUpdateable*> mFixedUpdateable[GameObject::MAX_REFERENCE_DEPTH];
+		std::unordered_map<unsigned int, IUpdateable*> mUpdateable[GameObject::MAX_REFERENCE_DEPTH];
 	};
 
-	void SceneManager::RegisterScene(const std::string& sceneName, Scene* scene)
-	{
-		if (mCurrentScene == nullptr)
-		{
-			mCurrentScene = scene;
-		}
-
-		auto iter = mSceneMap.find(sceneName);
-		assert(iter == mSceneMap.end()); // 동일한 이름의 씬을 등록하면 안댐
-
-		mSceneMap.insert({ sceneName, scene });
-	}
 	void SceneManager::RegisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
 	{
-		mFixedUpdateable.push_back(fixedUpdateable);
+		GameObject* gameObject = fixedUpdateable->GetGameObject();
+		mFixedUpdateable[gameObject->GetReferenceDepth()].insert({ fixedUpdateable->GetId(), fixedUpdateable });
 	}
 	void SceneManager::RegisterUpdateable(IUpdateable* updateable)
 	{
-		mUpdateable.push_back(updateable);
+		GameObject* gameObject = updateable->GetGameObject();
+		mUpdateable[gameObject->GetReferenceDepth()].insert({ updateable->GetId(), updateable });
 	}
 
 	void SceneManager::UnregisterFixedUpdateable(IFixedUpdateable* fixedUpdateable)
 	{
-		mFixedUpdateable.erase(std::find(mFixedUpdateable.begin(), mFixedUpdateable.end(), fixedUpdateable));
+		GameObject* gameObject = fixedUpdateable->GetGameObject();
+		mFixedUpdateable[gameObject->GetReferenceDepth()].erase(mFixedUpdateable->find(fixedUpdateable->GetId()));
 	}
 	void SceneManager::UnregisterUpdateable(IUpdateable* updateable)
 	{
-		mUpdateable.erase(std::find(mUpdateable.begin(), mUpdateable.end(), updateable));
+		GameObject* gameObject = updateable->GetGameObject();
+		mUpdateable[gameObject->GetReferenceDepth()].erase(mUpdateable->find(updateable->GetId()));
 	}
 
 	Scene& SceneManager::GetCurrentScene() const

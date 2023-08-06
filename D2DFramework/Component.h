@@ -16,7 +16,7 @@ namespace d2dFramework
 		virtual void Release() = 0;
 
 	protected:
-		virtual inline GameObject* GetGameObject() const; // 다른 인터페이스에서 함수 참조하기 위해서 virtual로 선언
+		inline GameObject* GetGameObject() const; // 다른 인터페이스에서 함수 참조하기 위해서 virtual로 선언
 
 	private:
 		GameObject* mOwner;

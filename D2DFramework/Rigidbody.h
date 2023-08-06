@@ -3,11 +3,10 @@
 #include "Vector2.h"
 #include "Component.h"
 #include "IFixedUpdateable.h"
+#include "GameObject.h"
 
 namespace d2dFramework
 {
-	class GameObject;
-
 	class Rigidbody final : public Component, public IFixedUpdateable
 	{
 	public:
@@ -18,20 +17,20 @@ namespace d2dFramework
 		void FixedUpdate(float deltaTime) override;
 		void Release() override;
 
+		inline GameObject* GetGameObject() const override;
+		inline unsigned int GetId() const override;
+
 		inline void SetVelocity(const Vector2& velocity);
 		inline void SetAcceleartion(const Vector2& acceleration);
-		inline void SetReflection(const Vector2& reflection);
 		inline void SetMass(float mass);
 		inline void SetCOR(float COR);
 		inline void SetGravityScale(float gravityScale);
 
 		inline void AddVelocity(const Vector2& velocity);
 		inline void AddAcceleartion(const Vector2& acceleration);
-		inline void AddReflection(const Vector2& reflection);
 
 		inline const Vector2& GetVelocity(void);
 		inline const Vector2& GetAcceleartion(void);
-		inline const Vector2& GetReflection(void);
 		inline float GetMass(void);
 		inline float GetInvMass(void);
 		inline float GetCOR(void);
@@ -41,13 +40,21 @@ namespace d2dFramework
 
 		Vector2 mVelocity;
 		Vector2 mAcceleartion;
-		Vector2 mReflection;
 
 		float mMass;
 		float mInvMass;
 		float mCOR; // 반발계수 0~1
 		float mGravityScale;
 	};
+
+	GameObject* Rigidbody::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	unsigned int Rigidbody::GetId() const
+	{
+		return BaseEntity::GetId();
+	}
 
 	void Rigidbody::SetVelocity(const Vector2& velocity)
 	{
@@ -56,10 +63,6 @@ namespace d2dFramework
 	void Rigidbody::SetAcceleartion(const Vector2& acceleration)
 	{
 		mAcceleartion = acceleration;
-	}
-	void Rigidbody::SetReflection(const Vector2& reflection)
-	{
-		mReflection = reflection;
 	}
 	void Rigidbody::SetMass(float mass)
 	{
@@ -101,10 +104,6 @@ namespace d2dFramework
 	{
 		mAcceleartion += acceleration;
 	}
-	void Rigidbody::AddReflection(const Vector2& reflection)
-	{
-		mReflection += reflection;
-	}
 
 	const Vector2& Rigidbody::GetVelocity(void)
 	{
@@ -113,10 +112,6 @@ namespace d2dFramework
 	const Vector2& Rigidbody::GetAcceleartion(void)
 	{
 		return mAcceleartion;
-	}
-	const Vector2& Rigidbody::GetReflection(void)
-	{
-		return mReflection;
 	}
 	float Rigidbody::GetMass(void)
 	{

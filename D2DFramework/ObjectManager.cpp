@@ -13,7 +13,7 @@ namespace d2dFramework
 	}
 
 	ObjectManager::ObjectManager()
-		: BaseEntity(static_cast<unsigned int>(eFramworkID::ObjectManager))
+		: BaseEntity(static_cast<unsigned int>(eFrameworkID::ObjectManager))
 	{
 		mValidObjectMap.reserve(RESERVE_SIZE);
 	}
@@ -23,7 +23,7 @@ namespace d2dFramework
 		release();
 	}
 
-	void ObjectManager::handleDeleteObject()
+	void ObjectManager::handleObjectLifeSpan()
 	{
 		GameObject* gameObject = nullptr;
 

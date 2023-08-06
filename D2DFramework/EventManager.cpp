@@ -7,7 +7,7 @@ namespace d2dFramework
 	EventManager* EventManager::mInstance = nullptr;
 
 	EventManager::EventManager()
-		: BaseEntity(static_cast<unsigned int>(eFramworkID::EventManager))
+		: BaseEntity(static_cast<unsigned int>(eFrameworkID::EventManager))
 	{
 		mDefaultEventNameMap.insert({ eDefaultEvent::ChangeScene, "ChangeScene" });
 	}

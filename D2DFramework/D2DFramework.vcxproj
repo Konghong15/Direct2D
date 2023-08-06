@@ -106,12 +106,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../lib/</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -137,7 +141,10 @@
     <ClCompile Include="AnimationRenderer.cpp" />
     <ClCompile Include="BaseEntity.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="SoundAsset.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="CircleCollider.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -169,7 +176,11 @@
     <ClInclude Include="AnimationRenderer.h" />
     <ClInclude Include="BaseEntity.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="eObjectType.h" />
     <ClInclude Include="FrameInfomation.h" />
+    <ClInclude Include="SoundAsset.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="CircleCollider.h" />

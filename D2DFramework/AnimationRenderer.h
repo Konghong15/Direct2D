@@ -19,15 +19,18 @@ namespace d2dFramework
 		~AnimationRenderer() override = default;
 
 		void Init() override;
+		void Release() override;
+
 		void Update(float deltaTime) override;
 		bool IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox) override;
 		void Render(const D2D1::Matrix3x2F& cameraTransform) override;
-		void Release() override;
 
 		inline void SetOffSet(const Vector2& offset);
 		inline void SetSize(const Vector2& size);
 		inline void SetAnimationAsset(AnimationAsset* animationAsset);
 
+		inline GameObject* GetGameObject() const override;
+		inline unsigned int GetId() const override;
 		inline const Vector2& GetOffset(void) const;
 		inline const Vector2& GetSize(void) const;
 		inline AnimationAsset* GetAnimationAsset(void) const;
@@ -57,6 +60,14 @@ namespace d2dFramework
 		mAnimationAsset = animationAsset;
 	}
 
+	GameObject* AnimationRenderer::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	unsigned int AnimationRenderer::GetId() const
+	{
+		return BaseEntity::GetId();
+	}
 	const Vector2& AnimationRenderer::GetOffset() const
 	{
 		return mOffset;

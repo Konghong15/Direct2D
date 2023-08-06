@@ -5,6 +5,7 @@ namespace d2dFramework
 {
 	OBBCollider::OBBCollider(unsigned int id, GameObject* owner)
 		: Component(id, owner)
+		, Collider(eColliderType::OBB)
 	{
 	}
 
@@ -21,11 +22,6 @@ namespace d2dFramework
 	bool OBBCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
 	{
 		return true;
-	}
-
-	void OBBCollider::OnCollision(ICollideable* other, const Manifold& manifold)
-	{
-
 	}
 
 	void OBBCollider::Release()

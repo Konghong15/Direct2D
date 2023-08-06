@@ -2,13 +2,14 @@
 
 #include "BaseEntity.h"
 #include "FrameInfomation.h"
+#include "eObjectType.h"
 
 #include <d2d1.h>
 #include <dwrite.h>
 #include <wincodec.h>
 #include <string>
 #include <map>
-#include <vector>
+#include <unordered_map>
 
 namespace d2dFramework
 {
@@ -24,14 +25,15 @@ namespace d2dFramework
 		~RenderManager() = default;
 
 		void Init();
-		void BeginDraw();
-		void Render(CameraManager* cameraManager);
-		void Clear(D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Identity(), D2D1_COLOR_F color = { 1.f, 1.f, 1.f, 1.f });
-		void EndDraw();
 		void Release();
 
-		inline void RegisterRenderable(IRenderable* renderable);
-		inline void UnregisterRenderable(IRenderable* renderable);
+		void RegisterRenderable(IRenderable* renderable);
+		void UnregisterRenderable(IRenderable* renderable);
+
+		void BeginDraw();
+		void Render(CameraManager* cameraManager);
+		void EndDraw();
+		void Clear(D2D1::Matrix3x2F matrix = D2D1::Matrix3x2F::Identity(), D2D1_COLOR_F color = { 1.f, 1.f, 1.f, 1.f });
 
 		void DrawPoint(float x, float y);
 		void DrawPoint(const D2D1_POINT_2F& point);
@@ -82,6 +84,7 @@ namespace d2dFramework
 	private:
 		enum { INIT_FONT_SIZE = 15 };
 		enum { INIT_STROKE_SIZE = 2 };
+		enum { RESERVE_SIZE = 2048 };
 
 		ID2D1Factory* mFactory;
 		ID2D1HwndRenderTarget* mRenderTarget;
@@ -95,7 +98,7 @@ namespace d2dFramework
 		std::map<const WCHAR*, ID2D1Bitmap*> mBitmapMap;
 		std::map<const WCHAR*, AnimationAsset*> mAnimationAssetMap;
 
-		std::vector<IRenderable*> mRenderable;
+		std::unordered_map<unsigned int, IRenderable*> mRenderable[static_cast<unsigned int>(eObjectType::Size)];
 	};
 
 	ID2D1Bitmap* RenderManager::GetBitmapOrNull(const WCHAR* imangePath)
@@ -112,13 +115,4 @@ namespace d2dFramework
 		return iter == mAnimationAssetMap.end() ? nullptr : iter->second;
 	}
 
-	void RenderManager::RegisterRenderable(IRenderable* renderable)
-	{
-		mRenderable.push_back(renderable);
-	}
-
-	void RenderManager::UnregisterRenderable(IRenderable* renderable)
-	{
-		mRenderable.erase(std::find(mRenderable.begin(), mRenderable.end(), renderable));
-	}
 }

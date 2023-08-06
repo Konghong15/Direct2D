@@ -1,7 +1,9 @@
 #pragma once
 
 #include "BaseEntity.h"
+#include "eObjectType.h"
 
+#include <map>
 #include <cassert>
 #include <unordered_map>
 #include <typeinfo>
@@ -23,16 +25,26 @@ namespace d2dFramework
 		template <typename T>
 		T* GetComponent();
 
-		// 컴포넌트가 등록된 채 콜백하여 업데이트하는 방식
-		// 각자 시스템에 ID 동록해서 관련 처리하는 방식
-		// 크게 렌더링과 충돌 검출, 이동처리 정도? 나머지는 고유한 시스템이나 관련스크립트로 뺴서 처리하면 될 거 같다.
+		inline void SetObjectType(eObjectType objectType);  // init 호출 전에만 사용해야 합니다. rendering 순서, collision 처리 순서 용도
+		inline void SetParent(GameObject* gameObject); // init 호출 전에만 사용해야 합니다. update, fixedUpdate 처리 순서 용도
+
+		inline eObjectType GetObjectType(void) const;
+		inline GameObject* GetParentOrNull() const;
+		inline unsigned int GetReferenceDepth() const;
 
 	private:
-		GameObject(unsigned int id);
+		GameObject(unsigned int id, eObjectType objectType = eObjectType::None);
 		~GameObject();
 
+	public:
+		enum { MAX_REFERENCE_DEPTH = 3u };
+
 	private:
+		eObjectType mObjectType;
 		std::unordered_map<size_t, Component*> mComponents;
+		GameObject* mParent;
+		std::map<unsigned int, GameObject*> mChildren;
+		unsigned int mReferenceDepth;
 	};
 
 	template <typename T>
@@ -62,5 +74,32 @@ namespace d2dFramework
 		T* find = static_cast<T*>((*iter).second);
 
 		return find;
+	}
+
+	void GameObject::SetObjectType(eObjectType objectType)
+	{
+		mObjectType = objectType;
+	}
+	void GameObject::SetParent(GameObject* gameObject)
+	{
+		assert(gameObject != nullptr);
+		mParent = gameObject;
+		mParent->mChildren.insert({ GetId(), this });
+		mReferenceDepth = gameObject->GetReferenceDepth() + 1u;
+
+		assert(MAX_REFERENCE_DEPTH > mReferenceDepth);
+	}
+
+	eObjectType GameObject::GetObjectType(void) const
+	{
+		return mObjectType;
+	}
+	GameObject* GameObject::GetParentOrNull() const
+	{
+		return mParent;
+	}
+	unsigned int GameObject::GetReferenceDepth() const
+	{
+		return mReferenceDepth;
 	}
 }

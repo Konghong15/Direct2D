@@ -6,8 +6,14 @@
 #include "IUpdateable.h"
 #include "Vector2.h"
 
+namespace d2dFramework
+{
+	class GameObject;
+}
+
 namespace d2dRigidbodyAABB
 {
+
 	class BoxPlayerComponent
 		: public d2dFramework::Component
 		, public d2dFramework::IUpdateable
@@ -22,6 +28,8 @@ namespace d2dRigidbodyAABB
 
 		inline void SetSpped(const d2dFramework::Vector2& speed);
 
+		inline d2dFramework::GameObject* GetGameObject() const override;
+		inline unsigned int GetId() const override;
 		inline const d2dFramework::Vector2& GetSpped(void) const;
 
 	private:
@@ -35,6 +43,14 @@ namespace d2dRigidbodyAABB
 		mSpeed = speed;
 	}
 
+	d2dFramework::GameObject* BoxPlayerComponent::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	unsigned int BoxPlayerComponent::GetId() const
+	{
+		return BaseEntity::GetId();
+	}
 	const d2dFramework::Vector2& BoxPlayerComponent::GetSpped(void) const
 	{
 		return mSpeed;

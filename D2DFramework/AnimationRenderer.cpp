@@ -32,6 +32,7 @@ namespace d2dFramework
 
 	void AnimationRenderer::Update(float deltaTime)
 	{
+		assert(mAnimationAsset != nullptr);
 		mAccumulatedTime += deltaTime;
 
 		FrameInfomation current = mAnimationAsset->GetFrameInfomation(mAnimationIndex, mFrameIndex);
@@ -68,6 +69,8 @@ namespace d2dFramework
 
 	void AnimationRenderer::Render(const D2D1::Matrix3x2F& cameraTransform)
 	{
+		assert(mAnimationAsset != nullptr);
+
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 		D2D1::Matrix3x2F matrix = transform->GetTransform();
 		GetRenderManager()->SetTransform(matrix * cameraTransform);

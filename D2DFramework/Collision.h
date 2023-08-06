@@ -35,8 +35,10 @@ namespace d2dFramework
 		static Vector2 GetCenter(const AABB& aabb);
 		static Vector2 GetCenter(const OBB& aabb);
 
+		static AABB MakeAABB(const Vector2& offset, const Vector2& size, D2D1::Matrix3x2F transform);
 		static AABB MakeAABB(const Vector2& offset, const Vector2& size, const Vector2& scale, const Vector2& translate);
 		static OBB MakeOBB(const Vector2& offset, const Vector2& size, D2D1::Matrix3x2F transform);
+		static Circle MakeCircle(const Vector2& offset, float radius, D2D1::Matrix3x2F transform);
 		static Circle MakeCircle(const Vector2& offset, float radius, const Vector2& scale, const Vector2& translate);
 	};
 }

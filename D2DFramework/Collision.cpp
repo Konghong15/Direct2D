@@ -398,6 +398,22 @@ namespace d2dFramework
 		return (obb.mPoints[0] + obb.mPoints[2]) * 0.5f;
 	}
 
+	AABB Collision::MakeAABB(const Vector2& offset, const Vector2& size, D2D1::Matrix3x2F transform)
+	{
+		AABB result{ {-size.GetX() * 0.5f, size.GetY() * 0.5f }, { size.GetX() * 0.5f, -size.GetY() * 0.5f} };
+
+		D2D1::Matrix3x2F combine = transform * D2D1::Matrix3x2F::Translation({ offset.GetX(), offset.GetY() });
+
+		D2D1_POINT_2F temp;
+		temp = combine.TransformPoint({ result.TopLeft.GetX(), result.TopLeft.GetY() });
+		result.TopLeft.SetXY(temp.x, temp.y);
+
+		temp = combine.TransformPoint({ result.BottomRight.GetX(), result.BottomRight.GetY() });
+		result.BottomRight.SetXY(temp.x, temp.y);
+
+		return result;
+	}
+
 	AABB Collision::MakeAABB(const Vector2& offset, const Vector2& size, const Vector2& scale, const Vector2& translate)
 	{
 		AABB result;
@@ -429,6 +445,25 @@ namespace d2dFramework
 
 		temp = transform.TransformPoint({ result.mPoints[BottomLeft].GetX(), result.mPoints[BottomLeft].GetY() });
 		result.mPoints[BottomLeft].SetX(temp.x); result.mPoints[BottomLeft].SetY(temp.y);
+
+		return result;
+	}
+
+	Circle Collision::MakeCircle(const Vector2& offset, float radius, D2D1::Matrix3x2F transform)
+	{
+		Circle result;
+		D2D1::Matrix3x2F combine = transform * D2D1::Matrix3x2F::Translation({ offset.GetX(), offset.GetY() });
+
+		D2D1_POINT_2F temp;
+		temp = combine.TransformPoint({ 0, 0 });
+		result.Center.SetXY(temp.x, temp.y);
+
+		temp = combine.TransformPoint({ radius, radius });
+
+		Vector2 tempRadius = result.Center - Vector2({ temp.x, temp.y });
+		tempRadius.AbsXY();
+
+		result.Radius = (tempRadius.GetX() > tempRadius.GetY() ? tempRadius.GetX() : tempRadius.GetY());
 
 		return result;
 	}

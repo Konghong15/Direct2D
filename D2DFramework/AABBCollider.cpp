@@ -11,8 +11,7 @@ namespace d2dFramework
 {
 	AABBCollider::AABBCollider(unsigned int id, GameObject* owner)
 		: Component(id, owner)
-		, mbIsTrigger(false)
-		, mOffset(0.f, 0.f)
+		, Collider(eColliderType::AABB)
 		, mSize(1.f, 1.f)
 		, mWorldAABB{ Vector2(-0.5f, -0.5f), Vector2(0.5f, 0.5f) }
 	{
@@ -20,14 +19,19 @@ namespace d2dFramework
 
 	void AABBCollider::Init()
 	{
-		ICollideable::Init();
+		Collider::Init();
+	}
+
+	void AABBCollider::Release()
+	{
+		Collider::Release();
 	}
 
 	void AABBCollider::UpdateCollider()
 	{
 		Transform* transform = GetGameObject()->GetComponent<Transform>();
 
-		mWorldAABB = Collision::MakeAABB(mOffset, mSize, transform->GetScale(), transform->GetTranslate());
+		mWorldAABB = Collision::MakeAABB(mOffset, mSize, transform->GetSTTansform());
 	}
 
 	bool AABBCollider::CheckCollision(ICollideable* other, Manifold* outManifold)
@@ -57,76 +61,5 @@ namespace d2dFramework
 			return false;
 			break;
 		}
-	}
-
-
-	void AABBCollider::OnCollision(ICollideable* other, const Manifold& manifold)
-	{
-		Rigidbody* rigidBody = GetGameObject()->GetComponent<Rigidbody>();
-		Rigidbody* otherRigidBody = other->GetGameObject()->GetComponent<Rigidbody>();
-
-		if (rigidBody == nullptr && otherRigidBody == nullptr)
-		{
-			return;
-		}
-		if (otherRigidBody == nullptr)
-		{
-			Transform* transform = GetGameObject()->GetComponent<Transform>();
-			transform->AddTranslate(manifold.CollisionNormal * -manifold.Penetration);
-
-			float scalar = rigidBody->GetVelocity().GetMagnitude() * (1 + rigidBody->GetCOR());
-
-			rigidBody->AddVelocity(manifold.CollisionNormal * scalar);
-
-			return;
-		}
-		if (rigidBody == nullptr)
-		{
-			Transform* transform = other->GetGameObject()->GetComponent<Transform>();
-			transform->AddTranslate(manifold.CollisionNormal * manifold.Penetration);
-
-
-			float scalar = otherRigidBody->GetVelocity().GetMagnitude() * (1 + otherRigidBody->GetCOR());
-
-			otherRigidBody->AddVelocity(manifold.CollisionNormal * scalar);
-
-			return;
-		}
-
-		Vector2 rv = otherRigidBody->GetVelocity() - rigidBody->GetVelocity();
-		float scalar = Vector2::Dot(rv, manifold.CollisionNormal);
-
-		if (scalar > 0)
-		{
-			return;
-		}
-
-		float COR = min(rigidBody->GetCOR(), otherRigidBody->GetCOR());
-
-		float j = -(1 + COR) * scalar;
-		j /= rigidBody->GetInvMass() + otherRigidBody->GetInvMass();
-
-		float massSum = rigidBody->GetMass() + otherRigidBody->GetMass();
-
-		if (massSum == 0.f)
-		{
-			return;
-		}
-
-		Vector2 impulse = manifold.CollisionNormal * j;
-		rigidBody->AddVelocity(impulse * -rigidBody->GetInvMass());
-		otherRigidBody->AddVelocity(impulse * otherRigidBody->GetInvMass());
-
-		const float percent = 0.2f;
-		const float slop = 0.01f;
-		Vector2 correction = manifold.CollisionNormal * (std::max<float>(manifold.Penetration - slop, 0.f) / (rigidBody->GetInvMass() + otherRigidBody->GetInvMass()) * percent);
-
-		rigidBody->AddVelocity(correction * -rigidBody->GetInvMass());
-		otherRigidBody->AddVelocity(correction * otherRigidBody->GetInvMass());
-	}
-
-	void AABBCollider::Release()
-	{
-		ICollideable::Release();
 	}
 }

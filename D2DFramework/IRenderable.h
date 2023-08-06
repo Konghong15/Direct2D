@@ -5,6 +5,7 @@
 namespace d2dFramework
 {
 	class RenderManager;
+	class GameObject;
 	struct AABB;
 
 	class IRenderable
@@ -19,6 +20,9 @@ namespace d2dFramework
 		virtual bool IsOutsideBoundingBox(const D2D1::Matrix3x2F& cameraTransform, const AABB& boundingBox) = 0;
 		virtual void Render(const D2D1::Matrix3x2F& cameraTransform) = 0;
 		virtual void Release() = 0;
+
+		virtual GameObject* GetGameObject() const = 0;
+		virtual inline unsigned int GetId() const = 0;
 
 	protected:
 		inline RenderManager* GetRenderManager() const;

@@ -36,6 +36,8 @@ namespace d2dFramework
 		inline void SetUVRectangle(const D2D1_RECT_F& rectangle);
 		inline void SetSpriteType(eSpriteType spriteType);
 
+		inline GameObject* GetGameObject() const override;
+		inline unsigned int GetId() const override;
 		inline const Vector2& GetOffset(void) const;
 		inline const Vector2& GetSize(void) const;
 		inline const D2D1_COLOR_F& GetBaseColor(void) const;
@@ -57,7 +59,7 @@ namespace d2dFramework
 		eSpriteType mSpriteType;
 	};
 
- 	void SpriteRenderer::SetOffSet(const Vector2& offset)
+	void SpriteRenderer::SetOffSet(const Vector2& offset)
 	{
 		mOffset = offset;
 	}
@@ -86,6 +88,14 @@ namespace d2dFramework
 		mSpriteType = spriteType;
 	}
 
+	GameObject* SpriteRenderer::GetGameObject() const
+	{
+		return Component::GetGameObject();
+	}
+	unsigned int SpriteRenderer::GetId() const
+	{
+		return BaseEntity::GetId();
+	}
 	const Vector2& SpriteRenderer::GetOffset() const
 	{
 		return mOffset;

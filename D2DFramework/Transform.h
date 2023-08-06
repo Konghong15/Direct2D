@@ -4,11 +4,10 @@
 
 #include "Vector2.h"
 #include "Component.h"
+#include "GameObject.h"
 
 namespace d2dFramework
 {
-	class GameObject;
-
 	class Transform : public Component
 	{
 	public:
@@ -30,6 +29,7 @@ namespace d2dFramework
 		inline float GetRotate(void) const;
 		inline const Vector2& GetTranslate(void) const;
 
+		inline const D2D1::Matrix3x2F GetSTTansform(void) const;
 		inline const D2D1::Matrix3x2F GetTransform(void) const;
 		inline const D2D1::Matrix3x2F GetInverseTransform(void) const;
 
@@ -78,9 +78,36 @@ namespace d2dFramework
 		return mTranslate;
 	}
 
+	const D2D1::Matrix3x2F Transform::GetSTTansform(void) const
+	{
+		GameObject* parent = GetGameObject()->GetParentOrNull();
+
+		D2D1::Matrix3x2F result = D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
+
+		if (parent == nullptr)
+		{
+			return result;
+		}
+		else
+		{
+			return result * parent->GetComponent<Transform>()->GetTransform();
+		}
+	}
+
 	const D2D1::Matrix3x2F Transform::GetTransform(void) const
 	{
-		return D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Rotation(mRotateInDegree) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
+		GameObject* parent = GetGameObject()->GetParentOrNull();
+
+		D2D1::Matrix3x2F result = D2D1::Matrix3x2F::Scale({ mScale.GetX(), mScale.GetY() }) * D2D1::Matrix3x2F::Rotation(mRotateInDegree) * D2D1::Matrix3x2F::Translation({ mTranslate.GetX(), mTranslate.GetY() });
+
+		if (parent == nullptr)
+		{
+			return result;
+		}
+		else
+		{
+			return result * parent->GetComponent<Transform>()->GetTransform();
+		}
 	}
 	const D2D1::Matrix3x2F Transform::GetInverseTransform(void) const
 	{

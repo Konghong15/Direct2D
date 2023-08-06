@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "ICollideable.h"
+#include "Collider.h"
 #include "OBB.h"
 #include "AABB.h"
 
@@ -9,53 +9,49 @@ namespace d2dFramework
 {
 	class GameObject;
 
-	class OBBCollider final : public Component, public ICollideable
+	class OBBCollider final : public Component, public Collider
 	{
 	public:
 		OBBCollider(unsigned int id, GameObject* owner);
 		virtual ~OBBCollider() = default;
 
 		void Init() override;
-		void UpdateCollider() override;
-		bool CheckCollision(ICollideable* other, Manifold* outManifold) override;
-		void OnCollision(ICollideable* other, const Manifold& manifold) override;
 		void Release() override;
 
-		inline void SetIsTrigger(bool bisTrigger);
+		void UpdateCollider() override;
+		bool CheckCollision(ICollideable* other, Manifold* outManifold) override;
+
+		inline void SetSize(const Vector2& size);
 
 		inline GameObject* GetGameObject() const override;
-		inline eColliderType GetColliderType() const override;
-		inline bool GetIsTrigger() const;
+		inline unsigned int GetId() const override;
 		inline const OBB& GetWorldOBB() const;
+		inline const Vector2& GetSize() const;
 
 	private:
-		bool mbIsTrigger;
-
-		Vector2 mOffset;
 		Vector2 mSize;
-
 		OBB mWorldOBB;
 	};
 
-	void OBBCollider::SetIsTrigger(bool bisTrigger)
+	void OBBCollider::SetSize(const Vector2& size)
 	{
-		mbIsTrigger = bisTrigger;
+		mSize = size;
 	}
 
 	GameObject* OBBCollider::GetGameObject() const
 	{
 		return Component::GetGameObject();
 	}
-	eColliderType OBBCollider::GetColliderType() const
+	unsigned int OBBCollider::GetId() const
 	{
-		return eColliderType::OBB;
-	}
-	bool OBBCollider::GetIsTrigger() const
-	{
-		return mbIsTrigger;
+		return BaseEntity::GetId();
 	}
 	const OBB& OBBCollider::GetWorldOBB() const
 	{
 		return mWorldOBB;
+	}
+	const Vector2& OBBCollider::GetSize() const
+	{
+		return mSize;
 	}
 }

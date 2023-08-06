@@ -2,6 +2,7 @@
 
 #include "BaseEntity.h"
 #include "GameObject.h"
+#include "Transform.h"
 
 #include <cassert>
 #include <unordered_map>
@@ -26,7 +27,7 @@ namespace d2dFramework
 		ObjectManager(const ObjectManager&) = delete;
 		ObjectManager& operator=(const ObjectManager&) = delete;
 
-		void handleDeleteObject();
+		void handleObjectLifeSpan();
 		void release();
 
 	private:
@@ -73,6 +74,7 @@ namespace d2dFramework
 			return;
 		}
 
-		mDeleteObject.push(iter->second);
+		GameObject* gameObject = iter->second;
+		mDeleteObject.push(gameObject);
 	}
 }

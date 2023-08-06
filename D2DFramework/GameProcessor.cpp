@@ -8,6 +8,7 @@
 #include "EventManager.h"
 #include "CollisionManager.h"
 #include "CameraManager.h"
+#include "SoundManager.h"
 
 #include "IUpdateable.h"
 #include "IFixedUpdateable.h"
@@ -32,6 +33,7 @@ namespace d2dFramework
 		, mCollisionManager(new CollisionManager())
 		, mCameraManager(new CameraManager())
 		, mDefaultCamera(nullptr)
+		, mSoundManager(new SoundManager())
 	{
 		InputManager::mInstance = new InputManager;
 		EventManager::mInstance = new EventManager;
@@ -65,13 +67,16 @@ namespace d2dFramework
 
 		mRenderManager->Init();
 		mTimeManager->Init();
-
-		mSceneManager->RegisterScene("defaultScene", new Scene("defaultScene"));
+		mCollisionManager->Init();
 		mSceneManager->Init();
+		mSoundManager->Init();
+
+		EventManager::mInstance;
 		InputManager::mInstance->Init();
+
 		mCameraManager->SetScreenSize({ static_cast<float>(mWidth), static_cast<float>(mHeight) });
-		mDefaultCamera = ObjectManager::mInstance->CreateObject(static_cast<unsigned int>(eFramworkID::DefaultCamera));
-		mDefaultCamera->CreateComponent<Transform>(static_cast<unsigned int>(eFramworkID::DefaultCameraTransform));
+		mDefaultCamera = ObjectManager::mInstance->CreateObject(static_cast<unsigned int>(eFrameworkID::DefaultCamera));
+		mDefaultCamera->CreateComponent<Transform>(static_cast<unsigned int>(eFrameworkID::DefaultCameraTransform));
 		mCameraManager->RegisterCamera(mDefaultCamera);
 	}
 
@@ -100,12 +105,13 @@ namespace d2dFramework
 		// lateUpdate?
 		mRenderManager->Render(mCameraManager);
 
-		ObjectManager::mInstance->handleDeleteObject();
+		ObjectManager::mInstance->handleObjectLifeSpan();
 		EventManager::mInstance->handleEvent();
 	}
 
 	void GameProcessor::Destroy()
 	{
+		mSoundManager->Release();
 		mRenderManager->Release();
 		mSceneManager->Release();
 		mCollisionManager->Release();

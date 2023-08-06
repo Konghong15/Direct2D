@@ -4,7 +4,7 @@
 namespace d2dFramework
 {
 	TimeManager::TimeManager()
-		: BaseEntity(static_cast<unsigned int>(eFramworkID::TimeManager))
+		: BaseEntity(static_cast<unsigned int>(eFrameworkID::TimeManager))
 	{
 		Init();
 	}

@@ -1,5 +1,6 @@
 #include "RenderManger.h"
 
+#include "GameObject.h"
 #include "IRenderable.h"
 #include "eFrameworkID.h"
 #include "AnimationAsset.h"
@@ -22,7 +23,7 @@
 namespace d2dFramework
 {
 	RenderManager::RenderManager()
-		: BaseEntity(static_cast<unsigned int>(eFramworkID::RenderManager))
+		: BaseEntity(static_cast<unsigned int>(eFrameworkID::RenderManager))
 		, mFactory(nullptr)
 		, mRenderTarget(nullptr)
 		, mWICFactory(nullptr)
@@ -68,10 +69,20 @@ namespace d2dFramework
 		SetFontSize(INIT_FONT_SIZE);
 		SetColor({ 0.f,0.f,0.f,1.f });
 		SetStrokeWidth(INIT_STROKE_SIZE);
+
+		for (unsigned int i = 0; i < static_cast<unsigned int>(eObjectType::Size); ++i)
+		{
+			mRenderable[i].reserve(RESERVE_SIZE);
+		}
 	}
 
 	void RenderManager::Release()
 	{
+		for (unsigned int i = 0; i < static_cast<unsigned int>(eObjectType::Size); ++i)
+		{
+			mRenderable[i].clear();
+		}
+
 		mTextFormat->Release(); mTextFormat = nullptr;
 		mFactory->Release(); mFactory = nullptr;
 		mRenderTarget->Release(); mRenderTarget = nullptr;
@@ -93,6 +104,22 @@ namespace d2dFramework
 		mAnimationAssetMap.clear();
 	}
 
+	void RenderManager::RegisterRenderable(IRenderable* renderable)
+	{
+		assert(renderable != nullptr);
+
+		GameObject* gameObject = renderable->GetGameObject();
+		mRenderable[static_cast<unsigned int>(gameObject->GetObjectType())].insert({ renderable->GetId(), renderable });
+	}
+
+	void RenderManager::UnregisterRenderable(IRenderable* renderable)
+	{
+		GameObject* gameObject = renderable->GetGameObject();
+		unsigned int index = static_cast<unsigned int>(gameObject->GetObjectType());
+
+		mRenderable[index].erase(renderable->GetId());
+	}
+
 	void RenderManager::BeginDraw()
 	{
 		mRenderTarget->BeginDraw();
@@ -109,14 +136,17 @@ namespace d2dFramework
 		AABB cameraAABB = { {0, 0 }, cameraManager->GetScrennSize() };
 		D2D1::Matrix3x2F matrix = cameraManager->GetCombineMatrix();
 
-		for (IRenderable* renderable : mRenderable)
+		for (unsigned int i = 0; i < static_cast<unsigned int>(eObjectType::Size); ++i)
 		{
-			if (renderable->IsOutsideBoundingBox(matrix, cameraAABB))
+			for (auto pair : mRenderable[i])
 			{
-				continue;
-			}
+				if (pair.second->IsOutsideBoundingBox(matrix, cameraAABB))
+				{
+					continue;
+				}
 
-			renderable->Render(matrix);
+				pair.second->Render(matrix);
+			}
 		}
 
 		EndDraw();

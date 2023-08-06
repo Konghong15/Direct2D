@@ -9,7 +9,7 @@
 namespace d2dFramework
 {
 	SceneManager::SceneManager()
-		: BaseEntity(static_cast<unsigned int>(eFramworkID::SceneManager))
+		: BaseEntity(static_cast<unsigned int>(eFrameworkID::SceneManager))
 		, mCurrentScene(nullptr)
 	{
 	}
@@ -27,8 +27,6 @@ namespace d2dFramework
 
 	void SceneManager::Init()
 	{
-		mCurrentScene->Enter();
-
 		const std::string& key = EventManager::GetInstance()->GetEventName(eDefaultEvent::ChangeScene);
 		auto changeScene = [this](const std::string& data) -> void
 		{
@@ -45,32 +43,51 @@ namespace d2dFramework
 
 		EventManager::GetInstance()->RegisterEventHandler(key, BaseEntity::GetId(), changeScene);
 	}
-
-	void SceneManager::FixedUpdate(float deltaTime)
-	{
-		for (IFixedUpdateable* fixedUpdateable : mFixedUpdateable)
-		{
-			fixedUpdateable->FixedUpdate(deltaTime);
-		}
-	}
-
-	void SceneManager::Update(float deltaTime)
-	{
-		for (IUpdateable* updateable : mUpdateable)
-		{
-			updateable->Update(deltaTime);
-		}
-	}
-
 	void SceneManager::Release()
 	{
 		const std::string& key = EventManager::GetInstance()->GetEventName(eDefaultEvent::ChangeScene);
-		EventManager::GetInstance()->UnRegisterEventHandler(key, BaseEntity::GetId()); 
+		EventManager::GetInstance()->UnRegisterEventHandler(key, BaseEntity::GetId());
 
 		for (auto iter = mSceneMap.begin(); iter != mSceneMap.end(); ++iter)
 		{
 			Scene* scene = iter->second;
 			scene->Exit();
 		}
+	}
+
+	void SceneManager::FixedUpdate(float deltaTime)
+	{
+		for (int i = 0; i < GameObject::MAX_REFERENCE_DEPTH; ++i)
+		{
+			for (auto pair : mFixedUpdateable[i])
+			{
+				pair.second->FixedUpdate(deltaTime);
+			}
+		}
+	}
+
+	void SceneManager::Update(float deltaTime)
+	{
+		for (int i = 0; i < GameObject::MAX_REFERENCE_DEPTH; ++i)
+		{
+			for (auto pair : mUpdateable[i])
+			{
+				pair.second->Update(deltaTime);
+			}
+		}
+	}
+
+	void SceneManager::RegisterScene(const std::string& sceneName, Scene* scene)
+	{
+		if (mCurrentScene == nullptr)
+		{
+			mCurrentScene = scene;
+			mCurrentScene->Enter();
+		}
+
+		auto iter = mSceneMap.find(sceneName);
+		assert(iter == mSceneMap.end()); // 동일한 이름의 씬을 등록하면 안댐
+
+		mSceneMap.insert({ sceneName, scene });
 	}
 }

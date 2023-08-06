@@ -14,11 +14,6 @@ namespace d2dFramework
 	enum class eDefaultEvent 
 	{
 		ChangeScene,
-		EnterCollision,
-		OnCollision,
-		ExitCollision,
-		// CreateObject,
-		// DeleteObject
 	};
 
 	class EventManager final : public BaseEntity

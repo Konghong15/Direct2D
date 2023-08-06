@@ -3,8 +3,11 @@
 
 namespace d2dFramework
 {
-	GameObject::GameObject(unsigned int id)
+	GameObject::GameObject(unsigned int id, eObjectType objectType)
 		: BaseEntity(id)
+		, mObjectType(objectType)
+		, mParent(nullptr)
+		, mReferenceDepth(0u)
 	{
 	}
 
@@ -27,6 +30,16 @@ namespace d2dFramework
 
 	void GameObject::Release()
 	{
+		if (mParent != nullptr)
+		{
+			mParent->mChildren.erase(GetId());
+		}
+
+		for (auto pair : mChildren)
+		{
+			pair.second->Release();
+		}
+
 		for (auto keyComponent : mComponents)
 		{
 			keyComponent.second->Release();
