@@ -8,7 +8,6 @@
 #include "EventManager.h"
 #include "CollisionManager.h"
 #include "CameraManager.h"
-#include "SoundManager.h"
 
 #include "IUpdateable.h"
 #include "IFixedUpdateable.h"
@@ -33,7 +32,6 @@ namespace d2dFramework
 		, mCollisionManager(new CollisionManager())
 		, mCameraManager(new CameraManager())
 		, mDefaultCamera(nullptr)
-		, mSoundManager(new SoundManager())
 	{
 		InputManager::mInstance = new InputManager;
 		EventManager::mInstance = new EventManager;
@@ -69,7 +67,6 @@ namespace d2dFramework
 		mTimeManager->Init();
 		mCollisionManager->Init();
 		mSceneManager->Init();
-		mSoundManager->Init();
 
 		EventManager::mInstance;
 		InputManager::mInstance->Init();
@@ -111,7 +108,6 @@ namespace d2dFramework
 
 	void GameProcessor::Destroy()
 	{
-		mSoundManager->Release();
 		mRenderManager->Release();
 		mSceneManager->Release();
 		mCollisionManager->Release();

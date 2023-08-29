@@ -146,12 +146,14 @@
     <ClInclude Include="CirclePlayerComponent.h" />
     <ClInclude Include="D2DRigidbodyAABB.h" />
     <ClInclude Include="DefaultScene.h" />
+    <ClInclude Include="PlatformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoxPlayerComponent.cpp" />
     <ClCompile Include="CirclePlayerComponent.cpp" />
     <ClCompile Include="D2DRigidbodyAABB.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlatformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\D2DFramework\D2DFramework.vcxproj">

@@ -24,7 +24,8 @@ namespace d2dRigidbodyAABB
 		d2dFramework::GameObject* mLeftWall;
 		d2dFramework::GameObject* mRightWall;
 		d2dFramework::GameObject* mGround;
-		d2dFramework::GameObject* mCeiling;
+		d2dFramework::GameObject* mPlatform1;
+		d2dFramework::GameObject* mPlatform2;
 
 		d2dFramework::GameObject* mBoxPlayer;
 		d2dFramework::GameObject* mCirclePlayer;

@@ -13,7 +13,6 @@ namespace d2dFramework
 	class SceneManager;
 	class CollisionManager;
 	class CameraManager;
-	class SoundManager;
 	class GameObject;
 
 	class GameProcessor
@@ -36,7 +35,6 @@ namespace d2dFramework
 		inline SceneManager* getSceneManager() const;
 		inline CollisionManager* getCollisionManager() const;
 		inline CameraManager* getCameraManager() const;
-		inline SoundManager* getSoundManager() const;
 
 	private:
 		UINT mWidth;
@@ -48,7 +46,6 @@ namespace d2dFramework
 		SceneManager* mSceneManager;
 		CollisionManager* mCollisionManager;
 		CameraManager* mCameraManager;
-		SoundManager* mSoundManager;
 
 		GameObject* mDefaultCamera;
 	};
@@ -89,10 +86,5 @@ namespace d2dFramework
 	{
 		assert(mCameraManager != nullptr);
 		return mCameraManager;
-	}
-	SoundManager* GameProcessor::getSoundManager() const
-	{
-		assert(mSoundManager != nullptr);
-		return mSoundManager;
 	}
 }

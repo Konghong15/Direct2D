@@ -1,25 +1,20 @@
 #include "D2DRigidbodyAABB.h"
 
-#include <functional>
+#include "BoxPlayerComponent.h"
+#include "PlatformComponent.h"
+#include "CirclePlayerComponent.h"
 
 #include "GameObject.h"
 #include "Transform.h"
-
 #include "Scene.h"
 #include "SceneManager.h"
-#include "SoundManager.h"
-
 #include "AABBCollider.h"
 #include "Rigidbody.h"
-#include "BoxPlayerComponent.h"
-
 #include "CircleCollider.h"
-#include "CirclePlayerComponent.h"
-
 #include "SpriteRenderer.h"
-
 #include "ObjectManager.h"
 
+#include <functional>
 
 namespace d2dRigidbodyAABB
 {
@@ -28,7 +23,6 @@ namespace d2dRigidbodyAABB
 		, mLeftWall(nullptr)
 		, mRightWall(nullptr)
 		, mGround(nullptr)
-		, mCeiling(nullptr)
 		, mBoxPlayer(nullptr)
 		, mDummy{ nullptr, }
 		, mCirclePlayer(nullptr)
@@ -44,63 +38,60 @@ namespace d2dRigidbodyAABB
 		getSceneManager()->RegisterScene("hoho", new Scene("hoho"));
 		// register Register Scene;
 
-		unsigned int soundId = tempId++;
-		getSoundManager()->CreateSoundAsset(soundId, "../resource/Stage12.ogg");
-		getSoundManager()->Play(soundId);
-		getSoundManager()->SetFrequencyAll(30.f);
-		getSoundManager()->Play(soundId);
-		getSoundManager()->Play(soundId);
-
-
 		Transform* transform;
 		AABBCollider* aabbCollider;
 		Rigidbody* rigidbody;
 		SpriteRenderer* spriteRenderer;
 		CircleCollider* circleCollider;
 
+		auto createWall = [](Vector2 pos, Vector2 size) -> GameObject*
+		{
+			GameObject* wall = ObjectManager::GetInstance()->CreateObject(tempId++);
+			Transform* transform = wall->CreateComponent<Transform>(tempId++);
+			AABBCollider* collider = wall->CreateComponent<AABBCollider>(tempId++);
+			SpriteRenderer* renderer = wall->CreateComponent<SpriteRenderer>(tempId++);
+
+			transform->SetTranslate(pos);
+			collider->SetSize(size);
+			renderer->SetSize(size);
+			renderer->SetBaseColor({ 0,0,0,1 });
+
+			return wall;
+		};
+
 		{
 			float x = GetWidth() * -0.5f;
 			float y = 0;
 			float w = 100;
 			float h = (float)GetHeight();
-			mLeftWall = ObjectManager::GetInstance()->CreateObject(tempId++);
-			transform = mLeftWall->CreateComponent<Transform>(tempId++);
-			transform->SetTranslate({ x, y });
-			aabbCollider = mLeftWall->CreateComponent<AABBCollider>(tempId++);
-			aabbCollider->SetSize({ w, h });
-			spriteRenderer = mLeftWall->CreateComponent<SpriteRenderer>(tempId++);
-			spriteRenderer->SetSize({ w, h });
-			spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
-			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
+			mLeftWall = createWall({ x,y }, { w,h });
 
 			x *= -1;
-			mRightWall = ObjectManager::GetInstance()->CreateObject(tempId++);
-			transform = mRightWall->CreateComponent<Transform>(tempId++);
-			transform->SetTranslate({ x, y });
-			aabbCollider = mRightWall->CreateComponent<AABBCollider>(tempId++);
-			aabbCollider->SetSize({ w, h });
-			spriteRenderer = mRightWall->CreateComponent<SpriteRenderer>(tempId++);
-			spriteRenderer->SetSize({ w, h });
-			spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
-			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
+			mRightWall = createWall({ x,y }, { w,h });
 
-			/*	x = 0;
-				y = GetHeight() * -0.5f;
-				w = (float)GetWidth();
-				h = 300;
-				mGround = ObjectManager::GetInstance()->CreateObject(tempId++);
-				transform = mGround->CreateComponent<Transform>(tempId++);
-				transform->SetTranslate({ x, y });
-				aabbCollider = mGround->CreateComponent<AABBCollider>(tempId++);
-				aabbCollider->SetSize({ w, h });
-				spriteRenderer = mGround->CreateComponent<SpriteRenderer>(tempId++);
-				spriteRenderer->SetSize({ w, h });
-				spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
-				spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });*/
+			x = 0;
+			y = GetHeight() * -0.5f;
+			w = (float)GetWidth();
+			h = 300;
+			mGround = createWall({ x,y }, { w,h });
 
+			x = 500;
+			y = 0;
+			w = 300;
+			h = 100;
+			mPlatform1 = createWall({ x,y }, { w,h });
+			PlatformComponent* platformComponent = mPlatform1->CreateComponent<PlatformComponent>(tempId++);
+			platformComponent->SetIsMovePaused(false);
+			platformComponent->SetMoveSpeed(3.f);
+			platformComponent->SetMovePositions({
+				{ 500, 100},
+				{ 500, -200},
+				{ 800, -200},
+				{ 500, 100}
+				});
 
-			mCeiling = ObjectManager::GetInstance()->CreateObject(tempId++);
-
+			x = -500;
+			mPlatform2 = createWall({ x,y }, { w,h });
 		}
 
 		// make player, dummy
@@ -116,12 +107,12 @@ namespace d2dRigidbodyAABB
 			spriteRenderer->SetSize({ size, size });
 			spriteRenderer->SetBaseColor({ 1, 1, 0, 0.5f });
 			spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
-
 			rigidbody = mBoxPlayer->CreateComponent<Rigidbody>(tempId++);
 			BoxPlayerComponent* boxCo = mBoxPlayer->CreateComponent<BoxPlayerComponent>(tempId++);
 			boxCo->SetSpped({ 400, 400 });
 			rigidbody->SetMass(100);
-			mBoxPlayer->SetObjectType(eObjectType::Player);
+			rigidbody->SetCOR(0.f);
+			mBoxPlayer->SetObjectType(eObjectType::None);
 
 			mCirclePlayer = ObjectManager::GetInstance()->CreateObject(tempId++);
 			transform = mCirclePlayer->CreateComponent<Transform>(tempId++);
@@ -135,87 +126,36 @@ namespace d2dRigidbodyAABB
 			spriteRenderer->SetBorderColor({ 1, 1, 0, 1.f });
 			rigidbody = mCirclePlayer->CreateComponent<Rigidbody>(tempId++);
 			CirclePlayerComponent* circleCo = mCirclePlayer->CreateComponent<CirclePlayerComponent>(tempId++);
-			circleCo->SetSpped({ 100, 100 });
-			rigidbody->SetMass(0);
-			mCirclePlayer->SetParent(mBoxPlayer);
-			mCirclePlayer->SetObjectType(eObjectType::Player);
+			circleCo->SetSpped({ 200, 100 });
+			rigidbody->SetMass(100);
+			rigidbody->SetCOR(0.5f);
+			mCirclePlayer->SetObjectType(eObjectType::None);
 
-			mCirclePlayer = ObjectManager::GetInstance()->CreateObject(tempId++);
-			transform = mCirclePlayer->CreateComponent<Transform>(tempId++);
-			transform->SetTranslate({ 200, 0 });
-			circleCollider = mCirclePlayer->CreateComponent<CircleCollider>(tempId++);
-			circleCollider->SetRadius(size * 0.5f);
-			spriteRenderer = mCirclePlayer->CreateComponent<SpriteRenderer>(tempId++);
-			spriteRenderer->SetSpriteType(eSpriteType::Circle);
-			spriteRenderer->SetSize({ size, size });
-			spriteRenderer->SetBaseColor({ 1, 1, 0, 0.5f });
-			spriteRenderer->SetBorderColor({ 1, 1, 0, 1.f });
-			rigidbody = mCirclePlayer->CreateComponent<Rigidbody>(tempId++);
-			circleCo = mCirclePlayer->CreateComponent<CirclePlayerComponent>(tempId++);
-			circleCo->SetSpped({ 100, 100 });
-			rigidbody->SetMass(0);
-			mCirclePlayer->SetParent(mBoxPlayer);
-			mCirclePlayer->SetObjectType(eObjectType::Player);
+			//size = 20;
+			//for (size_t i = 0u; i < DUMMY_COUNT; ++i)
+			//{
+			//	float x = 500 / DUMMY_COUNT * i - 500 * 0.5f;
 
-			mCirclePlayer = ObjectManager::GetInstance()->CreateObject(tempId++);
-			transform = mCirclePlayer->CreateComponent<Transform>(tempId++);
-			transform->SetTranslate({ 0, 200 });
-			circleCollider = mCirclePlayer->CreateComponent<CircleCollider>(tempId++);
-			circleCollider->SetRadius(size * 0.5f);
-			spriteRenderer = mCirclePlayer->CreateComponent<SpriteRenderer>(tempId++);
-			spriteRenderer->SetSpriteType(eSpriteType::Circle);
-			spriteRenderer->SetSize({ size, size });
-			spriteRenderer->SetBaseColor({ 1, 1, 0, 0.5f });
-			spriteRenderer->SetBorderColor({ 1, 1, 0, 1.f });
-			rigidbody = mCirclePlayer->CreateComponent<Rigidbody>(tempId++);
-			 circleCo = mCirclePlayer->CreateComponent<CirclePlayerComponent>(tempId++);
-			circleCo->SetSpped({ 100, 100 });
-			rigidbody->SetMass(0);
-			mCirclePlayer->SetParent(mBoxPlayer);
-			mCirclePlayer->SetObjectType(eObjectType::Player);
+			//	for (size_t j = 0u; j < DUMMY_COUNT; ++j)
+			//	{
+			//		float y = 300 / DUMMY_COUNT * j - 300 * 0.5f;;
+			//		mDummy[i] = ObjectManager::GetInstance()->CreateObject(tempId++);
+			//		mDummy[i]->SetObjectType(eObjectType::Enemy);
+			//		transform = mDummy[i]->CreateComponent<Transform>(tempId++);
+			//		transform->SetTranslate({ x,y });
+			//		aabbCollider = mDummy[i]->CreateComponent<AABBCollider>(tempId++);
+			//		aabbCollider->SetSize({ size, size });
+			//		spriteRenderer = mDummy[i]->CreateComponent<SpriteRenderer>(tempId++);
+			//		spriteRenderer->SetSize({ size, size });
+			//		spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
+			//		spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
+			//		rigidbody = mDummy[i]->CreateComponent<Rigidbody>(tempId++);
 
-			mCirclePlayer = ObjectManager::GetInstance()->CreateObject(tempId++);
-			transform = mCirclePlayer->CreateComponent<Transform>(tempId++);
-			transform->SetTranslate({ 0, -200 });
-			circleCollider = mCirclePlayer->CreateComponent<CircleCollider>(tempId++);
-			circleCollider->SetRadius(size * 0.5f);
-			spriteRenderer = mCirclePlayer->CreateComponent<SpriteRenderer>(tempId++);
-			spriteRenderer->SetSpriteType(eSpriteType::Circle);
-			spriteRenderer->SetSize({ size, size });
-			spriteRenderer->SetBaseColor({ 1, 1, 0, 0.5f });
-			spriteRenderer->SetBorderColor({ 1, 1, 0, 1.f });
-			rigidbody = mCirclePlayer->CreateComponent<Rigidbody>(tempId++);
-			 circleCo = mCirclePlayer->CreateComponent<CirclePlayerComponent>(tempId++);
-			circleCo->SetSpped({ 100, 100 });
-			rigidbody->SetMass(0);
-			mCirclePlayer->SetParent(mBoxPlayer);
-			mCirclePlayer->SetObjectType(eObjectType::Player);
+			//		rigidbody->SetMass(size);
 
-			size = 10;
-			for (size_t i = 0u; i < DUMMY_COUNT; ++i)
-			{
-				float x = 500 / DUMMY_COUNT * i - 500 * 0.5f;
-
-				for (size_t j = 0u; j < DUMMY_COUNT; ++j)
-				{
-					float y = 300 / DUMMY_COUNT * j - 300 * 0.5f;;
-					mDummy[i] = ObjectManager::GetInstance()->CreateObject(tempId++);
-					mDummy[i]->SetObjectType(eObjectType::Enemy);
-					transform = mDummy[i]->CreateComponent<Transform>(tempId++);
-					transform->SetTranslate({ x,y });
-					aabbCollider = mDummy[i]->CreateComponent<AABBCollider>(tempId++);
-					aabbCollider->SetSize({ size, size });
-					spriteRenderer = mDummy[i]->CreateComponent<SpriteRenderer>(tempId++);
-					spriteRenderer->SetSize({ size, size });
-					spriteRenderer->SetBaseColor({ 1, 0, 0, 0.5f });
-					spriteRenderer->SetBorderColor({ 1, 0, 0, 1.f });
-					rigidbody = mDummy[i]->CreateComponent<Rigidbody>(tempId++);
-
-					rigidbody->SetMass(size);
-
-					//rigidbody->AddVelocity({ rand() % 100 - 50.f,100 });
-				}
-			}
+			//		//rigidbody->AddVelocity({ rand() % 100 - 50.f,100 });
+			//	}
+			//}
 		}
 	}
 

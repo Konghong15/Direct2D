@@ -21,9 +21,9 @@ namespace d2dRigidbodyAABB
 
 		Rigidbody* rigidbody = GetGameObject()->GetComponent<Rigidbody>();
 
-		if (InputManager::GetInstance()->GetKeyState('W') == eKeyState::Hold)
+		if (InputManager::GetInstance()->GetKeyState('W') == eKeyState::Push)
 		{
-			rigidbody->AddVelocity({ 0, mSpeed.GetY() * deltaTime });
+			rigidbody->AddVelocity({ 0, 500 });
 		}
 		else if (InputManager::GetInstance()->GetKeyState('S') == eKeyState::Hold)
 		{

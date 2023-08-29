@@ -42,4 +42,9 @@ namespace d2dFramework
 
 		return result;
 	}
+
+	float MathHelper::GetInterpolation(float start, float end, float delta)
+	{
+		return (1 - delta) * start + delta * end;
+	}
 }

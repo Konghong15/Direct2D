@@ -13,5 +13,6 @@ namespace d2dFramework
 		static float DegreeToRadian(float degree);
 		static float Clamp(float num, float min, float max);
 		static D2D1_RECT_F CreateRectangle(const Vector2& offset, const Vector2& size);
+		static float GetInterpolation(float start, float end, float delta);
 	};
 }

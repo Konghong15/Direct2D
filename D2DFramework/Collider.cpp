@@ -86,8 +86,8 @@ namespace d2dFramework
 		}
 
 		// 미는 연산 넣으면 떨림 발생
-		//transform->AddTranslate(manifold.CollisionNormal * -manifold.Penetration * otherRigidBody->GetMass() / massSum);
-		//otherTransform->AddTranslate(manifold.CollisionNormal * manifold.Penetration * rigidBody->GetMass() / massSum);
+		transform->AddTranslate(manifold.CollisionNormal * -manifold.Penetration * otherRigidBody->GetMass() / massSum);
+		otherTransform->AddTranslate(manifold.CollisionNormal * manifold.Penetration * rigidBody->GetMass() / massSum);
 
 		Vector2 impulse = manifold.CollisionNormal * j;
 		rigidBody->AddVelocity(impulse * -rigidBody->GetInvMass());
